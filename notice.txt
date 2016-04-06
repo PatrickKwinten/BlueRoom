@@ -1,0 +1,4 @@
+This project contains the following software:
+
+Teamroom.nsf by IBM - Apache license
+https://www.openntf.org/main.nsf/project.xsp?r=project/TeamRoom%20OpenNTF%208.5.2/summary
