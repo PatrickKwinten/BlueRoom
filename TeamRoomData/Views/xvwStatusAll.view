@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view xmlns="http://www.lotus.com/dxl" name="xvwStatusAll" showinmenu="false" allowdocselection="true" publicaccess="false" unreadmarks="standard" onopengoto="lastopened" onrefresh="displayindicator" headers="simple" opencollapsed="false" showresponsehierarchy="false" showmargin="true" shrinkrows="true" extendlastcolumn="false" showhierarchies="false" unreadcolor="maroon" rowlinecount="2" headerlinecount="1" rowspacing="1" haslinkcolumn="true" bgcolor="white" altrowcolor="#efefef" totalscolor="blue" headerbgcolor="#a8cfd4" boldunreadrows="false" evaluateactions="false" allownewdocuments="false" allowcustomizations="true" hidemarginborder="false" marginwidth="0px 0px 1px" marginbgcolor="white" uniquekeys="false" initialbuildrestricted="false" noemptycategories="true">
+  <code event="selection">
+    <formula>SELECT (form = "IndStat" &amp; FileThisStatusDoc = "0") | ((form = "Status" | form = "SubteamStatus")  &amp; Status = "1")</formula>
+  </code>
+  <actionbar useappletinbrowser="true" bgcolor="#78b4bc" bordercolor="black">
+    <actionbarstyle height="4.7500ex">
+      <font size="9pt" name="multilingual"/>
+    </actionbarstyle>
+    <actionbuttonstyle margintype="fixed" margin="5" bgcolor="#c4dee1" displayborder="notesstyle" widthtype="background"/>
+    <font size="9pt" name="multilingual"/>
+    <border width="0px 0px 1px"/>
+    <action title="_Forward" showinbar="false" systemcommand="forward"/>
+    <action title="_Edit Document" showinbar="false" systemcommand="edit"/>
+    <action title="New Individual Status">
+      <code event="click">
+        <formula>@Command([Compose]; "IndStat")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>db := @Subset(@DbName;-1);
+svr := @Subset(@DbName;1);
+access := @TextToNumber(@V4UserAccess(svr : db));
+REM {hide when access is less than Editor};
+@Subset(access; 1) &lt; 3</formula>
+      </code>
+    </action>
+    <action title="Set Status to Inactive" hide="web">
+      <code event="click">
+        <formula>REM {variables to translate};
+label := "Error";
+message := "You must first select a document.  Note:  highlight bar cannot be on a category.";
+REM {END variables to translate};
+
+@If(!@IsAvailable(form);
+@Return(@Prompt([Ok]; label; message));
+"");
+
+@Command([ToolsRunMacro]; "(SetStatusInactive)")</formula>
+      </code>
+    </action>
+    <action title="Delete\Move to Trash" showinmenu="false" hide="notes">
+      <code event="click">
+        <formula>@Command([MoveToTrash])</formula>
+      </code>
+    </action>
+    <action title="Delete\Empty Trash" showinmenu="false" hide="notes">
+      <code event="click">
+        <formula>@Command([EmptyTrash])</formula>
+      </code>
+    </action>
+    <action title="Search" showinmenu="false" hide="notes">
+      <code event="click">
+        <formula>REM {Web only - used in Views};
+@Command([ViewShowSearchBar])</formula>
+      </code>
+    </action>
+    <action title="Chat\Chat with Author" hide="preview edit previewedit web">
+      <code event="click">
+        <formula>@Command([SendInstantMessage]; From)</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>!@IsAvailable(form)</formula>
+      </code>
+    </action>
+    <action title="Database Help">
+      <code event="click">
+        <formula>@Command([HelpUsingDatabase])</formula>
+      </code>
+    </action>
+  </actionbar>
+  <column align="center" sort="descending" resort="ascending" hidedetailrows="false" itemname="$WeekEnding" width="13.7500" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="true" formatdatatype="datetime">
+    <font size="9pt"/>
+    <columnheader title="Week ending">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <datetimeformat show="date" date="yearmonthday" fourdigityear="true" time="hourminute" zone="never" dateformat="weekdaydaymonthyear" dayformat="twodigitday" monthformat="twodigitmonth" yearformat="fourdigityear" weekdayformat="shortname" dateseparator1=" " dateseparator2="/" dateseparator3="/" timeseparator=":" timeformat24="true" preference="usersetting"/>
+    <numberformat format="general" varying="true" digits="1" punctuated="false" parens="false" percent="false" bytes="false" decimalsym="." thousandssep="," currencysymtype="custom" currencysym="$" usecustomsym="false"/>
+    <code event="value">
+      <formula>@Date(ReportDate)</formula>
+    </code>
+  </column>
+  <column resort="both" hidedetailrows="false" itemname="$StatusFor" width="10" resizable="true" separatemultiplevalues="false" sortnoaccent="false" sortnocase="true" showaslinks="false">
+    <columnheader title="Status For">
+      <font size="9pt" style="bold"/>
+    </columnheader>
+    <code event="value">
+      <formula>REM {Variables to translate};
+TeamTxt := "Team Status";
+SubteamTxt := "Subteam: "+SubteamName;
+REM {END variables to translate};
+
+@If(form = "Status"; TeamTxt;
+	form = "SubteamStatus"; SubteamTxt;
+	form = "IndStat"; @Name([Abbreviate]; from);
+	"")</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" itemname="$Form" width="10" resizable="true" separatemultiplevalues="false" sortnoaccent="false" sortnocase="true" showaslinks="false">
+    <columnheader title="Form">
+      <font size="9pt" style="bold"/>
+    </columnheader>
+    <code event="value">
+      <formula>Form</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" itemname="$SingleSubteamName" width="8.3750" resizable="true" separatemultiplevalues="false" sortnoaccent="false" sortnocase="true" showaslinks="false">
+    <font size="9pt" color="teal" style="bold"/>
+    <columnheader title="SingleSubteamName">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <code event="value">
+      <formula>@If(form = "SubteamStatus"; SubteamName; 	"")</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" itemname="$Author" width="7.5000" resizable="true" separatemultiplevalues="false" sortnoaccent="false" sortnocase="true" showaslinks="false">
+    <font size="9pt" color="teal"/>
+    <columnheader title="Author">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <code event="value">
+      <formula>from</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" itemname="$SametimeInfo" width="7.1250" resizable="true" separatemultiplevalues="false" sortnoaccent="false" sortnocase="true" showaslinks="false" hidden="true">
+    <columnheader title="SametimeInfo">
+      <font size="9pt"/>
+    </columnheader>
+    <numberformat legacy="true" format="general" varying="true" punctuated="false" parens="false" percent="false" bytes="false"/>
+    <code event="value">
+      <formula>from</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" listseparator="comma" itemname="$Subject" width="32.7500" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="true">
+    <font size="9pt" color="teal"/>
+    <columnheader title="Key thought">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <columnnamesformat showonline="true" columncontainsname="false" columnname="SametimeInfo" verticalorientation="top"/>
+    <code event="value">
+      <formula>Subject</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" itemname="SubteamName" width="10" resizable="true" separatemultiplevalues="false" sortnoaccent="false" sortnocase="true" showaslinks="false">
+    <columnheader title="SubteamName">
+      <font size="9pt" style="bold"/>
+    </columnheader>
+  </column>
+</view>

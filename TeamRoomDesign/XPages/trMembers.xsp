@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core">
+
+	<xp:repeat id="repeat1" rows="30"
+		value="#{javascript:TeamController.loadMembers();}" var="obj"
+		indexVar="idx">
+		1
+		<xp:br></xp:br>
+	</xp:repeat>
+	<xp:text escape="true" id="computedField1" value="#{javascript:TeamController.helloWorld();}"></xp:text></xp:view>

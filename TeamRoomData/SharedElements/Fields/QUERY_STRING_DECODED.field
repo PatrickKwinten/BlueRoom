@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sharedfield xmlns="http://www.lotus.com/dxl" name="QUERY_STRING_DECODED" language="en">
+  <field type="text" kind="editable" name="QUERY_STRING_DECODED">
+    <code event="inputtranslation">
+      <formula>""</formula>
+    </code>
+  </field>
+</sharedfield>

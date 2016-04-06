@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(wFindAddressBook)" hide="v3" runaswebuser="true" publicaccess="true" language="en">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+Use "AddrBook"
+
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Call FindAddressBook
+End Sub</lotusscript>
+  </code>
+</agent>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view xmlns="http://www.lotus.com/dxl" name="(MissionLookup) " alias="MissionLookup" showinmenu="false" publicaccess="false" language="en" unreadmarks="none" onopengoto="lastopened" onrefresh="displayindicator" headers="beveled" opencollapsed="false" showresponsehierarchy="false" showmargin="true" shrinkrows="true" extendlastcolumn="true" showhierarchies="false" unreadcolor="black" rowlinecount="4" headerlinecount="1" rowspacing="1" bgcolor="white" totalscolor="gray" headerbgcolor="white" boldunreadrows="false" evaluateactions="false" allownewdocuments="false" allowcustomizations="true" hidemarginborder="false" marginwidth="0px" marginbgcolor="white" uniquekeys="false">
+  <code event="selection">
+    <formula>SELECT form = "Mission"</formula>
+  </code>
+  <actionbar bordercolor="black">
+    <actionbuttonstyle bgcolor="silver"/>
+    <action title="Categori_ze" showinmenu="false" showinbar="false" systemcommand="categorize"/>
+    <action title="_Edit Document" showinbar="false" systemcommand="edit"/>
+    <action title="Send Docu_ment" showinbar="false" systemcommand="send"/>
+    <action title="_Forward" showinbar="false" systemcommand="forward"/>
+    <action title="_Move To Folder..." showinbar="false" systemcommand="movetofolder"/>
+    <action title="_Remove From Folder" showinbar="false" systemcommand="removefromfolder"/>
+  </actionbar>
+  <column sort="ascending" hidedetailrows="false" itemname="Form" width="5.6250" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <font size="9pt"/>
+    <columnheader title="Mission">
+      <font size="9pt"/>
+    </columnheader>
+  </column>
+  <column hidedetailrows="false" itemname="TeamName" width="10" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <font size="9pt"/>
+    <columnheader title="Team name">
+      <font size="9pt"/>
+    </columnheader>
+  </column>
+  <column hidedetailrows="false" itemname="Mission" width="10" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <font size="9pt"/>
+    <columnheader title="Statement">
+      <font size="9pt"/>
+    </columnheader>
+  </column>
+  <column hidedetailrows="false" itemname="Categories" width="14.3750" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <font size="9pt"/>
+    <columnheader title="Categories">
+      <font size="9pt"/>
+    </columnheader>
+  </column>
+  <column hidedetailrows="false" itemname="DocType" width="17.5000" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <font size="9pt"/>
+    <columnheader title="Comm Types">
+      <font size="9pt"/>
+    </columnheader>
+  </column>
+  <column hidedetailrows="false" itemname="DefaultFilingInterval" width="11.5000" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <font size="9pt"/>
+    <columnheader title="Default Filing Interval">
+      <font size="9pt"/>
+    </columnheader>
+  </column>
+</view>

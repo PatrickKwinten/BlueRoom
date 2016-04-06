@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sharedfield xmlns="http://www.lotus.com/dxl" name="$$Return" language="en">
+  <field type="text" kind="computedfordisplay" name="$$Return">
+    <code event="defaultvalue">
+      <formula>REM {This $$Return field returns HTML as a result of the successful form submittal.};
+REM;
+REM {Variables to translate};
+DType := DocType;
+DocTypeTxt := "Document type:&amp;nbsp;&amp;nbsp;";
+SubjTxt := "Subject:&amp;nbsp;&amp;nbsp;";
+PrevDoc := "Open the page you just submitted";
+Another := "Create Another: ";
+AllView := "Index of All Documents";
+MissionView :=  "TeamRoom Overview";
+ActiveView := "By Date";
+Done  := "Done";
+Subteam := "Subteam Profile";
+Participant := "Team Member Profile";
+Event := "Event Profile";
+Mission := "TeamRoom Setup";
+Announcement := "Team Announcement";
+AnnouncePlural := "Team Announcements";
+ResponseTxt := "Response";
+IntProfile := "Newsletter Profile";
+TeamStatus := "Team Status";
+SubteamStatus := "Subteam Status";
+IndStat := "Individual Status";
+ThankMsg := "The page has been successfully submitted.";
+REM {End variables to translate};
+
+REM {Get the name of this database.};
+DB := @ReplaceSubstring(@ReplaceSubstring(@Subset(@DbName; -1); " "; "+"); "\\"; "/");
+FIELD webButtonPressed := webButtonPressed;
+FormName := @If(Form = "MainTopic"; MainTopic;
+Form = "Subteam"; Subteam;
+Form = "ParticipantProfile"; Participant;
+Form = "Event"; Event;
+Form = "Response"; Response;
+Form = "ResponseToResponse"; response;
+form = "Interest Profile"; IntProfile;
+@Contains(form; "Archive"); ArcProfile;
+form = "Mission"; Mission;
+form = "Status"; TeamStatus;
+form = "IndStat"; IndStat;
+form = "announcement"; Announcement;
+form = "SubteamStatus"; SubteamStatus; "");
+spacer := @Repeat("&amp;nbsp;"; 6);
+dtMTopic :=  "&lt;h4&gt;" + spacer + DocTypeTxt +  DType + "&lt;br&gt;" + spacer + SubjTxt + Subject + "&lt;p&gt;&lt;/h4&gt;";
+dtResp := "&lt;h4&gt;" + spacer + DocTypeTxt +  ResponseTxt + "&lt;br&gt;" + spacer + SubjTxt + Subject + "&lt;p&gt;&lt;/h4&gt;";
+dtOther := "&lt;h4&gt;" + spacer + DocTypeTxt +  formname + "&lt;p&gt;&lt;/h4&gt;";
+dtAnnounce := "&lt;h4&gt;" + spacer + formname + ":" + spacer + Subject + "&lt;p&gt;&lt;/h4&gt;";
+getMore := @If(form = "MainTopic"; dtMTopic; form = "announcement"; dtAnnounce; @Contains(@LowerCase(form); "response"); dtResp; dtOther);
+
+NewThankYou := "&lt;h3&gt;" + ThankMsg + "&lt;/h3&gt;"+ getMore;
+
+existingdoclink := "&lt;font size=2&gt;&lt;a href=/" + db + "/($All)/" + @Text(@DocumentUniqueID) + "?OpenDocument&gt;" + PrevDoc + "&lt;/a&gt;" + spacer;
+LinkAllView :=  "&lt;a href=/" + DB + "/" + "($All)?OpenView&gt;" +  AllView +  "&lt;/a&gt;" + spacer;
+LinkMissionView := "&lt;a href=/" + db + "/TeamOverview?OpenView&gt;"+ MissionView +"&lt;/a&gt;" + spacer;
+LinkActiveView := "&lt;a href=/" + db + "/ActiveDate?OpenView&gt;"+ ActiveView  +"&lt;/a&gt;" + spacer;
+LinkAnnouncements := "&lt;a href=/" + db + "/Announcements?OpenView&gt;"+ AnnouncePlural  +"&lt;/a&gt;&lt;hr&gt;";
+
+LinkDoneButton := "&lt;FORM&gt;&lt;INPUT TYPE=\"button\" VALUE=" + Done + " onClick=\"window.close(self)\"&gt;&lt;/FORM&gt;";
+Another2 := "&lt;font size=3&gt;" + Another;
+LinkCRParticipant := "&amp;nbsp;&amp;nbsp;&lt;font  size=2&gt;&lt;a href=/" + DB + "/" + "ParticipantProfile?Openform&amp;w=1&gt;" +  Participant +  "&lt;/a&gt;";
+LinkCRSubteam := "&amp;nbsp;&amp;nbsp;&lt;font  size=2&gt;&lt;a href=/" + DB + "/" + "Subteam?Openform&amp;w=1&gt;" +  Subteam +  "&lt;/a&gt;";
+LinkCREvent := "&amp;nbsp;&amp;nbsp;&lt;font  size=2&gt;&lt;a href=/" + DB + "/" + "Event?Openform&amp;w=1&gt;" +  Event +  "&lt;/a&gt; ";
+bkgd := "&lt;body bgcolor=\"" + "#ffffff" + "\"+ &gt;";
+
+REM {Assemble the HTML to be returned};
+OkMsg := bkgd + NewThankYou + existingdoclink + LinkAllView + LinkMissionView + LinkActiveView + LinkAnnouncements;
+CancelMsg := NewThankYou + Another2 + LinkCRParticipant + LinkCRSubteam + LinkCREvent + LinkDoneButton ;
+
+REM {Because the Part Profile, Subteam, and Event are created in a smaller window, we're using a different msg. when they're new docs.};
+@If(webNewDoc = "1"; CancelMsg;OKMsg )</formula>
+    </code>
+  </field>
+  <item name="$HTMLDocumentStyles" summary="true" sign="true">
+    <rawitemdata type="1">
+0ggBAAAA/wDSCAEA/wAAANIIAQCAAIAA
+</rawitemdata>
+  </item>
+  <item name="$SignatureStatus">
+    <text>1</text>
+  </item>
+  <item name="$HTMLCode" sign="true">
+    <rawitemdata type="1"/>
+  </item>
+</sharedfield>

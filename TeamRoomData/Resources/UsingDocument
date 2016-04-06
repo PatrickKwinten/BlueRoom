@@ -1,0 +1,326 @@
+<?xml version='1.0' encoding='utf-8'?>
+<helpusingdocument xmlns='http://www.lotus.com/dxl' version='9.0' maintenanceversion='1.5'
+ replicaid='C1257F57006DFDAE' publicaccess='false' designerversion='7' default='true'>
+<noteinfo noteid='14a' unid='192ECA96AB7CA745802577C2003DF23F' sequence='9'>
+<created><datetime dst='true'>20101020T121637,11+01</datetime></created>
+<modified><datetime>20160212T210124,00+01</datetime></modified>
+<revised><datetime dst='true'>20131002T111058,27-04</datetime></revised>
+<lastaccessed><datetime>20160212T210124,00+01</datetime></lastaccessed>
+<addedtofile><datetime>20160212T210124,00+01</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Lotus Notes Template Development/O=Lotus Notes</name></updatedby>
+<wassignedby><name>CN=Lotus Notes Template Development/O=Lotus Notes</name></wassignedby>
+<body><richtext>
+<pardef id='1' align='none' leftmargin='1in' hide='notes' tabs='L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in'/>
+<par def='1'><run html='true'><font size='8pt'/>&lt;HEAD&gt;<break/>&lt;STYLE TYPE="text/css"&gt;</run></par>
+<par def='1'><run html='true'><font size='8pt'/> 	BODY {font-family: "Arial"}</run></par>
+<par def='1'><run html='true'><font size='8pt'/>&lt;/STYLE&gt;<break/>&lt;/HEAD&gt;</run></par>
+<pardef id='2' leftmargin='1in' hide='notes'/>
+<par def='2'><run><font size='9pt' style='underline' color='blue'/></run><actionhotspot
+ hotspotstyle='none'><code event='onClick' for='web'><javascript>history.back()</javascript></code><code
+ event='onClick' for='client'><javascript>history.back()</javascript></code><run
+><font size='9pt' style='underline' color='blue'/>Go back</run></actionhotspot><run
+><font size='9pt' style='bold underline' color='blue'/></run></par>
+<pardef id='3' leftmargin='1in' hide='web'/>
+<par def='3'><run><font size='9pt' style='underline' color='blue'/></run><actionhotspot
+ hotspotstyle='none'><code event='click'><formula>@Command([FileCloseWindow])</formula></code><run
+><font size='9pt' style='underline' color='blue'/>Close this document to view the database</run></actionhotspot><run
+><font size='9pt'/></run></par>
+<pardef id='4' leftmargin='1in'/>
+<par def='4'><run><font size='9pt'/> </run></par>
+<pardef id='5' align='center'/>
+<par def='5'><run><font size='18pt' style='bold extrude' color='#400000'/>Using TeamRoom</run></par>
+<par def='5'><run><font size='9pt' style='bold' color='maroon'/>This database can be used only by Notes R6.0 and later clients and Domino servers.</run></par>
+<par def='5'><run><font size='9pt' style='bold' color='maroon'/>JavaScript must be enabled on the Notes client.</run></par>
+<pardef id='6'/>
+<par def='6'><run><font size='11pt' style='bold' color='#37605e'/></run></par>
+<par def='6'><run><font style='bold'/>The TeamRoom Setup</run></par>
+<par def='6'><run><font size='9pt' style='bold'/></run></par>
+<par def='6'><run><font size='9pt'/>The TeamRoom Setup is the first piece of collaborative teamwork the team does together.  It is divided into sections:  </run><run
+><font size='9pt' style='bold'/>Team Name &amp; Purpose, Team Members, Categories, Document Types, </run><run
+><font size='9pt'/>and </run><run><font size='9pt' style='bold'/>Milestones/Events</run><run
+><font size='9pt'/>.  The last section, </run><run><font size='9pt' style='bold'/>Advanced Options,</run><run
+><font size='9pt'/> lets you set up agents that send newsletters, reminders, and do the filing in the database.  In order for the database to be fully functional, a TeamRoom Setup document must be created.  </run></par>
+<par def='6'><run><font size='9pt'/></run></par>
+<par def='6'><run><font size='9pt'/>By defining these elements at the outset, the team provides context for their use of the TeamRoom.  These elements define the </run><run
+><font size='9pt'/>Why, What</run><run><font size='9pt'/> (content of work), </run><run
+><font size='9pt'/>How </run><run><font size='9pt'/>(use of the TeamRoom) and </run><run
+><font size='9pt'/>When </run><run><font size='9pt'/>of the project.  By giving structure to the common language and goals of your team, th</run><run
+><font size='9pt'/>e TeamRoom Setup forms the core of the TeamRoom, and begins the process of building team commitment and focus.</run></par>
+<par def='6'><run><font size='9pt'/></run></par>
+<par def='6'><run><font size='9pt' style='bold underline'/>TeamRoom Documents</run></par>
+<par def='6'><run><font size='9pt'/></run></par>
+<par def='6'><run><font size='9pt'/>There are an unlimited number of Document Types that can be defined in a TeamRoom.  These are defined on the TeamRoom Setup.  Four default document types are provided:  Discussion, Action Item, Meeting, and Reference.  The Document form is set up so that fields pertinent to the document type will display ("form morphing").  For example, "Meeting Time" will only display when the document type "Meeting" is selected.</run></par>
+<par def='6'><run><font size='9pt'/></run></par>
+<par def='6'><run><font size='9pt'/>Below is a description of each default document type.  Any additional document types that you specify in the TeamRoom Setup will have the features listed next to "Discussion" below.</run></par>
+<par def='6'><run><font size='9pt'/></run></par>
+<table widthtype='fitmargins' user4spacing='true' refwidth='9.6563in'><tablecolumn
+ width='17.3889%'/><tablecolumn width='20.6771%'/><tablecolumn width='61.9340%'/>
+<tablerow>
+<tablecell>
+<pardef id='7' leftmargin='2%' rightmargin='99%' keepwithnext='true' keeptogether='true'/>
+<par def='7'><run><font size='9pt' style='bold'/>Document Type</run></par></tablecell>
+<tablecell>
+<pardef id='8' leftmargin='2%' rightmargin='99%' keepwithnext='true' keeptogether='true'/>
+<par def='8'><run><font size='9pt' style='bold'/>Fields</run></par></tablecell>
+<tablecell>
+<pardef id='9' leftmargin='1%' rightmargin='100%' keepwithnext='true' keeptogether='true'/>
+<par def='9'><run><font size='9pt' style='bold'/>Comments / features</run></par></tablecell></tablerow>
+<tablerow>
+<tablecell>
+<par def='7'><run><font size='9pt'/>Discussion</run></par></tablecell>
+<tablecell>
+<par def='8'><run><font size='9pt'/>Review By Date</run></par>
+<par def='8'><run><font size='9pt'/>For Review By</run></par>
+<par def='8'><run><font size='9pt'/>Category</run></par>
+<par def='8'><run><font size='9pt'/>Associated Event</run></par>
+<par def='8'><run><font size='9pt'/>Associated Subteam</run></par></tablecell>
+<tablecell>
+<pardef id='10' leftmargin='4%' rightmargin='100%' list='bullet' keepwithnext='true'
+ keeptogether='true'/>
+<par def='10'><run><font size='9pt'/>You can enter people's names who need to look at the document; you do not need to set a Review By Date.</run></par>
+<par def='10'><run><font size='9pt'/>If you enter a Review By Date, you must enter the name of at least one reviewer.</run></par>
+<par def='10'><run><font size='9pt'/>People who are listed as reviewers are provided with a hotspot "Mark Reviewed by Me".  They will have Editor access to the document until everybody on the reviewer list has clicked this hotspot.</run></par>
+<par def='10'><run><font size='9pt'/>The "Mark reviewed by me" hotspot is only available when the document is in Edit mode; it is not available on new documents.</run></par></tablecell></tablerow>
+<tablerow>
+<tablecell>
+<par def='7'><run><font size='9pt'/>Action Item</run></par></tablecell>
+<tablecell>
+<par def='8'><run><font size='9pt'/>Priority</run></par>
+<par def='8'><run><font size='9pt'/>Due Date</run></par>
+<par def='8'><run><font size='9pt'/>Assigned To</run></par>
+<par def='8'><run><font size='9pt'/>Category</run></par>
+<par def='8'><run><font size='9pt'/>Associated Event</run></par>
+<par def='8'><run><font size='9pt'/>Associated Subteam</run></par></tablecell>
+<tablecell>
+<par def='10'><run><font size='9pt'/>The default Priority for action items is "3" (1 is the highest).  Action items can be viewed by priority in the 'Action items by priority' view.</run></par>
+<par def='10'><run><font size='9pt'/>You can enter people's names who need to complete the Action Item; you do not need to set a Due Date.</run></par>
+<par def='10'><run><font size='9pt' style='strikethrough'/>I</run><run><font
+ size='9pt'/>f you enter a Due Date, you must assign the action item to at least one person.</run></par>
+<par def='10'><run><font size='9pt'/>Everybody on the Assigned To list has Editor access to the document until the hotspot "Mark complete" has been clicked by someone.  Anyone on the reviewer list can mark an action item as completed.  The "Mark complete" hotspot is only available when the document is in Edit mode; it is not available on new documents.</run></par></tablecell></tablerow>
+<tablerow>
+<tablecell>
+<par def='7'><run><font size='9pt'/>Meeting</run></par></tablecell>
+<tablecell>
+<par def='8'><run><font size='9pt'/>Meeting Date</run></par>
+<par def='8'><run><font size='9pt'/>Meeting Time</run></par>
+<par def='8'><run><font size='9pt'/>Duration</run></par>
+<par def='8'><run><font size='9pt'/>Meeting Location</run></par>
+<par def='8'><run><font size='9pt'/>Attendees</run></par>
+<par def='8'><run><font size='9pt'/>Category</run></par>
+<par def='8'><run><font size='9pt'/>Associated Event</run></par>
+<par def='8'><run><font size='9pt'/>Associated Subteam</run></par></tablecell>
+<tablecell>
+<par def='10'><run><font size='9pt'/>A button called "Add To My Calendar" is provided, which adds the meeting information to the user's personal calendaring &amp; scheduling profile.  The button is available on documents being read or edited, but it is not available on new documents.</run></par></tablecell></tablerow>
+<tablerow>
+<tablecell>
+<par def='7'><run><font size='9pt'/>Reference</run></par></tablecell>
+<tablecell>
+<par def='8'><run><font size='9pt'/>Review By Date</run></par>
+<par def='8'><run><font size='9pt'/>For Review By</run></par>
+<par def='8'><run><font size='9pt'/>Category</run></par>
+<par def='8'><run><font size='9pt'/>Associated Event</run></par>
+<par def='8'><run><font size='9pt'/>Associated Subteam</run></par></tablecell>
+<tablecell>
+<par def='10'><run><font size='9pt'/>Same as Discussion above.</run></par></tablecell></tablerow></table>
+<pardef id='11' leftmargin='1.2500in'/>
+<par def='11'><run><font size='9pt'/></run></par>
+<par def='4'><run><font style='bold'/>Active versus Inactive Documents</run></par>
+<par def='4'><run><font size='9pt' style='bold'/></run></par>
+<par def='4'><run><font size='9pt'/>All documents in the team room (except the TeamRoom Setup) are considered "Active" when they are created.  Only active Main Documents and their responses display in the views in the Team Documents list (shown in the left frame); only active Participants, Subteams, and Milestones/Events display in the TeamRoom Overview view, etc.  When a document is marked "inactive", it will only display in the "Inactive Documents" view or the "Index of All Documents" view.</run></par>
+<par def='4'><run><font size='9pt'/></run></par>
+<par def='11'><run><font size='9pt' style='underline'/>Marking documents "inactive"</run></par>
+<par def='11'><run><font size='9pt'/></run></par>
+<par def='11'><run><font size='9pt'/>Setup:  In the TeamRoom Setup's Advanced panel, specify the default interval for Main Documents to be marked inactive.</run></par>
+<par def='11'><run><font size='9pt'/></run></par>
+<pardef id='12' leftmargin='1.5000in'/>
+<par def='12'><run><font size='9pt' style='underline'/>Notes users</run></par>
+<par def='12'><run><font size='9pt' color='teal'/>Main Documents: </run><run
+><font size='9pt'/> When a document is created, it will automatically display the default date that the document will be marked as "inactive".  When the Auto File agent (described below) runs, the documents will be rendered inactive.</run></par>
+<par def='12'><run><font size='9pt' color='teal'/>Participants, Subteams, and Milestones/Events:</run><run
+><font size='9pt'/>  Switch to the TeamRoom Overview view and select the document(s) you wish to mark inactive.  Click the "Set status to inactive" action button.  (You can also edit individual documents and click the "inactive" radio button.)</run></par>
+<par def='12'><run><font size='9pt' color='teal'/>Team/Subteam Status:  </run><run
+><font size='9pt'/>Switch to the Active Team/Subteam Status view and select the document(s) you wish to mark inactive.  Click the "Set status to inactive" action button.  (You can also edit individual documents and click the "inactive" radio button.)</run></par>
+<par def='12'><run><font size='9pt' style='underline'/>Web browser users</run></par>
+<par def='12'><run><font size='9pt'/>Main Documents:  same as Notes users.</run></par>
+<par def='12'><run><font size='9pt'/>Participants, Subteams, Milestones/Events, and Team/Subteam Status:  Edit the individual documents and click the "inactive" radio button.</run></par>
+<par def='12'><run><font size='9pt'/></run></par>
+<par def='6'><run><font style='bold'/>Views</run></par>
+<par def='6'><run><font size='9pt'/></run></par>
+<par def='11'><run><font size='9pt'/>Some of the views in this template display icons that tell the user the status of a document.  For example, </run><picture
+ height='13px' width='9px'><notesbitmap>
+lQAmAAAAAAAAAAAAAAABAAAAAAAAAAkADQAIAAEACAABAAMAAACWAF4AAAAAAAAAAAAAAA0ATADJ
+AMkAxADCAcMAxADCAQECwgDEAMIBAQLCAMQAwgEBAsIAxADCAQECwgDEAMIBAQLCAMUAwgLCAMQA
+wgHDAMQAwgHDAMUAwgLCAMkAlwAPAAAA////+AAAwMDA
+</notesbitmap></picture><run><font
+ size='9pt'/> displays when the review/completion of a Discussion or Action Item has passed its due date and is still open.  This feature can cause a delay in opening the view, because it must refresh every time the view is selected.  This will become more apparent when the view has many documents.  Views marked with an asterisk (*) below may display this behavior.</run></par>
+<par def='11'><run><font size='9pt'/></run></par>
+<par def='11'><run><font size='9pt'/>There are a number of things that can be done to alleviate this problem, if the performance has degraded to an unacceptable level:</run></par>
+<pardef id='13' leftmargin='1.5000in' list='bullet'/>
+<par def='13'><run><font size='9pt'/>Remove the column from the view</run></par>
+<par def='13'><run><font size='9pt'/>Change the view refresh attribute to refresh automatically every 2-3 hours, rather than every time the view is accessed.</run></par>
+<par def='6'><run><font size='9pt'/></run></par>
+<par def='11'><run><font size='9pt' style='bold'/>Team Documents</run></par>
+<par def='12'><run><font size='9pt' color='teal'/>by Date*:</run><run><font
+ size='9pt'/>  </run><run><font size='9pt'/>Contains active documents, sorted by the date the document was .  You can click on column headings to sort the view "on the fly" by Document Type and by Author.</run><run
+><font size='9pt' color='teal'/> </run></par>
+<par def='12'><run><font size='9pt' color='teal'/>by Milestone/Event, by Category, by Subteam, by Alternate Name, by Author: </run><run
+><font size='9pt'/> Contain active documents, categorized by Milestone/Event, Category, Subteam, Alternate Name, and Author respectively.</run></par>
+<par def='12'><run><font size='9pt' color='teal'/>Action item by priority:</run><run
+><font size='9pt'/>  Categorizes action item documents based upon their priority, then by their category.</run></par>
+<par def='12'><run><font size='9pt' color='teal'/>Chronological:  </run><run
+><font size='9pt'/>Categorizes documents based upon the date they were created.</run></par>
+<par def='12'><run><font size='9pt' color='teal'/>Open By Assignment*:   </run><run
+><font size='9pt'/>Categorized by assignee.  Includes all Action Items that have an Open status, and Discussion documents that have not been fully reviewed.  If a Discussion is assigned to two people and one has completed their review, the document will not appear under their name in this view.</run></par>
+<par def='12'><run><font size='9pt' color='teal'/>Open by Due Date*:</run><run
+><font size='9pt' color='blue'/>  </run><run><font size='9pt'/>Sorted by due date.  All Action Items which are Open, and all Discussion documents that have not been fully reviewed.</run></par>
+<par def='12'><run><font size='9pt'/></run></par>
+<par def='11'><run><font size='9pt' style='bold'/>Personal Documents</run></par>
+<par def='12'><run><font size='9pt' color='teal'/>Documents assigned to me*</run><run
+><font size='9pt'/> </run><run><font size='9pt' color='teal'/>(Notes users only):  </run><run
+><font size='9pt'/>Includes both open and completed Main Documents and their responses that are assigned to you.</run></par>
+<par def='12'><run><font size='9pt' color='teal'/>Documents I Created (Notes users only):</run><run
+><font size='9pt'/>  Includes all documents that you created.</run></par>
+<par def='12'><run><font size='9pt' color='teal'/>My weekly status reports:  </run><run
+><font size='9pt'/>Includes all of your weekly status reports.</run></par>
+<par def='12'><run><font size='9pt' color='teal'/>My Newsletter Profile (All users):  </run><run
+><font size='9pt'/>Allows the user to set up notification of new/modified documents which match the user's interests.  These interests can include documents by specific author, words or phrases that appear in the Subject of the documents, specific categories, etc.  This feature is not available to Anonymous web users.</run></par>
+<par def='12'><run><font size='9pt' style='bold'/></run></par>
+<par def='11'><run><font size='9pt' style='bold'/>Project Information</run></par>
+<par def='11'><run><font size='9pt'/>This is where one looks for all project information pertaining to the TeamRoom:  the TeamRoom Setup, Status documents, team Calendar, and the Index and Inactive documents.</run></par>
+<par def='12'><run><font size='9pt' color='teal'/>TeamRoom Overview:  </run><run
+><font size='9pt'/>The TeamRoom Setup document and all participants, subteams, and milestone/event documents are in this view.  </run></par>
+<par def='12'><run><font size='9pt' color='teal'/>Team Announcements:  </run><run
+><font size='9pt'/>this is the view that the TeamRoom database opens to.  It displays team announcements and will show a special "urgency" icon if the announcement is created as a "must read".</run></par>
+<par def='12'><run><font size='9pt' color='teal'/>Calendar*: </run><run><font
+ size='9pt' style='italic' color='teal'/> </run><run><font size='9pt'/>The calendar will display Action Item documents on their due date, Meeting documents on their meeting date, and Milestone/Event documents on the date of the event.</run></par>
+<par def='12'><run><font size='9pt' color='teal'/>Active Team/Subteam Status:  </run><run
+><font size='9pt'/>Shows the active team status and subteam status documents.</run></par>
+<par def='12'><run><font size='9pt' color='teal'/>Individual status reports:  </run><run
+><font size='9pt'/>Shows all individual status reports, categorized by subteam and then by individual.</run></par>
+<par def='12'><run><font size='9pt' color='teal'/>Index of all documents:</run><run
+><font size='9pt'/>  Shows all of the documents in the TeamRoom.</run></par>
+<par def='12'><run><font size='9pt' color='teal'/>Inactive documents:</run><run
+><font size='9pt'/>  Shows only documents which have been marked "inactive".</run></par>
+<par def='11'><run><font size='9pt'/></run></par>
+<par def='11'><run><font size='9pt' style='bold'/>Leader/Facilitator Options </run><run
+><font size='9pt'/>(only available to users with Editor or higher access to the TeamRoom database)</run></par>
+<par def='12'><run><font size='9pt'/>This provides easy access to the TeamRoom Setup.  Is is also where you create a Team or Subteam status document, which alerts the team of new happenings.  When you're ready to "close" the TeamRoom, create a team status that summarizes the project, the outcome, and the lessons learned.  </run></par>
+<par def='12'><run><font size='9pt'/></run></par>
+<par def='12'><run><font size='9pt' style='bold'/>Update access list:  </run><run
+><font size='9pt'/>People with Manager access can add team members' names to the Access Control list by clicking "Update Access List" from the Leader/Facilitator Options list.  </run></par>
+<par def='12'><run><font size='9pt'/>By default, this form is not accessible to Web users.  This is due to the "Maximum internet name &amp; password" setting that is set to Editor by default.  To enable this dialog box on the web, you must do the following:</run></par>
+<pardef id='14' leftmargin='2in' firstlineleftmargin='1.7500in'/>
+<par def='14'><run><font size='9pt'/>-	In the Notes Client, select File--Database--Access control and click "Advanced Options".  Change the "Maximum internet name &amp; password" to Manager.</run></par>
+<par def='14'><run><font size='9pt'/>- 	In the Domino Designer, edit the page called TeamRoom Outline and deselect "Hide from web".</run></par>
+<par def='4'><run><font size='9pt'/></run></par>
+<par def='4'><run><font style='bold'/>Preview Pane</run></par>
+<par def='4'><run><font size='9pt'/></run></par>
+<par def='11'><run><font size='9pt' color='teal'/>Notes client users only:  </run><run
+><font size='9pt'/>The preview pane lets you read the content of the selected document.  </run><run
+><font size='9pt'/>To preview a document, simply drag the edge of the pane upwards until it is the size that you want.</run></par>
+<par def='6'><run><font size='9pt'/></run></par>
+<pardef id='15' leftmargin='0.7500in' firstlineleftmargin='1in'/>
+<par def='15'><run><font style='bold'/>Newsletter Profiles</run></par>
+<pardef id='16' leftmargin='1in' firstlineleftmargin='1.2500in'/>
+<par def='16'><run><font size='9pt'/></run></par>
+<par def='11'><run><font size='9pt' style='bold'/>Setting up your Newsletter Profile</run></par>
+<par def='11'><run><font size='9pt'/>Click "My Newsletter Profile to bring up your personal interest profile document. You can elect to be notified via a newsletter if certain conditions are met in documents created in the TeamRoom database.  These conditions can include the appearance of your name or phrases that you designate.  The newsletter profile will not display in any visible view, so this is the only way to access it.</run></par>
+<par def='16'><run><font size='9pt'/></run></par>
+<par def='11'><run><font size='9pt' style='bold'/>Adding the current discussion topic to your Newsletter Profile  </run></par>
+<par def='11'><run><font size='9pt' color='teal'/>Notes client users:  </run><run
+><font size='9pt'/>Use the navigator item Newsletter Profile to edit and change your personal profile.  Use the Action menu item Add Selected Topic To Newsletter Profile  to add the current discussion topic to the list of items you wish to track via newsletter.</run></par>
+<par def='11'><run><font size='9pt' color='teal'/>Web browser users:  </run><run
+><font size='9pt'/>Open the Main Topic which you would like to be added to your Newsletter profile and select the Add Topic to Newsletter Profile hotspot.  This action is available whether you are reading or editing a main topic document.  This feature is not available to Anonymous web users.</run></par>
+<par def='11'><run><font size='9pt'/></run></par>
+<par def='3'><run><font style='bold'/>Subscriptions (Notes client only)</run></par>
+<pardef id='17' leftmargin='1in' hide='notes web mobile' keeptogether='true'/>
+<par def='17'><run><font size='9pt' color='gray'/>[the Subscription paragraphs are hidden from web browser users]</run></par>
+<pardef id='18' leftmargin='1.2500in' hide='web'/>
+<par def='18'><run><font size='9pt'/></run></par>
+<par def='18'><run><font size='9pt'/>This template has a customized subscription form, containing the same fields as are found in the Interest Profile.  Select Create-Subscription to create a new subscription in your Headline database.  </run></par>
+<par def='18'><run><font size='9pt'/></run></par>
+<par def='18'><run><font size='9pt' color='teal'/>Converting Interest Profiles to Subscriptions:</run><run
+><font size='9pt'/>  If you have an existing interest profile, you can convert its data into a subscription.  Select Actions-Convert Interest Profile to Subscription.  Note that this action will convert the data and then delete your existing interest profile.  It can only be used by Notes clients running R5.0 or higher.  Subscriptions are not available for the web at this time.</run></par>
+<pardef id='19' leftmargin='1in' firstlineleftmargin='1.2500in' hide='web'/>
+<par def='19'><run><font size='9pt' style='bold'/></run></par>
+<par def='15'><run><font style='bold'/>Private Documents</run></par>
+<par def='15'><run><font style='bold'/></run></par>
+<pardef id='20' leftmargin='1.2500in' firstlineleftmargin='1.2896in'/>
+<par def='20'><run><font size='9pt'/>You can use the "Mark Private" and</run><run
+><font size='9pt' style='bold'/> </run><run><font size='9pt'/>"Mark Public" actions in the template to control whether anyone other than yourself can read a specific document.  For example, if you have not completed the writing of a particular document, you can click the "Mark Private" action and others will not be able to see the document.  When you complete the document, you can click the</run><run
+><font size='9pt' style='bold'/> </run><run><font size='9pt'/>"Mark Public"</run><run
+><font size='9pt' style='bold'/> </run><run><font size='9pt'/>action to make it available for others to read.</run></par>
+<par def='16'><run><font size='9pt'/></run></par>
+<par def='16'><run><font size='9pt'/>Note:  This action is not available to Anonymous web users.</run></par>
+<par def='16'><run><font size='9pt'/></run></par>
+<par def='4'><run><font style='bold'/>Deleting Documents on the Web</run></par>
+<par def='4'><run><font size='9pt' style='bold'/></run></par>
+<par def='11'><run><font size='9pt'/>You can delete documents on the web while at the view level.  Click the document once to 'highlight' it and click the "Move to Trash" button.  A trash can icon will appear next to the document.  To remove the document permanently from the database, click the "Empty Trash" button.</run></par>
+<par def='11'><run><font size='9pt'/></run></par>
+<pardef id='21' leftmargin='1in' keeptogether='true'/>
+<par def='21'><run><font style='bold'/>Pasting documents from other TeamRoom databases</run></par>
+<par def='21'><run><font size='9pt' style='bold underline'/></run></par>
+<pardef id='22' leftmargin='1.2500in' keeptogether='true'/>
+<par def='22'><run><font size='9pt'/>Documents that are copied from other TeamRoom databases will bring their original archive date with them rather than pick up the new TeamRoom's archive time period.  If the agent for making documents inactive is scheduled to run, the document may be archived sooner than you expect.  If this occurs, select the document in the Index of All documents view and click "Mark Active".</run></par>
+<par def='22'><run><font size='9pt'/></run></par>
+<par def='11'><run><font size='9pt'/></run></par>
+<par def='21'><run><font size='12pt' style='bold underline'/>For Administrators</run></par>
+<par def='11'><run><font size='9pt'/></run></par>
+<par def='15'><run><font style='bold'/>Agents </run></par>
+<par def='6'><run><font size='9pt' style='bold'/></run></par>
+<par def='11'><run><font size='9pt'/>There are several agents which run periodically, which should be activated.  All of the scheduled agents can be easily activated (via the Notes client) by modifying the TeamRoom Setup, in the "Advanced Options" section.</run></par>
+<par def='11'><run><font size='9pt'/></run></par>
+<par def='11'><run><font size='9pt' color='teal'/>Send  Newsletters:</run><run
+><font size='9pt'/>  Reviews the "Newsletter Profile" of each user who has a profile on a server-based TeamRoom database.  It matches criteria on the profile with any criteria it finds in the topics of the current database.  Each match generates a document link, which will become part of the newsletter; that newsletter is then mailed to the subscriber.  The agent can be run periodically.  Typically this would be on a daily basis. </run></par>
+<par def='11'><run><font size='9pt'/></run></par>
+<par def='11'><run><font size='9pt' color='teal'/>Auto File:</run><run><font
+ size='9pt'/>  When you enable "Marking Documents as Inactive", an agent will run that checks when documents reach their "inactive" dates, and automatically removes the documents from the Active Work views and marks them as "Inactive" in the Index (All) view.</run></par>
+<par def='11'><run><font size='9pt'/></run></par>
+<par def='11'><run><font size='9pt' color='teal'/>Send Reminders:</run><run
+><font size='9pt'/>  When you enable Reminders, an agent will run that checks to see if a document has a Due Date.  If it does, and if the Due Date has passed, it sends an e-mail to the person(s) assigned to the document, reminding them that there is a document that needs their attention.  This agent also checks to see if a document has been assigned for review by a team member.  If so, an e-mail is sent to that person, indicating that a document needs their review.</run></par>
+<par def='11'><run><font size='9pt'/></run></par>
+<pardef id='23' leftmargin='1in' hide='notes web mobile'/>
+<par def='23'><run><font size='9pt' style='bold' color='silver'/>Mailed/Pasted Documents</run></par>
+<pardef id='24' leftmargin='1.2500in' hide='notes web mobile'/>
+<par def='24'><run><font size='9pt' color='silver'/></run></par>
+<par def='24'><run><font size='9pt' color='silver'/>When a document is mailed or pasted into the TeamRoom database, it automatically appears in the Team Document views and in the Index of All Documents view.  There is also a selection under Leader/Facilitator Options called "Manage Mailed/Pasted Docs", where all unprocessed mailed or pasted documents reside.  </run></par>
+<par def='24'><run><font size='9pt' color='silver'/></run></par>
+<par def='24'><run><font size='9pt' color='silver'/>There are two ways to process mailed/pasted documents:</run></par>
+<pardef id='25' leftmargin='1.5000in' hide='notes web mobile'/>
+<par def='25'><run><font size='9pt' color='silver'/>1. Open the document in Edit mode.  Fill in optional workflow information, such as assignments, due date, etc., and save the document. </run></par>
+<par def='25'><run><font size='9pt' color='silver'/>2. Open the document in Edit mode.  Click the "Update Mailed/Pasted Doc" action and save the document.</run></par>
+<par def='11'><run><font size='9pt'/></run></par>
+<par def='4'><run><font style='bold'/>Archiving</run></par>
+<par def='4'><run><font size='9pt'/></run></par>
+<par def='11'><run><font size='9pt' color='teal'/>Notes client users only: </run><run
+><font size='9pt' style='italic'/> </run><run><font size='9pt'/>To set up Archiving for the TeamRoom, click the Archive button on the second tab of the File-Database-Properties infobox.  Fill out the information and click the OK button.  Set up the Archiving task to run on the server.  An archive database will be set up automatically.</run></par>
+<par def='11'><run><font size='9pt'/></run></par>
+<par def='11'><run><font size='9pt' style='underline'/>Marking documents as "Expired"  </run></par>
+<par def='11'><run><font size='9pt'/>The Archive feature can act upon documents that have been marked as Expired.  </run></par>
+<par def='11'><run><font size='9pt' color='teal'/>Notes client users:  </run><run
+><font size='9pt'/>Select a document in the view and choose Mark/Unmark Expired from the Actions menu.</run></par>
+<par def='11'><run><font size='9pt' color='teal'/>Web browser users:  </run><run
+><font size='9pt'/>Put the document into edit mode by clicking the Edit Document hotspot.  Then click the Mark/Unmark Expired hotspot at the top of the document.  </run></par>
+<par def='11'><run><font size='9pt' style='bold'/></run></par>
+<pardef id='26' leftmargin='1in' hide='web' keeptogether='true'/>
+<par def='26'><run><font style='bold'/>Upgrading from Other Template Designs</run></par>
+<par def='17'><run><font size='9pt' color='gray'/>[the upgrading paragraphs are hidden from web browser users]</run></par>
+<pardef id='27' leftmargin='1.2500in' hide='web' keeptogether='true'/>
+<par def='27'><run><font size='9pt'/></run></par>
+<par def='27'><run><font size='9pt'/>The TeamRoom template has been designed from the ground up to be compatible with the Discussion template.  This means that any R4.6 or higher Discussion database can be upgraded to a TeamRoom database by replacing the design with the TeamRoom template.</run></par>
+<par def='27'><run><font size='9pt'/></run></par>
+<par def='27'><run><font size='9pt'/>The TeamRoom template is now also compatible with the 4.1 release of the Lotus Institute TeamRoom.  After replacing the design of the 4.1 TeamRoom, you must run the agent "Convert 4.1 TeamRoom to new Design".  This agent is hidden by default.  To make it available to use, edit the agent and change "When this agent should be run" to </run><run
+><font size='9pt' style='italic'/>Manually from the Actions Menu.</run><run
+><font size='9pt'/>  It is recommended that you hide the agent after use, to avoid confusion.</run></par>
+<par def='27'><run><font size='9pt'/></run></par>
+<par def='26'><run><font style='bold'/>Alternate Name Support -- Upgrading from R5 TeamRoom</run></par>
+<par def='17'><run><font size='9pt' color='gray'/>[the Alternate Name Support paragraphs are hidden from web browser users]</run></par>
+<par def='26'><run><font size='9pt'/></run></par>
+<par def='27'><run><font size='9pt'/>The Notes 6 (and future) TeamRoom provides support for </run><popup
+ show='onclick' hotspotstyle='none'><popuptext>An alternate name is helpful when you want to use your native language and character set to type, display, and look up names. For example, you can type a name in a native language and character set when sending mail. Your primary name is recognizable to an international audience; an alternate name is recognizable in your native language. </popuptext><run
+><font size='9pt' style='underline' color='blue'/>Alternate Names</run></popup><run
+><font size='9pt'/>.  The Subteam Details feature displays the names of the people assigned to a particular subteam.  Because R5 Subteam documents did not have alternate name support, the Subteam Details dialog box would only list primary names.  To update the Subteam documents, open the TeamRoom setup and click Manage Lists - Upgrade Subteams to New Design.</run></par>
+<par def='27'><run><font size='9pt'/></run></par></richtext></body>
+<item name='$SourceSeqTime' sign='true'><datetime dst='true'>19970729T164511,72-04</datetime></item>
+<item name='$SourceSequence' sign='true'><text>00000026</text></item></helpusingdocument>
+

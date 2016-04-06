@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="(SubteamDetails)" alias="SubteamDetails" nocompose="true" noquery="true" publicaccess="false" language="en" bgcolor="#efefef">
+  <code event="windowtitle">
+    <formula>"Subteam Details"</formula>
+  </code>
+  <code event="helprequest">
+    <formula> @Command([OpenHelpDocument]; [ClientHelp]; "(Help)"; "TeamRoomFMissionEdit")</formula>
+  </code>
+  <background allowoverride="false"/>
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1"/>
+      <subformref name="WebFont"/>
+      <pardef id="2" align="none" leftmargin="1in" hide="notes web" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="2">
+        <sharedfieldref name="AltNameDisplay"/>
+      </par>
+      <table leftmargin="0.7500in" widthtype="fixedleft" refwidth="4.8125in">
+        <tablecolumn width="4.8125in"/>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="system">
+            <pardef id="4" leftmargin="1%" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in" keepwithnext="true" keeptogether="true"/>
+            <par def="4">
+              <run>
+                <font color="white"/>
+              </run>
+            </par>
+            <table widthtype="fitmargins" leftmargin="0.1000in" rightmargin="98%" refwidth="4.6160in">
+              <tablecolumn width="100%"/>
+              <tablerow>
+                <tablecell borderwidth="0px" bgcolor="#d2d2d2">
+                  <cellbackground>
+                    <imageref name="bg_DIALOGBAND"/>
+                  </cellbackground>
+                  <pardef id="6" leftmargin="0.1000in" keepwithnext="true" keeptogether="true"/>
+                  <par def="6">
+                    <run>
+                      <font size="9pt" name="user-interface"/>Choose a subteam</run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <pardef id="7" leftmargin="1%" keepwithnext="true" keeptogether="true"/>
+            <par def="7">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/> </run>
+            </par>
+            <pardef id="8" leftmargin="0.1000in" keepwithnext="true" keeptogether="true"/>
+            <par def="8">
+              <run>
+                <font size="9pt" style="bold" name="user-interface"/>
+              </run>
+              <run>
+                <font size="9pt" name="user-interface"/>
+                <field usenotesstyle="false" height="0.6000in" width="2in" multiline="true" borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="SubteamList" description="Choose a subteam" htmltitle="Choose a subteam">
+                  <keywords recalconchange="true" columns="3" ui="listbox">
+                    <formula>View := "SubteamLookup";
+SubteamLookup := @DbColumn("" : "NoCache"; ""; View; 1);
+SubteamLookup</formula>
+                  </keywords>
+                  <code event="htmlattributes">
+                    <formula>"size = 5"</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" name="user-interface" color="white"/>
+              </run>
+            </par>
+            <pardef id="9" leftmargin="1%" hide="notes" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>subteamlist = ""</formula>
+              </code>
+            </pardef>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;p&gt;</run>
+            </par>
+            <pardef id="10" leftmargin="1%" hide="web" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>subteamlist = ""</formula>
+              </code>
+            </pardef>
+            <par def="10">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/>
+              </run>
+            </par>
+            <table widthtype="fitmargins" leftmargin="0.1000in" rightmargin="98%" refwidth="4.6160in">
+              <tablecolumn width="100%"/>
+              <tablerow>
+                <tablecell borderwidth="0px" bgcolor="#d2d2d2">
+                  <cellbackground>
+                    <imageref name="bg_DIALOGBAND"/>
+                  </cellbackground>
+                  <pardef id="12" leftmargin="0.1000in" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>subteamlist = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="12">
+                    <run>
+                      <font size="9pt" name="user-interface"/>List of team member(s)</run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <par def="8">
+              <run>
+                <font name="user-interface" color="white"/>
+              </run>
+              <run>
+                <font size="9pt" name="user-interface"/>
+                <field type="text" allowmultivalues="true" kind="computedfordisplay" name="MemberNames" listinputseparators="comma semicolon newline" listdisplayseparator="semicolon">
+                  <code event="defaultvalue">
+                    <formula>View := "SubteamLookup";
+Members := @DbLookup("" : "NoCache"; ""; View; SubteamList; "STmembers");
+AltMembers := @DbLookup("" : "NoCache"; ""; View; SubteamList; "AltNameMembers");
+@If(
+SubteamList = "" | @IsError(Members); "";
+AltNameDisplay = "1"; @Name([Abbreviate]; AltMembers);  Members)</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" name="user-interface" color="white"/>
+              </run>
+            </par>
+            <pardef id="13" leftmargin="1%" hide="notes" keepwithnext="true" keeptogether="true"/>
+            <par def="13">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;p&gt;</run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/>
+              </run>
+            </par>
+            <table widthtype="fitmargins" leftmargin="0.1000in" rightmargin="98%" refwidth="4.6160in">
+              <tablecolumn width="100%"/>
+              <tablerow>
+                <tablecell borderwidth="0px" bgcolor="#d2d2d2">
+                  <cellbackground>
+                    <imageref name="bg_DIALOGBAND"/>
+                  </cellbackground>
+                  <par def="12">
+                    <run>
+                      <font size="9pt" name="user-interface"/>Purpose </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <pardef id="14" leftmargin="0.1000in" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>subteamlist = ""</formula>
+              </code>
+            </pardef>
+            <par def="14">
+              <run>
+                <font size="9pt" name="user-interface"/>
+              </run>
+              <run>
+                <font size="9pt" name="user-interface"/>
+                <field type="text" kind="computedfordisplay" name="SubteamRole">
+                  <code event="defaultvalue">
+                    <formula>View := "SubteamLookup";
+Role := @DbLookup("" : "NoCache"; ""; View; SubteamList; "Position");
+@If(
+
+SubteamList = "" | @IsError(Role); ""; Role)</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" style="bold" name="user-interface"/>
+              </run>
+            </par>
+            <par def="7">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/>  </run>
+            </par>
+            <pardef id="15" leftmargin="0.1000in" rightmargin="99%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="15">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/>
+              </run>
+              <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="#d5ccbb">
+                <code event="click">
+                  <formula>@Command([FileCloseWindow])</formula>
+                </code>
+                <font size="9pt" name="user-interface"/>Done</button>
+              <run>
+                <font size="9pt" name="user-interface"/>
+              </run>
+            </par>
+            <pardef id="16" leftmargin="0.1000in" rightmargin="99%" hide="read notes" keepwithnext="true" keeptogether="true"/>
+            <par def="16">
+              <run>
+                <font size="9pt" name="user-interface"/>
+              </run>
+              <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="#d5ccbb">
+                <code event="onClick" for="web">
+                  <javascript>window.close(self)</javascript>
+                </code>
+                <font size="9pt" name="user-interface"/>Done</button>
+              <run>
+                <font size="9pt" name="user-interface" color="teal"/>
+              </run>
+            </par>
+            <pardef id="17" leftmargin="0.1000in" rightmargin="99%" keepwithnext="true" keeptogether="true"/>
+            <par def="17">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/> </run>
+            </par>
+            <par def="15">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/>
+              </run>
+            </par>
+            <par def="15">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/>
+              </run>
+            </par>
+            <par def="15">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/> </run>
+            </par>
+            <par def="15">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/>
+              </run>
+            </par>
+            <par def="15">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/>
+              </run>
+            </par>
+            <par def="15">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/> </run>
+            </par>
+            <par def="15">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/> </run>
+            </par>
+            <par def="15">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/>
+              </run>
+            </par>
+            <par def="15">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/> </run>
+            </par>
+            <par def="15">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/> </run>
+            </par>
+            <par def="15">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/> </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="18" leftmargin="1in" rightmargin="100%" hide="notes web"/>
+      <par def="18">
+        <run>
+          <font size="9pt" name="user-interface"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+  <item name="$SignatureStatus">
+    <text>1</text>
+  </item>
+  <item name="$SubForm_RepIDs" sign="true">
+    <text>0000000000000000</text>
+  </item>
+</form>

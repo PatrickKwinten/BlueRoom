@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(wAddressOpen)" hide="v3" runaswebuser="true" publicaccess="true" language="en">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript/>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Set session = New NotesSession
+	Set db = session.CurrentDatabase
+	Set note = session.DocumentContext
+	
+	'logging is for debug purposes
+	Set dbug = New NotesLog("wSendLink")
+'to turn off the debug log, set this to False     
+	dbug.LogActions = True
+	dbug.OpenAgentLog	
+	
+	IsWebClient = True 
+	Set item = note.getfirstitem("AddressBooks")
+	If item Is Nothing Then
+		dbug.logaction("nothing")
+	End If
+	
+	vbooks = session.addressbooks
+	Forall v In vbooks
+'need to put addressbooks into the tmpNABs field
+		item.appendtotextlist(NABEntry(v.filename))		
+	End Forall
+	
+  'There has to be something in the address lookup field so if the addressbooks call returned nothing, we'll default to names.nsf
+	If (note.getitemvalue("AddressBooks")(0) = "") Then
+		Call note.replaceitemvalue("AddressBooks",NABEntry("names.nsf"))		
+	End If
+	
+End Sub
+</lotusscript>
+  </code>
+  <code event="NABEntry">
+    <lotusscript>Function NABEntry(NABFilename As String) As String
+       'pull the title of the address book and put it as the display string in the field     
+	Dim newnab As notesdatabase
+	If NABFilename &lt;&gt; "" Then
+		Set newnab = New notesdatabase("", NABFilename)
+		If newnab.isopen Then
+			NABEntry = newnab.title + "|" + NABFilename
+			
+		Elseif newnab.open("","") Then
+			NABEntry = newnab.title + "|"+NABFilename
+		Else
+			NABEntry = NABFilename+"|"+NABFilename
+		End If
+	End If
+End Function</lotusscript>
+  </code>
+</agent>

@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view xmlns="http://www.lotus.com/dxl" name="calendarOutline" alias="myTestCalendar" showinmenu="false" allowdocselection="true" publicaccess="false" language="en" unreadmarks="standard" onopengoto="lastopened" onrefresh="displayindicator" headers="none" opencollapsed="false" showresponsehierarchy="false" showmargin="true" shrinkrows="true" extendlastcolumn="true" showhierarchies="false" unreadcolor="maroon" rowlinecount="3" headerlinecount="1" rowspacing="1.25" bgcolor="white" altrowcolor="#efefef" totalscolor="blue" headerbgcolor="white" boldunreadrows="false" evaluateactions="true" allownewdocuments="false" allowcustomizations="true" hidemarginborder="false" marginwidth="0px" marginbgcolor="white" uniquekeys="false">
+  <code event="selection">
+    <formula>SELECT Status != "0" &amp; (DueDate != "" | MtgDate != "" | form = "Event")</formula>
+  </code>
+  <code event="helprequest">
+    <formula>REM {DNT};
+@Command([OpenHelpDocument]; [ClientHelp]; "(Help)"; "TeamRoomVCalendar")</formula>
+  </code>
+  <actionbar useappletinbrowser="true" bgcolor="#78b4bc" bordercolor="black">
+    <actionbarstyle height="4.7500ex">
+      <font size="9pt" name="multilingual"/>
+    </actionbarstyle>
+    <actionbuttonstyle margintype="fixed" margin="5" bgcolor="#c4dee1" displayborder="notesstyle" widthtype="background"/>
+    <font size="9pt" name="multilingual"/>
+    <border width="0px 0px 1px"/>
+    <action title="_Forward" showinbar="false" systemcommand="forward"/>
+    <action title="_Edit Document" showinbar="false" systemcommand="edit"/>
+    <action title="New Document" hide="preview previewedit">
+      <code event="click">
+        <formula>@PostedCommand([Compose];"MainTopic")</formula>
+      </code>
+    </action>
+    <action title="New Event" hide="web">
+      <code event="click">
+        <formula>@Command([Compose]; "Event")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>db := @Subset(@DbName;-1);
+svr := @Subset(@DbName;1);
+access := @TextToNumber(@V4UserAccess(svr : db));
+REM {hide when access is less than Editor};
+@Subset(access; 1) &lt; 4</formula>
+      </code>
+    </action>
+    <action title="Calendar Format\One Day" hide="notes">
+      <imageref name="FullCalendar.gif|FullCalendar.gif"/>
+      <code event="click">
+        <formula>@Command([CalendarFormat]; "1")</formula>
+      </code>
+    </action>
+    <action title="Calendar Format\Two Days" hide="notes">
+      <imageref name="FullCalendar.gif|FullCalendar.gif"/>
+      <code event="click">
+        <formula>@Command([CalendarFormat]; "2")</formula>
+      </code>
+    </action>
+    <action title="Calendar Format\One Week" hide="notes">
+      <imageref name="FullCalendar.gif|FullCalendar.gif"/>
+      <code event="click">
+        <formula>@Command([CalendarFormat]; "7")</formula>
+      </code>
+    </action>
+    <action title="Calendar Format\Two Weeks" hide="notes">
+      <imageref name="FullCalendar.gif|FullCalendar.gif"/>
+      <code event="click">
+        <formula>@Command([CalendarFormat]; "14")</formula>
+      </code>
+    </action>
+    <action title="Calendar Format\One Month" hide="notes">
+      <imageref name="FullCalendar.gif|FullCalendar.gif"/>
+      <code event="click">
+        <formula>@Command([CalendarFormat]; "30")</formula>
+      </code>
+    </action>
+    <action title="Chat\Chat with Author" hide="preview edit previewedit web">
+      <code event="click">
+        <formula>@Command([SendInstantMessage]; From)</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>!@IsAvailable(form)  | @LowerCase(form) = @LowerCase("EveNt")</formula>
+      </code>
+    </action>
+    <action title="Chat\Chat with Assignee(s)" hide="preview edit previewedit web">
+      <code event="click">
+        <formula>REM {variables to translate};
+xTitle := "Chat";
+xNoAssign := "There are no assignees on this document.";
+xNoSelected := "No names were selected.";
+xSelect := "Select name(s) to chat with";
+AllTxt  := "-- Chat with all assignees --";
+REM {END variables to translate};
+
+
+listChat := AllTxt : @Name([Abbreviate]; People);
+@If(People = ""; @Return(@Prompt([Ok]; xtitle; xNoAssign)); "");
+AskChat := @Prompt([OkCancelListMult]; xtitle; xSelect; ""; listChat);
+@If(!@IsText(Askchat); @Return(@Prompt([Ok]; xtitle; xNoSelected)); "");
+ChatList := @If(@Contains(askchat; AllTxt); People; AskChat);
+@Command([SendInstantMessage]; ChatList)</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>!@IsAvailable(form) | DocType != DefaultDocType2 |  @IsResponseDoc | @LowerCase(form) = @LowerCase("EveNt")</formula>
+      </code>
+    </action>
+    <action title="Chat\Chat with Attendee(s)" hide="preview edit previewedit web">
+      <code event="click">
+        <formula>REM {variables to translate};
+xTitle := "Chat";
+xNoAssign := "There are no attendees on this document.";
+xNoSelected := "No names were selected.";
+xSelect := "Select name(s) to chat with";
+AllTxt  := "-- Chat with all attendees --";
+REM {END variables to translate};
+
+listChat :=
+AllTxt : @Name([Abbreviate]; People);
+@If(People = ""; @Return(@Prompt([Ok]; xTitle; xNoAssign)); "");
+AskChat := @Prompt([OkCancelListMult]; xTitle; xSelect; ""; listChat);
+@If(!@IsText(Askchat); @Return(@Prompt([Ok]; xtitle; xNoSelected)); "");
+ChatList := @If(@Contains(askchat; AllTxt); People; AskChat);
+@Command([SendInstantMessage]; ChatList)</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>!@IsAvailable(form) | DocType != DefaultDocType3 | @IsResponseDoc | @LowerCase(form) = @LowerCase("EveNt")</formula>
+      </code>
+    </action>
+    <action title="Chat\Chat with Reviewer(s)" hide="preview edit previewedit web">
+      <code event="click">
+        <formula>REM {variables to translate};
+xTitle := "Chat";
+xNoAssign := "There are no reviewers on this document.";
+xNoSelected := "No names were selected.";
+xSelect := "Select name(s) to chat with";
+AllTxt  := "-- Chat with all reviewers --";
+REM {END variables to translate};
+
+listChat :=
+AllTxt : @Name([Abbreviate]; People);
+@If(People = ""; @Return(@Prompt([Ok];xTitle; xNoAssign)); "");
+AskChat := @Prompt([OkCancelListMult]; xTitle; xSelect; ""; @Trim(listChat));
+@If(!@IsText(Askchat); @Return(@Prompt([Ok]; xtitle; xNoSelected)); "");
+ChatList := @If(@Contains(askchat; AllTxt); People; AskChat);
+@Command([SendInstantMessage]; ChatList)</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>!@IsAvailable(form) | DocType = DefaultDocType2 | DocType = DefaultDocType3 | @LowerCase(form) = @LowerCase("EveNt")</formula>
+      </code>
+    </action>
+    <action title="Database Help">
+      <code event="click">
+        <formula>@Command([HelpUsingDatabase])</formula>
+      </code>
+    </action>
+  </actionbar>
+  <column sort="ascending" hidedetailrows="false" itemname="CalDateTime" width="14.3750" resizable="false" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false" extattrs="$STARTDATE$=true">
+    <font size="9pt"/>
+    <columnheader title="CalDateTime">
+      <font size="9pt"/>
+    </columnheader>
+    <datetimeformat legacy="true" show="datetime" date="yearmonthday" fourdigityear="true" time="hourminutesecond" zone="never"/>
+    <code event="value">
+      <formula>tempTime := @If(MtgDate != ""; @Text(MtgTime); @Text(@Time([12:00:00])));
+tempDate := @If(form = "Event"; @Text(EventDate); DueDate != ""; @Text(DueDate); @Text(MtgDate));
+DT := tempDate + " " + tempTime;
+@TextToTime(DT)</formula>
+    </code>
+  </column>
+  <column sort="ascending" hidedetailrows="false" listseparator="comma" itemname="Icon" width="2" resizable="false" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false" showasicons="true">
+    <font size="9pt"/>
+    <columnheader title="Icon">
+      <font size="9pt"/>
+    </columnheader>
+    <code event="value">
+      <formula>date := Duedate;
+done := "1";
+LCDocType := @LowerCase(DocType);
+LCMtg := @LowerCase(DefaultDocType3);
+@If(
+LCDocType = LCMtg; 158;
+current_status = done; 82; Date = ""; ""; Date &lt; @Today; 150; Date &lt; @Adjust(@Today; 0; 0; 7; 0; 0; 0); 64; "")</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" itemname="SametimeInfo" width="13" resizable="true" separatemultiplevalues="false" sortnoaccent="false" sortnocase="true" showaslinks="false" hidden="true" extattrs="$SAMETIMEINFO$=true">
+    <columnheader title="SametimeInfo">
+      <font size="9pt"/>
+    </columnheader>
+    <numberformat legacy="true" format="general" varying="true" punctuated="false" parens="false" percent="false" bytes="false"/>
+    <code event="value">
+      <formula>from</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" listseparator="comma" itemname="For" width="24.5000" resizable="false" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false" extattrs="$AGGREGATEDSUBJECT$=true">
+    <font size="9pt" color="blue"/>
+    <columnheader title="For">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <columnnamesformat showonline="true" columncontainsname="false" columnname="SametimeInfo" verticalorientation="top"/>
+    <code event="value">
+      <formula>Disctxt := DefaultDocType1;
+ActionItemTxt := DefaultDocType2;
+MtgTxt := DefaultDocType3;
+Type := @If(form = "Event"; ""; DocType = DefaultDocType1; DiscTxt; DocType = DefaultDocType2; ActionItemTxt; DocType = DefaultDocType3; MtgTxt; DocType);
+Subj := @If(form = "Event"; EventSummary; Subject);
+MTime := @If(MtgTime != ""; " (" + @Text(MtgTime; "T1") + ")"; "");
+Result := @If(form = "Event"; Subj;Type + ": " + Subj + MTime);
+result</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" itemname="StartDateTime" width="10" resizable="true" separatemultiplevalues="false" sortnoaccent="false" sortnocase="true" showaslinks="false">
+    <columnheader title="StartTime">
+      <font size="9pt" style="bold"/>
+    </columnheader>
+  </column>
+  <column hidedetailrows="false" itemname="EndDateTime" width="10" resizable="true" separatemultiplevalues="false" sortnoaccent="false" sortnocase="true" showaslinks="false">
+    <columnheader title="EndTime">
+      <font size="9pt" style="bold"/>
+    </columnheader>
+  </column>
+  <column hidedetailrows="false" itemname="Chair" width="10" resizable="true" separatemultiplevalues="false" sortnoaccent="false" sortnocase="true" showaslinks="false">
+    <columnheader title="Chair">
+      <font size="9pt" style="bold"/>
+    </columnheader>
+    <code event="value">
+      <formula>@Name([CN];From)</formula>
+    </code>
+  </column>
+  <item name="$CalendarFormat" summary="true" sign="true">
+    <rawitemdata type="18">
+AT8BAAAJAQAACQEBDQrWAIYAEiA/AKQBdAQ8AAEAfsK8AAEA7+/vAAQA7+/vAP///wD///8A////
+ACMDAQDv7+8AAQD///8AAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQA/gIAAAQAACQAAAAAAAAAA
+AAAAAA==
+</rawitemdata>
+  </item>
+  <item name="$FormulaTV" sign="true">
+    <text/>
+  </item>
+</view>

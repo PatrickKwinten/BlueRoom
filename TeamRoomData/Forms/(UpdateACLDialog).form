@@ -1,0 +1,691 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="(UpdateACLDialog)" alias="UpdateACLDialog" htmlallfields="true" publicaccess="false" language="en">
+  <code event="postopen">
+    <formula>@SetProfileField("TempVars"; "notify"; "")</formula>
+  </code>
+  <code event="onLoad" for="web">
+    <javascript>var Msgfield2 = document.forms[0].computeMsg.value
+
+if (Msgfield2 != ''){
+	 alert(Msgfield2)
+	}</javascript>
+  </code>
+  <code event="jsheader" for="client">
+    <javascript>var pathname = window.location.pathname;
+filename = pathname.substring(0,(pathname.lastIndexOf('nsf')+4)) 
+
+function ACLHelp()
+{
+var newWindow = window.open(filename + 'HelpACL?openPage','secondary_window','toolbar=no,location=no,scrollbars=yes,directories=no,resizable=yes,height=300,width=400')
+}</javascript>
+  </code>
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>&lt;HEAD&gt;<break/>&lt;STYLE TYPE="text/css"&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/> 	BODY {font-family: "Arial"}</run>
+      </par>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>&lt;/STYLE&gt;<break/>&lt;/HEAD&gt;</run>
+      </par>
+      <pardef id="2" hide="notes web"/>
+      <par def="2">
+        <run>
+          <font size="9pt"/>
+        </run>
+        <run>
+          <font size="9pt"/>
+          <sharedfieldref name="AltNameDisplay"/>
+        </run>
+        <run>
+          <font size="9pt"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" allowmultivalues="true" kind="computedwhencomposed" name="PriPLookup" listinputseparators="comma semicolon" listdisplayseparator="semicolon">
+            <code event="defaultvalue">
+              <formula>PLookup :=  @DbColumn("" : "nocache"; ""; "PeopleLookup"; 1);
+
+SLookup := @DbColumn("" : "nocache"; ""; "SubteamLookup"; 1);
+
+@Trim(@Unique(PLookup : SLookup))</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" allowmultivalues="true" kind="computedwhencomposed" name="AltPLookup" listinputseparators="comma semicolon" listdisplayseparator="semicolon">
+            <code event="defaultvalue">
+              <formula>PLookup :=  @DbColumn("" : "nocache"; ""; "PriAlt"; 1);
+
+SLookup := @DbColumn("" : "nocache"; ""; "SubteamLookup"; 1);
+
+@Trim(@Unique(PLookup : SLookup))</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+      </par>
+      <table widthtype="fixedleft" refwidth="5.1875in">
+        <tablecolumn width="5.1875in"/>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="system">
+            <pardef id="4" leftmargin="0.1000in" rightmargin="98%" keepwithnext="true" keeptogether="true"/>
+            <par def="4">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font size="9pt"/>The lists below show the team member and subteam profiles that have been created for this TeamRoom.  For each access level, select the team member(s) or subteam(s)who should be granted the particular access.  Subteam names MUST match group names in the server's Name &amp; Address book in order to work properly in the ACL.</run>
+            </par>
+            <pardef id="5" leftmargin="0.1000in" rightmargin="98%" spacebefore="1.5" spaceafter="1.5" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="5">
+              <run>
+                <font size="9pt" style="underline" color="blue"/>
+              </run>
+              <actionhotspot hotspotstyle="none">
+                <code event="click">
+                  <formula>@DialogBox("HelpACL"; [AutoHorzFit] : [AutoVertFit] : [SizeToTable] : [NoOkCancel] : [NoCancel])</formula>
+                </code>
+                <run>
+                  <font size="9pt" style="underline" color="blue"/>Recommendations for Access Control</run>
+              </actionhotspot>
+              <run>
+                <font size="9pt" style="underline" color="blue"/>
+              </run>
+            </par>
+            <pardef id="6" leftmargin="0.1000in" rightmargin="98%" spacebefore="1.5" spaceafter="1.5" hide="notes" keepwithnext="true" keeptogether="true"/>
+            <par def="6">
+              <run>
+                <font size="9pt" style="underline" color="blue"/>
+              </run>
+              <actionhotspot hotspotstyle="none">
+                <code event="onClick" for="web">
+                  <javascript>var pathname = window.location.pathname;
+filename = pathname.substring(0,(pathname.lastIndexOf('nsf')+4)) 
+
+var newWindow = window.open(filename + 'HelpACL?openPage','secondary_window','toolbar=no,location=no,scrollbars=yes,directories=no,resizable=yes,height=400,width=500')
+</javascript>
+                </code>
+                <code event="onClick" for="client">
+                  <javascript>var pathname = window.location.pathname;
+filename = pathname.substring(0,(pathname.lastIndexOf('nsf')+4)) 
+
+var newWindow = window.open(filename + 'HelpACL?openPage','secondary_window','toolbar=no,location=no,scrollbars=yes,directories=no,resizable=yes,height=400,width=500')
+</javascript>
+                </code>
+                <run>
+                  <font size="9pt" style="underline" color="blue"/>Recommendations for Access Control</run>
+              </actionhotspot>
+              <run>
+                <font size="9pt" style="underline" color="blue"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font size="9pt"/>Reminder:  If the TeamRoom database is located on a hierarchical server, those team members with hierarchical IDs must be entered as hierarchical.</run>
+            </par>
+            <pardef id="7" leftmargin="0.1000in" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="7">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="8" leftmargin="0.1000in" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="8">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <pardef id="9" leftmargin="0.1000in" hide="notes" keepwithnext="true" keeptogether="true"/>
+            <par def="9">
+              <run>
+                <font size="9pt" color="gray"/>web users:  hold down the CTRL key to select multiple entries.</run>
+            </par>
+            <table widthtype="fitmargins" leftmargin="0.1000in" rightmargin="98%" refwidth="4.9840in">
+              <tablecolumn width="50.1597%"/>
+              <tablecolumn width="49.8403%"/>
+              <tablerow>
+                <tablecell columnspan="2" borderwidth="0px">
+                  <pardef id="11" keepwithnext="true" keeptogether="true"/>
+                  <par def="11">
+                    <run>
+                      <font size="9pt" style="bold"/>Default database access level</run>
+                  </par>
+                  <par def="11">
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.7000in" width="2in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="DefaultAccess" description="Default access" htmltitle="Default access">
+                        <keywords helperbutton="false" recalconchange="true" recalcchoices="true" columns="1" ui="listbox">
+                          <textlist>
+                            <text>No Access|0</text>
+                            <text>Depositor|1</text>
+                            <text>Reader|2</text>
+                            <text>Author|3</text>
+                            <text>Editor|4</text>
+                            <text>Designer|5</text>
+                            <text>Manager|6</text>
+                          </textlist>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size=4"</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="12" leftmargin="0.0104in" keepwithnext="true" keeptogether="true"/>
+                  <par def="12">
+                    <run>
+                      <font size="9pt" style="bold"/>Manager </run>
+                    <run>
+                      <font size="9pt"/>(</run>
+                    <run>
+                      <font size="9pt"/>selected names:</run>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <computedtext>
+                        <code event="value">
+                          <formula>@Elements(ManagerAccess)</formula>
+                        </code>
+                      </computedtext>
+                    </run>
+                    <run>
+                      <font size="9pt"/>)</run>
+                  </par>
+                  <pardef id="13" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltNameDisplay = "0"</formula>
+                    </code>
+                  </pardef>
+                  <par def="13">
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="1in" width="2in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="AltNameSelection_Mgr" description="Select the Team Members to whom you are directing this information." listinputseparators="comma" listdisplayseparator="comma" htmlid="People1_1">
+                        <keywords recalconchange="true" recalcchoices="true" columns="1" ui="listbox">
+                          <formula>PLookup :=  AltPLookup;
+
+@If(PLookup = ""; ""; PLookup)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size = 4"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@If(AltNameDisplay = "1"; AltNameSelection_Mgr; PriNameSelection_Mgr)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="#806210"/>
+                    </run>
+                  </par>
+                  <pardef id="14" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltNameDisplay = "1"</formula>
+                    </code>
+                  </pardef>
+                  <par def="14">
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="1in" width="2in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="PriNameSelection_Mgr" description="Select the Team Members to whom you are directing this information." listinputseparators="comma" listdisplayseparator="comma" htmlid="People1_2">
+                        <keywords recalconchange="true" recalcchoices="true" columns="1" ui="listbox">
+                          <formula>PLookup :=  PriPLookup;
+
+@If(PLookup = ""; ""; PLookup)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size = 4"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@If(AltNameDisplay = "0"; PriNameSelection_Mgr; AltNameSelection_Mgr)</formula>
+                        </code>
+                      </field>
+                    </run>
+                  </par>
+                  <pardef id="15" leftmargin="0.0104in" hide="notes web mobile" keepwithnext="true" keeptogether="true"/>
+                  <par def="15">
+                    <run>
+                      <font size="9pt" color="gray"/>
+                      <field type="text" allowmultivalues="true" kind="computed" name="ManagerAccess" listinputseparators="comma" listdisplayseparator="comma">
+                        <code event="defaultvalue">
+                          <formula>PriNameSelection_Mgr</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" color="gray"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="16" keepwithnext="true" keeptogether="true"/>
+                  <par def="16">
+                    <run>
+                      <font size="9pt" style="bold"/>Designer </run>
+                    <run>
+                      <font size="9pt"/>(selected names:</run>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <computedtext>
+                        <code event="value">
+                          <formula>@Elements(DesignerAccess)</formula>
+                        </code>
+                      </computedtext>
+                    </run>
+                    <run>
+                      <font size="9pt"/>)</run>
+                  </par>
+                  <pardef id="17" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltNameDisplay = "0"</formula>
+                    </code>
+                  </pardef>
+                  <par def="17">
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="1in" width="2in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="AltNameSelection_Des" description="Designer names" listinputseparators="comma" listdisplayseparator="comma" htmlid="People1_1_1">
+                        <keywords recalconchange="true" recalcchoices="true" columns="1" ui="listbox">
+                          <formula>PLookup :=  AltPLookup;
+
+@If(PLookup = ""; ""; PLookup)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size = 4"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@If(AltNameDisplay = "1"; AltNameSelection_Des; PriNameSelection_Des)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="#806210"/>
+                    </run>
+                  </par>
+                  <pardef id="18" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltNameDisplay = "1"</formula>
+                    </code>
+                  </pardef>
+                  <par def="18">
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="1in" width="2in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="PriNameSelection_Des" description="Designer names" listinputseparators="comma" listdisplayseparator="comma" htmlid="People1_2_1">
+                        <keywords recalconchange="true" recalcchoices="true" columns="1" ui="listbox">
+                          <formula>PLookup :=  PriPLookup;
+
+@If(PLookup = ""; ""; PLookup)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size = 4"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@If(AltNameDisplay = "0"; PriNameSelection_Des; AltNameSelection_Des)</formula>
+                        </code>
+                      </field>
+                    </run>
+                  </par>
+                  <pardef id="19" hide="notes web mobile" keepwithnext="true" keeptogether="true"/>
+                  <par def="19">
+                    <run>
+                      <font size="9pt" color="gray"/>
+                      <field type="text" allowmultivalues="true" kind="computed" name="DesignerAccess" listinputseparators="comma" listdisplayseparator="comma">
+                        <code event="defaultvalue">
+                          <formula>PriNameSelection_Des</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="20" spacebefore="1.5" keepwithnext="true" keeptogether="true"/>
+                  <par def="20">
+                    <run>
+                      <font size="9pt" style="bold"/>Editor </run>
+                    <run>
+                      <font size="9pt"/>(selected names:</run>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <computedtext>
+                        <code event="value">
+                          <formula>@Elements(EditorAccess)</formula>
+                        </code>
+                      </computedtext>
+                    </run>
+                    <run>
+                      <font size="9pt"/>)</run>
+                  </par>
+                  <pardef id="21" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltNameDisplay = "0"</formula>
+                    </code>
+                  </pardef>
+                  <par def="21">
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="1in" width="2in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="AltNameSelection_Ed" description="Select the Team Members to whom you are directing this information." listinputseparators="comma" listdisplayseparator="comma" htmlid="People1_1_1_1">
+                        <keywords recalconchange="true" recalcchoices="true" columns="1" ui="listbox">
+                          <formula>PLookup :=  AltPLookup;
+
+@If(PLookup = ""; ""; PLookup)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size = 4"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@If(AltNameDisplay = "1"; AltNameSelection_Ed; PriNameSelection_Ed)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="#806210"/>
+                    </run>
+                  </par>
+                  <pardef id="22" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltNameDisplay = "1"</formula>
+                    </code>
+                  </pardef>
+                  <par def="22">
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="1in" width="2in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="PriNameSelection_Ed" description="Select the Team Members to whom you are directing this information." listinputseparators="comma" listdisplayseparator="comma" htmlid="People1_2_1_1">
+                        <keywords recalconchange="true" recalcchoices="true" columns="1" ui="listbox">
+                          <formula>PLookup :=  PriPLookup;
+
+@If(PLookup = ""; ""; PLookup)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size = 4"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@If(AltNameDisplay = "0"; PriNameSelection_Ed; AltNameSelection_Ed)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" color="#806210"/>
+                    </run>
+                  </par>
+                  <pardef id="23" hide="notes web mobile" keepwithnext="true" keeptogether="true"/>
+                  <par def="23">
+                    <run>
+                      <font size="9pt" color="gray"/>
+                    </run>
+                    <run>
+                      <font size="9pt" color="gray"/>
+                      <field type="text" allowmultivalues="true" kind="computed" name="EditorAccess" listinputseparators="comma" listdisplayseparator="comma">
+                        <code event="defaultvalue">
+                          <formula>PriNameSelection_Ed</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" color="gray"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="24" spacebefore="1.5" keepwithnext="true" keeptogether="true"/>
+                  <par def="24">
+                    <run>
+                      <font size="9pt" style="bold"/>Author </run>
+                    <run>
+                      <font size="9pt"/>(selected names:</run>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <computedtext>
+                        <code event="value">
+                          <formula>@Elements(AuthorAccess)</formula>
+                        </code>
+                      </computedtext>
+                    </run>
+                    <run>
+                      <font size="9pt"/>)</run>
+                  </par>
+                  <par def="17">
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="1in" width="2in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="AltNameSelection_Auth" description="Author names" listinputseparators="comma" listdisplayseparator="comma" htmlid="People1_1_1_2">
+                        <keywords recalconchange="true" recalcchoices="true" columns="1" ui="listbox">
+                          <formula>PLookup :=  AltPLookup;
+
+@If(PLookup = ""; ""; PLookup)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size = 4"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@If(AltNameDisplay = "1"; AltNameSelection_Auth; PriNameSelection_Auth)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="#806210"/>
+                    </run>
+                  </par>
+                  <par def="18">
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="1in" width="2in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="PriNameSelection_Auth" description="Author names" listinputseparators="comma" listdisplayseparator="comma" htmlid="People1_2_1_2">
+                        <keywords recalconchange="true" recalcchoices="true" columns="1" ui="listbox">
+                          <formula>PLookup :=  PriPLookup;
+
+@If(PLookup = ""; ""; PLookup)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size = 4"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@If(AltNameDisplay = "0"; PriNameSelection_Auth; AltNameSelection_Auth)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <par def="19">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt" color="gray"/>
+                      <field type="text" allowmultivalues="true" kind="computed" name="AuthorAccess" listinputseparators="comma" listdisplayseparator="comma">
+                        <code event="defaultvalue">
+                          <formula>PriNameSelection_Auth</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" style="bold" color="gray"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <pardef id="25" leftmargin="0.0104in" keepwithnext="true" keeptogether="true"/>
+            <par def="25">
+              <run>
+                <font size="9pt"/> </run>
+            </par>
+            <pardef id="26" leftmargin="0.1000in" rightmargin="98%" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>PriPLookup != ""</formula>
+              </code>
+            </pardef>
+            <par def="26">
+              <run>
+                <font size="9pt" style="bold" color="maroon"/>There are no Team Members defined in this TeamRoom.  Click "Update TeamRoom Setup" and create team member profiles first.</run>
+            </par>
+            <pardef id="27" leftmargin="0.1000in" rightmargin="98%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="27">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="28" leftmargin="0.1000in" rightmargin="98%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="28">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <table widthtype="fitmargins" leftmargin="0.1000in" rightmargin="98%" refwidth="4.9840in">
+              <tablecolumn width="65.7083%"/>
+              <tablecolumn width="34.2917%"/>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="30" align="right" leftmargin="0.0104in" keepwithnext="true" keeptogether="true"/>
+                  <par def="30">
+                    <run>
+                      <font size="9pt" style="bold" color="maroon"/>
+                    </run>
+                    <button width="1.5000in" widthtype="fixed" wraptext="true" bgcolor="#d5ccbb">
+                      <code event="click">
+                        <formula>errString := "Error";
+msg := "You did not select any names from the lists.";
+lists := @Trim(ManagerAccess : DesignerAccess : EditorAccess : AuthorAccess);
+dAccess := DefaultAccess;
+@SetProfileField("TempVars"; "Notify"; "");
+
+@If(@ClientType = "Notes"; @SetProfileField("TempVars"; "ClientType"; "Notes"); @SetProfileField("TempVars"; "ClientType"; ""));
+
+@If(
+@ClientType != "Notes" &amp; (lists = "" &amp; dAccess = "");
+@Return(@Do(@SetProfileField("TempVars"; "Notify"; msg); @Command([ViewRefreshFields])));
+@ClientType= "Notes" &amp; Lists = "" &amp; dAccess = ""; @Return(@Prompt([Ok]; errString; Msg));
+ "");
+
+@PostedCommand([ToolsRunMacro]; "(UpdateACL)");
+@PostedCommand([ViewRefreshFields])</formula>
+                      </code>
+                      <font size="9pt"/>UpdateACL</button>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="31" align="right" leftmargin="0.0104in" hide="web" keepwithnext="true" keeptogether="true"/>
+                  <par def="31">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <button width="1.5000in" widthtype="fixed" wraptext="true" bgcolor="#d5ccbb">
+                      <code event="click">
+                        <formula>@Command([FileCloseWindow])</formula>
+                      </code>
+                      <font size="9pt"/>Done</button>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <pardef id="32" align="right" leftmargin="0.0104in" hide="notes" keepwithnext="true" keeptogether="true"/>
+                  <par def="32">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <button width="1.5000in" widthtype="fixed" wraptext="true" bgcolor="#d5ccbb">
+                      <code event="onClick" for="web">
+                        <javascript>window.close(self)</javascript>
+                      </code>
+                      <font size="9pt"/>Done</button>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <par def="4">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <pardef id="33" leftmargin="0.1000in" rightmargin="98%" hide="notes web mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="33">
+              <run>
+                <font size="9pt"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="editable" name="computeMsg">
+                  <code event="defaultvalue">
+                    <formula>""</formula>
+                  </code>
+                  <code event="inputtranslation">
+                    <formula>prof := @GetProfileField("TempVars"; "notify");
+@If(@IsDocBeingRecalculated; prof; "")</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="34"/>
+      <par def="34">
+        <run>
+          <font size="9pt"/>
+        </run>
+      </par>
+      <par def="2">
+        <run>
+          <font size="9pt"/>
+        </run>
+        <run>
+          <font size="9pt"/>
+          <field type="text" kind="computed" name="saveoptions">
+            <code event="defaultvalue">
+              <formula>0</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt"/>
+        </run>
+      </par>
+      <par def="2">
+        <run>
+          <font size="9pt"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+</form>

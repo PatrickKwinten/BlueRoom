@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sharedfield xmlns="http://www.lotus.com/dxl" name="AbbreviateFrom" language="en">
+  <field type="text" kind="computedwhencomposed" name="AbbreviateFrom">
+    <code event="defaultvalue">
+      <formula>@Name([Abbreviate]; From)</formula>
+    </code>
+  </field>
+  <item name="$HTMLDocumentStyles" summary="true" sign="true">
+    <rawitemdata type="1">
+0ggBAAAA/wDSCAEA/wAAANIIAQCAAIAA
+</rawitemdata>
+  </item>
+</sharedfield>

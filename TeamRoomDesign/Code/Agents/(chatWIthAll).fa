@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(chatWIthAll)" hide="notes v3" publicaccess="false" language="en">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="action">
+    <simpleaction action="runformula">
+      <formula>AllTxt  := "-- Chat with all --";
+
+allList := @If(form = @ProperCase("SubTeaM"); @Name([Abbreviate]; STMembers); @Name([Abbreviate]; People));
+
+
+listChat :=
+AllTxt : AllList;
+AskChat := @Prompt([OkCancelListMult]; "Chat"; "Select name(s) to chat with"; ""; listChat);
+
+ChatList := @If(@Contains(askchat; AllTxt); AllList; AskChat);
+@Command([SendInstantMessage]; ChatList);SELECT
+ @All</formula>
+    </simpleaction>
+  </code>
+  <item name="$POID">
+    <datetime dst="true">20031022T091626,66-04</datetime>
+  </item>
+</agent>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view xmlns="http://www.lotus.com/dxl" name="s:TeamRoom Config\Related Objects" showinmenu="false" publicaccess="false" unreadmarks="none" onopengoto="lastopened" onrefresh="displayindicator" headers="beveled" opencollapsed="false" showresponsehierarchy="true" showmargin="true" shrinkrows="false" extendlastcolumn="false" showhierarchies="false" unreadcolor="black" rowlinecount="1" headerlinecount="1" rowspacing="1" bgcolor="white" totalscolor="black" headerbgcolor="white" boldunreadrows="false" evaluateactions="false" allownewdocuments="false" allowcustomizations="true" hidemarginborder="false" marginwidth="0px" marginbgcolor="white" uniquekeys="false">
+  <code event="selection">
+    <formula>SELECT Form = "sRelatedObject"</formula>
+  </code>
+  <column sort="ascending" hidedetailrows="false" itemname="Object1" width="10" resizable="true" separatemultiplevalues="true" sortnoaccent="true" sortnocase="true" showaslinks="false" categorized="true">
+    <columnheader title="Object1=Key">
+      <font size="9pt" style="bold"/>
+    </columnheader>
+  </column>
+  <column align="center" hidedetailrows="false" itemname="$4" width="2" resizable="false" separatemultiplevalues="false" sortnoaccent="false" sortnocase="true" showaslinks="false" showasicons="true">
+    <columnheader>
+      <font size="9pt" style="bold"/>
+    </columnheader>
+    <code event="value">
+      <formula>@If(Status="0";38;Status="1";37;39)</formula>
+    </code>
+  </column>
+  <column sort="ascending" hidedetailrows="false" itemname="sort" width="3.6250" resizable="true" separatemultiplevalues="true" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <columnheader title="sort">
+      <font size="9pt" style="bold"/>
+    </columnheader>
+  </column>
+  <column hidedetailrows="false" itemname="category" width="11.1250" resizable="true" separatemultiplevalues="true" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <columnheader title="Category">
+      <font size="9pt" style="bold"/>
+    </columnheader>
+  </column>
+  <column hidedetailrows="false" itemname="Object2" width="17.1250" resizable="true" separatemultiplevalues="true" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <columnheader title="Object2=Target/Type">
+      <font size="9pt" style="bold"/>
+    </columnheader>
+  </column>
+  <column hidedetailrows="false" itemname="Name" width="14.2500" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <columnheader title="name">
+      <font size="9pt" style="bold"/>
+    </columnheader>
+  </column>
+  <column hidedetailrows="false" itemname="picture" width="14.2500" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <columnheader title="picture">
+      <font size="9pt" style="bold"/>
+    </columnheader>
+  </column>
+</view>

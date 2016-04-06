@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view xmlns="http://www.lotus.com/dxl" name="Project Information\TeamRoom Overview" alias="TeamOverview" showinmenu="true" allowdocselection="true" publicaccess="false" language="en" unreadmarks="none" onopengoto="lastopened" onrefresh="displayindicator" headers="simple" opencollapsed="false" showresponsehierarchy="true" showmargin="true" shrinkrows="true" extendlastcolumn="true" showhierarchies="false" unreadcolor="purple" rowlinecount="2" headerlinecount="1" rowspacing="1.25" bgcolor="white" altrowcolor="#efefef" totalscolor="blue" headerbgcolor="#a8cfd4" boldunreadrows="false" evaluateactions="false" allownewdocuments="false" allowcustomizations="true" hidemarginborder="false" marginwidth="0px 0px 1px" marginbgcolor="white" uniquekeys="false" initialbuildrestricted="false" noemptycategories="true">
+  <code event="selection">
+    <formula>Flist := "ParticipantProfile" : "Subteam" : "Event";
+SELECT  form = "Mission" | (@IsMember(form; Flist) &amp; Status = "1")</formula>
+  </code>
+  <code event="helprequest">
+    <formula>REM {DNT};
+@Command([OpenHelpDocument]; [ClientHelp]; "(Help)"; "TeamRoomVTeamOverview")</formula>
+  </code>
+  <actionbar useappletinbrowser="true" bgcolor="#78b4bc" bordercolor="black">
+    <actionbarstyle height="4.7500ex">
+      <font size="9pt" name="multilingual"/>
+    </actionbarstyle>
+    <actionbuttonstyle margintype="fixed" margin="5" bgcolor="#c4dee1" displayborder="notesstyle" widthtype="background"/>
+    <font size="9pt" name="multilingual"/>
+    <border width="0px 0px 1px"/>
+    <action title="_Forward" showinbar="false" hide="web" systemcommand="forward"/>
+    <action title="_Edit Document" showinbar="false" hide="web" systemcommand="edit"/>
+    <action title="New\Team Member" hide="web">
+      <imageref name="new.gif|new.gif"/>
+      <code event="click">
+        <formula>REM {notes only};
+@Command([Compose]; "ParticipantProfile")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>db := @Subset(@DbName;-1);
+svr := @Subset(@DbName;1);
+access := @TextToNumber(@V4UserAccess(svr : db));
+REM {hide when access is less than Editor};
+@Subset(access; 1) &lt; 4</formula>
+      </code>
+    </action>
+    <action title="New\Subteam" hide="web">
+      <imageref name="new.gif|new.gif"/>
+      <code event="click">
+        <formula>REM {notes only};
+@Command([Compose]; "Subteam")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>db := @Subset(@DbName;-1);
+svr := @Subset(@DbName;1);
+access := @TextToNumber(@V4UserAccess(svr : db));
+REM {hide when access is less than Editor};
+@Subset(access; 1) &lt; 4</formula>
+      </code>
+    </action>
+    <action title="New\Event" hide="web">
+      <imageref name="new.gif|new.gif"/>
+      <code event="click">
+        <formula>REM {notes only};
+@Command([Compose]; "Event")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>db := @Subset(@DbName;-1);
+svr := @Subset(@DbName;1);
+access := @TextToNumber(@V4UserAccess(svr : db));
+REM {hide when access is less than Editor};
+@Subset(access; 1) &lt; 4</formula>
+      </code>
+    </action>
+    <action title="New\Team Member" hide="notes">
+      <imageref name="new.gif|new.gif"/>
+      <code event="hidewhen">
+        <formula>db := @Subset(@DbName;-1);
+svr := @Subset(@DbName;1);
+access := @TextToNumber(@V4UserAccess(svr : db));
+REM {hide when access is less than Editor};
+@Subset(access; 1) &lt; 4</formula>
+      </code>
+      <code event="onClick" for="web">
+        <javascript>var pathname = window.location.pathname;
+filename = pathname.substring(0,(pathname.lastIndexOf('nsf')+4)) 
+
+var newWindow = window.open(filename  + "ParticipantProfile?OpenForm&amp;w=1","secondary_window","toolbar=no,location=no,scrollbars=yes,directories=no,resizable=yes,height=400,width=450")
+</javascript>
+      </code>
+      <code event="onClick" for="client">
+        <javascript>var pathname = window.location.pathname;
+filename = pathname.substring(0,(pathname.lastIndexOf('nsf')+4)) 
+
+var newWindow = window.open(filename  + "ParticipantProfile?OpenForm&amp;w=1","secondary_window","toolbar=no,location=no,scrollbars=yes,directories=no,resizable=yes,height=400,width=450")
+</javascript>
+      </code>
+    </action>
+    <action title="New\Subteam" hide="notes">
+      <imageref name="new.gif|new.gif"/>
+      <code event="hidewhen">
+        <formula>db := @Subset(@DbName;-1);
+svr := @Subset(@DbName;1);
+access := @TextToNumber(@V4UserAccess(svr : db));
+REM {hide when access is less than Editor};
+@Subset(access; 1) &lt; 4</formula>
+      </code>
+      <code event="onClick" for="web">
+        <javascript>var pathname = window.location.pathname;
+filename = pathname.substring(0,(pathname.lastIndexOf('nsf')+4)) 
+
+var newWindow = window.open(filename  + "Subteam?OpenForm&amp;w=1","secondary_window","toolbar=no,location=no,scrollbars=yes,directories=no,resizable=yes,height=450,width=450")
+</javascript>
+      </code>
+      <code event="onClick" for="client">
+        <javascript>var pathname = window.location.pathname;
+filename = pathname.substring(0,(pathname.lastIndexOf('nsf')+4)) 
+
+var newWindow = window.open(filename  + "Subteam?OpenForm&amp;w=1","secondary_window","toolbar=no,location=no,scrollbars=yes,directories=no,resizable=yes,height=450,width=450")
+</javascript>
+      </code>
+    </action>
+    <action title="New\Event" hide="notes">
+      <imageref name="new.gif|new.gif"/>
+      <code event="hidewhen">
+        <formula>db := @Subset(@DbName;-1);
+svr := @Subset(@DbName;1);
+access := @TextToNumber(@V4UserAccess(svr : db));
+REM {hide when access is less than Editor};
+@Subset(access; 1) &lt; 4</formula>
+      </code>
+      <code event="onClick" for="web">
+        <javascript>var pathname = window.location.pathname;
+filename = pathname.substring(0,(pathname.lastIndexOf('nsf')+4)) 
+
+var newWindow = window.open(filename  + "Event?OpenForm&amp;w=1","secondary_window","toolbar=no,location=no,scrollbars=yes,directories=no,resizable=yes,height=400,width=450")
+</javascript>
+      </code>
+      <code event="onClick" for="client">
+        <javascript>var pathname = window.location.pathname;
+filename = pathname.substring(0,(pathname.lastIndexOf('nsf')+4)) 
+
+var newWindow = window.open(filename  + "Event?OpenForm&amp;w=1","secondary_window","toolbar=no,location=no,scrollbars=yes,directories=no,resizable=yes,height=400,width=450")
+</javascript>
+      </code>
+    </action>
+    <sharedactionref id="59">
+      <action title="Set Status to Inactive" hide="web">
+        <code event="click">
+          <formula>REM {variables to translate};
+label := "Error";
+message := "You must first select a document.  Note:  highlight bar cannot be on a category.";
+REM {END variables to translate};
+
+@If(!@IsAvailable(form);
+@Return(@Prompt([Ok]; label; message));
+"");
+
+@Command([ToolsRunMacro]; "(SetStatusInactive)")</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="55">
+      <action title="Delete\Move to Trash" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>@Command([MoveToTrash])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="56">
+      <action title="Delete\Empty Trash" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>@Command([EmptyTrash])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="44">
+      <action title="Search" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>REM {Web only - used in Views};
+@Command([ViewShowSearchBar])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="60">
+      <action title="Database Help">
+        <code event="click">
+          <formula>@Command([HelpUsingDatabase])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+  </actionbar>
+  <column sort="ascending" hidedetailrows="false" listseparator="comma" itemname="$19" width="1.2500" resizable="false" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false" hidden="true">
+    <font size="9pt"/>
+    <columnheader title="SortOrder">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <numberformat legacy="true" format="fixed" digits="1" punctuated="false" parens="false" percent="false" bytes="false"/>
+    <code event="value">
+      <formula>sort1 := "Mission";
+sort2 := "ParticipantProfile";
+sort3 := "Subteam";
+@If(form = sort1; 1; form = sort2; 2; form = sort3; 3; 99)</formula>
+    </code>
+  </column>
+  <column sort="ascending" hidedetailrows="false" listseparator="comma" itemname="$35" width="1.7500" resizable="false" separatemultiplevalues="true" sortnoaccent="true" sortnocase="true" showaslinks="false" categorized="true" twisties="true">
+    <font size="9pt" color="teal" style="bold"/>
+    <columnheader>
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <numberformat legacy="true" format="fixed" digits="1" punctuated="false" parens="false" percent="false" bytes="false"/>
+    <code event="value">
+      <formula>REM {Variables to translate};
+MissionTxt := "- TeamRoom Setup";
+ProfileTxt := "Team Member Profiles";
+SubteamTxt := "Subteams";
+EventTxt := "Milestones/Events";
+REM {End variables to translate};
+@If(form = "Mission"; MissionTxt;
+form = "Event"; EventTxt; form = "ParticipantProfile"; ProfileTxt; form = "Subteam"; SubteamTxt;  form)</formula>
+    </code>
+  </column>
+  <column sort="ascending" hidedetailrows="false" listseparator="comma" itemname="$40" width="32.7500" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <font size="9pt"/>
+    <columnheader title="Team Member">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <code event="value">
+      <formula>REM {Variables to translate};
+BlankTNText := "TEAMROOM SETUP for a New Team";
+TNText := "TEAMROOM SETUP for:  " + Teamname;
+ExpiredTxt := "EXPIRED: ";
+REM {end variables to translate};
+
+Exp := @If(ExpireDate != ""; ExpiredTxt; "");
+MissionText := @If(TeamName = ""; BlankTNText; TNText);
+EvTxt := EventSummary + " (" + @Text(EventDate) + ")";
+
+Exp + @If(form = "Mission"; MissionText; form = "Participant Profile" | form = "ParticipantProfile"; @Name([Abbreviate]; Who);   form = "Subteam"; STName; form = "Event"; EvTxt; Subject)</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" listseparator="comma" itemname="$33" width="30" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <font size="9pt"/>
+    <columnheader title="Phone (for Subteams:  Subteam Members)">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <code event="value">
+      <formula>@If(form = "Participant Profile" | form = "ParticipantProfile"; Phone; form = "Subteam"; STMembers; "")</formula>
+    </code>
+  </column>
+  <item name="$CIAOTime" sign="true">
+    <datetime>19970214T111652,95-05</datetime>
+  </item>
+  <item name="$HTMLDocumentStyles" summary="true" sign="true">
+    <rawitemdata type="1">
+0ggBAAAA/wDSCAEA/wAAANIIAQCAAIAA
+</rawitemdata>
+  </item>
+</view>

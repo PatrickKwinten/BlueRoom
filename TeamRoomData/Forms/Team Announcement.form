@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="Team Announcement" alias="announcement" publicaccess="false" language="en">
+  <actionbar useappletinbrowser="true" bgcolor="#78b4bc" bordercolor="black">
+    <actionbarstyle height="4.7500ex">
+      <font size="9pt" name="multilingual"/>
+    </actionbarstyle>
+    <actionbuttonstyle margintype="fixed" margin="5" bgcolor="#c4dee1" displayborder="notesstyle" widthtype="background"/>
+    <font size="9pt" name="multilingual"/>
+    <border width="0px 0px 1px"/>
+    <action title="Forward" showinbar="false" hide="preview previewedit web">
+      <code event="click">
+        <formula>@Command([MailForward])</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>@IsNewDoc</formula>
+      </code>
+    </action>
+    <action title="Forward as Bookmark" showinbar="false" hide="preview previewedit web">
+      <code event="click">
+        <formula>@Command([Compose]; @MailDbName; "Bookmark")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>@IsNewDoc</formula>
+      </code>
+    </action>
+    <action title="Edit Document" hide="preview edit previewedit">
+      <code event="click">
+        <formula>REM {For all forms except Main Document form, which needs special casing for assignees to edit};
+@Command([EditDocument])</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>lcabAuthors := @LowerCase(@Name([Abbreviate]; Authors));
+lcabFrom := @LowerCase(@Name([Abbreviate]; From));
+lcabAltFrom := @LowerCase(@Name([Abbreviate]; AltFrom));
+lcabUN := @LowerCase(@Name([Abbreviate]; @UserName));
+Filename := @DbName;
+Level := @V4UserAccess(Filename);
+Getlevel := @TextToNumber(@Subset(Level; 1));
+
+getLevel &lt; 4 &amp;
+(
+!@Contains(lcabAuthors; lcabUN) |
+!@Contains(lcabFrom; lcabUN) |
+!@Contains(lcabAltFrom; lcabUN))</formula>
+      </code>
+    </action>
+    <action title="Save &amp; Close" showinmenu="false" hide="preview read previewedit">
+      <code event="click">
+        <formula>REM {Can't use @isvalid on the web};
+@If(
+@ClientType != "Notes";
+@Do(@Command([FileSave]); @Command([FileCloseWindow]));
+@IsValid;
+@Do(@Command([FileSave]); @Command([FileCloseWindow])); "")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>REM {Hide if 'New doc' button was clicked};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w = "1" |  (@ClientType != "Notes" &amp; form = "MainTopic") | (@ClientType != "Notes" &amp; form = "Mission") | (@ClientType != "Notes" &amp; form = "IndStat")</formula>
+      </code>
+    </action>
+    <action title="Save &amp; Close" showinmenu="false" hide="notes">
+      <code event="hidewhen">
+        <formula>REM {Hide if 'New doc' button not clicked};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w != "1"</formula>
+      </code>
+      <code event="onClick" for="web">
+        <javascript>validate()</javascript>
+      </code>
+      <code event="onBlur" for="web">
+        <javascript>/*
+used only in Participant, Event, and Subteam profiles
+hidden if NewDoc has not been clicked
+*/</javascript>
+      </code>
+    </action>
+    <action title="Cancel" showinmenu="false" hide="preview previewedit web">
+      <code event="click">
+        <formula>REM {Notes only};
+REM {cannot issue the SaveOptions command below on the web};
+FIELD SaveOptions := 0;
+@Command([FileCloseWindow])</formula>
+      </code>
+    </action>
+    <action title="Cancel" showinmenu="false" hide="notes">
+      <code event="hidewhen">
+        <formula>REM {Hide if person clicked 'New doc' button};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w != "1"</formula>
+      </code>
+      <code event="onClick" for="web">
+        <javascript>window.close(self)</javascript>
+      </code>
+      <code event="onBlur" for="web">
+        <javascript>/*
+only used in Participant, Subteam, and Event profiles
+Hidden if they did not click the 'New document' button
+*/</javascript>
+      </code>
+    </action>
+    <action title="Cancel" showinmenu="false" hide="notes">
+      <code event="click">
+        <formula>REM {web new docs};
+CurrentView := @GetProfileField("tempvars"; "viewtitle");
+@Command([OpenView]; CurrentView)</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>REM {Hide if person clicked 'New doc' button};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w = "1" |
+(Form != "Mission" &amp; Form != "Interest Profile" &amp; !@IsNewDoc)</formula>
+      </code>
+    </action>
+    <action title="Cancel" showinmenu="false" hide="notes">
+      <code event="click">
+        <formula>REM {web only; saved docs};
+REM {hidden if 'NewDoc' button was clicked for Participant, Event, or Subteam};
+@Command([FileCloseWindow])</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>REM {Hide if person clicked 'New doc' button};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w = "1" | @IsNewDoc</formula>
+      </code>
+    </action>
+  </actionbar>
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="notes web" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1"/>
+      <pardef id="2" align="none" leftmargin="1in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <subformref name="WebFont"/>
+      <par def="1"/>
+      <pardef id="3" hide="notes web"/>
+      <par def="3">
+        <run>
+          <font size="8pt" color="gray"/>
+          <sharedfieldref name="$$Return"/>
+        </run>
+        <field type="authors" kind="computedwhencomposed" name="from">
+          <code event="defaultvalue">
+            <formula>@UserName</formula>
+          </code>
+        </field>
+      </par>
+      <pardef id="4" hide="notes web mobile"/>
+      <par def="4">
+        <run>
+          <font size="9pt" color="gray"/>Used to store an abstract of the BODY for XPage views</run>
+        <sharedfieldref name="Abstract"/>
+      </par>
+      <pardef id="5" align="center"/>
+      <par def="5">
+        <run>
+          <font style="bold" color="teal"/>
+        </run>
+      </par>
+      <table widthtype="fitmargins" minrowheight="1in" cellbordercolor="#78b4bc" cellborderstyle="groove" refwidth="9.0313in">
+        <tablecolumn width="100%"/>
+        <tablerow>
+          <tablecell valign="center" borderwidth="3px" bgcolor="#a8cfd4">
+            <pardef id="7" align="center" leftmargin="0.0625in" hide="read preview" keepwithnext="true" keeptogether="true"/>
+            <par def="7">
+              <run>
+                <font size="12pt"/>headline</run>
+            </par>
+            <par def="7">
+              <run>
+                <font size="12pt"/>
+              </run>
+            </par>
+            <par def="7">
+              <run>
+                <font size="14pt" style="bold" color="teal"/>
+              </run>
+              <run>
+                <font size="14pt" style="bold"/>
+                <field type="text" kind="editable" name="subject" description="Subject for announcement" htmltitle="Subject for announcement">
+                  <code event="htmlattributes">
+                    <formula>"size=40"</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="11" containertype="65418" aftercontainercount="2" afterbegincount="5">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="14pt" style="bold" color="teal"/>
+              </run>
+            </par>
+            <pardef id="8" align="center" leftmargin="0.0625in" hide="edit copy previewedit" keepwithnext="true" keeptogether="true"/>
+            <par def="8">
+              <run>
+                <font size="14pt" style="bold" color="teal"/>
+              </run>
+              <run>
+                <font size="14pt" style="bold"/>
+                <field type="text" kind="computedfordisplay" name="dspSubject">
+                  <code event="htmlattributes">
+                    <formula>"size=40"</formula>
+                  </code>
+                  <code event="defaultvalue">
+                    <formula>subject</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="11" containertype="65418" aftercontainercount="1" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="8pt"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="9"/>
+      <par def="9"> </par>
+      <table minrowheight="0.5000in" cellbordercolor="#78b4bc" widthtype="fixedcenter" refwidth="5.5000in">
+        <tablecolumn width="2.7500in"/>
+        <tablecolumn width="2.7500in"/>
+        <tablerow>
+          <tablecell valign="center" bgcolor="#d1e6e9">
+            <pardef id="10" align="center" leftmargin="0.0104in" hide="read preview" keepwithnext="true" keeptogether="true"/>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+                <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="type" description="Announcement type" htmltitle="Announcement type">
+                  <keywords helperbutton="false" columns="2" ui="radiobutton">
+                    <textlist>
+                      <text>Must Read | 1</text>
+                      <text>Informational | 2</text>
+                    </textlist>
+                  </keywords>
+                  <code event="defaultvalue">
+                    <formula>"2"</formula>
+                  </code>
+                </field>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell valign="center" bgcolor="#d1e6e9">
+            <pardef id="11" align="center" leftmargin="0.0104in" hide="read preview" keepwithnext="true" keeptogether="true"/>
+            <par def="11">
+              <run>
+                <font size="9pt"/>
+                <sharedfieldref name="FileThisStatusDoc"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <par def="9">
+        <run>
+          <font size="9pt" color="teal"/>
+        </run>
+      </par>
+      <pardef id="12" spaceafter="1.5" hide="read preview"/>
+      <par def="12">content</par>
+      <par def="9">
+        <field useoscontrolinbrowser="true" type="richtext" kind="editable" name="body" description="Content" htmltitle="Content">
+          <code event="htmlattributes">
+            <formula>"height=\"300\" width=625\" rows=\"15\" cols=\"90\""</formula>
+          </code>
+        </field>
+        <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="2" afterbegincount="5">
+Yg4BAIQAAAAAAAEAAAA=
+</compositedata>
+      </par>
+      <par def="9"/>
+      <pardef id="13" hide="read preview previewedit notes web"/>
+      <par def="13">
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="Status"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+  <item name="$SubForm_RepIDs" sign="true">
+    <text>0000000000000000</text>
+  </item>
+  <item name="$XPageAlt" sign="true">
+    <text>announcements.xsp</text>
+  </item>
+</form>

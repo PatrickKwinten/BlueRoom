@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="(DeleteMissionItem)" alias="DeleteMissionItem" nocompose="true" noquery="true" htmlallfields="true" publicaccess="false" language="en" bgcolor="#efefef">
+  <code event="windowtitle">
+    <formula>"Delete Mission Item"</formula>
+  </code>
+  <code event="postopen">
+    <formula>@SetProfileField("TempVars"; "notify"; "")</formula>
+  </code>
+  <code event="onLoad" for="web">
+    <javascript>var Msgfield = document.forms[0].CanDelete.value
+var Msgfield2 = document.forms[0].computeMsg.value
+
+if (Msgfield != ''){
+	 alert(Msgfield)
+	}
+
+if (Msgfield2 != ''){
+	 alert(Msgfield2)
+	}
+</javascript>
+  </code>
+  <code event="onLoad" for="client">
+    <javascript>var Msgfield = document.forms[0].CanDelete.value
+var Msgfield2 = document.forms[0].computeMsg.value
+
+if (Msgfield != ''){
+	 alert(Msgfield)
+	}
+
+if (Msgfield2 != ''){
+	 alert(Msgfield2)
+	}
+</javascript>
+  </code>
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="notes web" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1"/>
+      <pardef id="2" align="none" leftmargin="1in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <subformref name="WebFont"/>
+      <par def="1"/>
+      <pardef id="3" hide="notes web"/>
+      <par def="3">
+        <run>
+          <font size="8pt" name="user-interface" color="silver"/>
+        </run>
+        <run>
+          <font size="9pt" color="silver" name="user-interface"/>
+          <sharedfieldref name="AltNameDisplay"/>
+        </run>
+        <run>
+          <font size="8pt" name="user-interface" color="silver"/>
+        </run>
+      </par>
+      <par def="3">
+        <run>
+          <font size="8pt" color="silver" name="user-interface"/>
+          <field type="text" allowmultivalues="true" kind="computed" name="AltPList" listinputseparators="comma semicolon" listdisplayseparator="semicolon">
+            <code event="defaultvalue">
+              <formula>PLookup :=  @DbColumn("" : "nocache"; ""; "PriAlt"; 1);
+isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 40));
+
+@If(PLookup = ""; sp; PLookup)</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" name="user-interface" color="silver"/>
+        </run>
+        <run>
+          <font size="8pt" color="silver" name="user-interface"/>
+          <field type="text" allowmultivalues="true" kind="computed" name="PriPList" listinputseparators="comma semicolon" listdisplayseparator="semicolon">
+            <code event="defaultvalue">
+              <formula>PLookup :=  @DbColumn("" : "nocache"; ""; "PeopleLookup"; 1);
+isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 40));
+
+@If(PLookup = ""; sp; PLookup)</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="15" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="8pt" name="user-interface" color="silver"/>
+        </run>
+        <run>
+          <font size="9pt" color="silver" name="user-interface"/>
+          <field type="text" allowmultivalues="true" kind="computed" name="SList" listinputseparators="comma semicolon" listdisplayseparator="semicolon">
+            <code event="defaultvalue">
+              <formula>view := "SubteamLookup";
+Sub := @DbColumn("":"NoCache"; ""; view; 1);
+Sub</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="24" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="8pt" name="user-interface" color="silver"/>
+        </run>
+        <run>
+          <font size="9pt" color="silver" name="user-interface"/>
+          <field type="text" allowmultivalues="true" kind="computed" name="EList" listinputseparators="comma semicolon" listdisplayseparator="semicolon">
+            <code event="defaultvalue">
+              <formula>view := "DelEventLookup";
+Ev := @DbColumn("":"NoCache"; ""; view; 1);
+Ev</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="33" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="8pt" name="user-interface" color="silver"/>
+        </run>
+      </par>
+      <table htmlid="DelMissionItem1" widthtype="fixedleft" refwidth="7.1146in">
+        <tablecolumn width="7.1146in"/>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="system" htmlid="dmi1a">
+            <pardef id="5" leftmargin="1%" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>PList = "" &amp; SList = "" &amp; EList = ""</formula>
+              </code>
+            </pardef>
+            <par def="5">
+              <run>
+                <font size="5pt" name="multilingual"/>
+              </run>
+            </par>
+            <par def="5">
+              <run>
+                <font size="9pt" name="user-interface"/>If you delete a team member, their name will be removed from any subteams as well.</run>
+            </par>
+            <pardef id="6" leftmargin="1%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="6">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="7" leftmargin="1%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="7">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/>
+              </run>
+            </par>
+            <table minrowheight="0.2201in" htmlid="DelMissionItem2" leftmargin="1%" widthtype="fixedleft" refwidth="7.0319in">
+              <tablecolumn width="2.2000in"/>
+              <tablecolumn width="0.2285in"/>
+              <tablecolumn width="2.2000in"/>
+              <tablecolumn width="0.2035in"/>
+              <tablecolumn width="2.2000in"/>
+              <tablerow>
+                <tablecell valign="center" borderwidth="0px" bgcolor="#d2d2d2" htmlid="dmi2a">
+                  <cellbackground>
+                    <imageref name="bg_DIALOGBAND"/>
+                  </cellbackground>
+                  <pardef id="9" align="center" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltPList = ""  &amp; PriPList = "" &amp; SList = "" &amp; EList = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="9">
+                    <run>
+                      <font size="9pt" name="user-interface"/>Choose team member(s) to delete</run>
+                  </par>
+                </tablecell>
+                <tablecell valign="center" borderwidth="0px">
+                  <pardef id="10" align="center" hide="notes mobile" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>PList = "" &amp; SList = "" &amp; EList = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="10">
+                    <run>
+                      <font size="9pt" name="user-interface"/>  </run>
+                  </par>
+                </tablecell>
+                <tablecell valign="center" borderwidth="0px" bgcolor="#d2d2d2" htmlid="dmi2b">
+                  <cellbackground>
+                    <imageref name="bg_DIALOGBAND"/>
+                  </cellbackground>
+                  <pardef id="11" align="center" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltPList = ""  &amp; PriPList = "" &amp; SList = "" &amp; EList = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="11">
+                    <run>
+                      <font size="9pt" name="user-interface"/>Choose subteam(s) to delete</run>
+                  </par>
+                </tablecell>
+                <tablecell valign="center" borderwidth="0px">
+                  <pardef id="12" align="center" hide="notes mobile" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>PList = "" &amp; SList = "" &amp; EList = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="12">
+                    <run>
+                      <font size="9pt" name="user-interface"/>  </run>
+                  </par>
+                </tablecell>
+                <tablecell valign="center" borderwidth="0px" bgcolor="#d2d2d2" htmlid="dmi2c">
+                  <cellbackground>
+                    <imageref name="bg_DIALOGBAND"/>
+                  </cellbackground>
+                  <pardef id="13" align="center" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltPList = ""  &amp; PriPList = "" &amp; SList = "" &amp; EList = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="13">
+                    <run>
+                      <font size="9pt" name="user-interface"/>Choose event(s) to delete</run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="14" align="center" leftmargin="0" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>(AltPList = ""  &amp; PriPList = "" &amp; SList = "" &amp; EList = "") | AltNameDisplay = "0"</formula>
+                    </code>
+                  </pardef>
+                  <par def="14">
+                    <field usenotesstyle="false" height="1.2000in" width="2in" multiline="true" borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="AltParticipantList" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Choose team member(s) to delete">
+                      <keywords helperbutton="false" recalconchange="true" recalcchoices="true" columns="1" ui="listbox">
+                        <formula>isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 60));
+
+@If(AltPList = ""; sp; AltPList)</formula>
+                      </keywords>
+                      <code event="inputtranslation">
+                        <formula>@If(AltNameDisplay = "1"; AltParticipantList; PriParticipantList)</formula>
+                      </code>
+                    </field>
+                  </par>
+                  <pardef id="15" align="center" leftmargin="0" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltPList = ""  &amp; PriPList = "" &amp; SList = "" &amp; EList = "" | AltNameDisplay = "1"</formula>
+                    </code>
+                  </pardef>
+                  <par def="15">
+                    <field usenotesstyle="false" height="1.2000in" width="2in" multiline="true" borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="PriParticipantList" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Choose team member(s) to delete">
+                      <keywords helperbutton="false" recalconchange="true" recalcchoices="true" columns="1" ui="listbox">
+                        <formula>isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 60));
+
+@If(PriPList = ""; sp; PriPList)</formula>
+                      </keywords>
+                      <code event="inputtranslation">
+                        <formula>@If(AltNameDisplay = "0"; PriParticipantList; AltParticipantList)</formula>
+                      </code>
+                    </field>
+                  </par>
+                  <pardef id="16" align="center" leftmargin="0" hide="notes web" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltPList = ""  &amp; PriPList = "" &amp; SList = "" &amp; EList = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="16">
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                      <field type="text" allowmultivalues="true" kind="computed" name="ParticipantList" listinputseparators="comma semicolon" listdisplayseparator="semicolon">
+                        <code event="defaultvalue">
+                          <formula>@Trim(PriParticipantList)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="17" align="center" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>PList = "" &amp; SList = "" &amp; EList = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="17">
+                    <run>
+                      <font size="9pt" style="bold" name="user-interface"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="18" align="center" leftmargin="0" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltPList = ""  &amp; PriPList = "" &amp; SList = "" &amp; EList = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="18">
+                    <run>
+                      <font size="9pt" style="bold" name="user-interface"/>
+                    </run>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                      <field usenotesstyle="false" height="1.2000in" width="2in" multiline="true" borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="SubteamList" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Choose subteam(s) to delete">
+                        <keywords recalcchoices="true" columns="1" ui="listbox">
+                          <formula>isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 60));
+
+@If(SList = ""; sp; SList)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size=6"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@Trim(SubteamList)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="19" align="center" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>PList = "" &amp; SList = "" &amp; EList = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="19">
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="20" align="center" leftmargin="0" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltPList = ""  &amp; PriPList = "" &amp; SList = "" &amp; EList = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="20">
+                    <run>
+                      <font size="9pt" style="bold" name="user-interface"/>
+                    </run>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                      <field usenotesstyle="false" height="1.2000in" width="2in" multiline="true" borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="EventList" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Choose event(s) to delete">
+                        <keywords recalcchoices="true" columns="1" ui="listbox">
+                          <formula>isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 60));
+
+@If(EList= ""; sp; EList)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size=6"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@Trim(eventlist)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <pardef id="21" leftmargin="1%" keepwithnext="true" keeptogether="true"/>
+            <par def="21">
+              <run>
+                <font size="9pt" name="user-interface" color="maroon"/>
+              </run>
+            </par>
+            <par def="21">
+              <run>
+                <font size="9pt" name="user-interface" color="maroon"/>
+              </run>
+              <run>
+                <font size="9pt" name="user-interface"/>
+                <computedtext>
+                  <code event="value">
+                    <formula>msg := "There are no team members, subteams, or events defined in the TeamRoom Setup.";
+@If(AltPList = "" &amp; PriPList = "" &amp; SList = "" &amp; EList = ""; msg; "")</formula>
+                  </code>
+                </computedtext>
+              </run>
+              <run>
+                <font size="9pt" name="user-interface" color="white"/> </run>
+            </par>
+            <pardef id="22" leftmargin="1%" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>PList != "" &amp; SList != "" &amp; EList != ""</formula>
+              </code>
+            </pardef>
+            <par def="22">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/>
+              </run>
+            </par>
+            <par def="22">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/>
+              </run>
+            </par>
+            <par def="22">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/>
+              </run>
+            </par>
+            <pardef id="23" leftmargin="1%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="23">
+              <run>
+                <font size="9pt" name="user-interface"/>
+              </run>
+              <run>
+                <font size="9pt" name="user-interface"/>
+                <field type="text" kind="editable" name="computeMsg">
+                  <code event="defaultvalue">
+                    <formula>""</formula>
+                  </code>
+                  <code event="inputtranslation">
+                    <formula>prof := @GetProfileField("TempVars"; "notify");
+@If(@IsDocBeingRecalculated; prof; "")</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="7" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font name="user-interface" color="white"/>
+              </run>
+            </par>
+            <table htmlid="DelMissionItem3" leftmargin="1%" widthtype="fixedleft" refwidth="3.7319in">
+              <tablecolumn width="1.1160in"/>
+              <tablecolumn width="0.2653in"/>
+              <tablecolumn width="2.3507in"/>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="25" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltPList = ""  &amp; PriPList = "" &amp; SList = "" &amp; EList = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="25">
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                    <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="#d5ccbb">
+                      <code event="click">
+                        <formula>errString := "Error";
+msg := "You did not select anything to delete.";
+@SetProfileField("TempVars"; "Notify"; "");
+
+@If(@ClientType = "Notes"; @SetProfileField("TempVars"; "ClientType"; "Notes"); "");
+
+@If(
+@ClientType != "Notes" &amp; ParticipantList = "" &amp; SubteamList = "" &amp; EventList = "";
+@Return(@Do(@SetProfileField("TempVars"; "Notify"; msg); @Command([ViewRefreshFields])));
+@ClientType= "Notes" &amp; ParticipantList = "" &amp; SubteamList = "" &amp; EventList = ""; @Return(@Prompt([Ok]; errString; Msg));
+ "");
+
+@Command([ToolsRunMacro]; "(DeleteDocsViaMission)");
+@Command([ViewRefreshFields]);
+@PostedCommand([ViewRefreshFields]);
+@SetProfileField("TempVars"; "Notify"; "")</formula>
+                      </code>
+                      <font size="9pt" name="user-interface"/>Delete Item(s)</button>
+                    <run>
+                      <font size="9pt" name="user-interface" color="white"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="26" leftmargin="0.0104in" hide="notes mobile" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltPList = ""  &amp; PriPList = "" &amp; SList = "" &amp; EList = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="26">
+                    <run>
+                      <font size="9pt" name="user-interface" color="white"/>   </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="27" leftmargin="0.0104in" hide="web" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltPList = ""  &amp; PriPList = "" &amp; SList = "" &amp; EList = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="27">
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                    <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="#d5ccbb">
+                      <code event="click">
+                        <formula>@Command([FileCloseWindow])</formula>
+                      </code>
+                      <font size="9pt" name="user-interface"/>Done</button>
+                    <run>
+                      <font size="9pt" name="user-interface" color="white"/>
+                    </run>
+                  </par>
+                  <pardef id="28" leftmargin="0.0104in" hide="notes" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltPList = ""  &amp; PriPList = "" &amp; SList = "" &amp; EList = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="28">
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                    <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="#d5ccbb">
+                      <code event="onClick" for="web">
+                        <javascript>window.close(self)</javascript>
+                      </code>
+                      <font size="9pt" name="user-interface"/>Done</button>
+                    <run>
+                      <font size="9pt" name="user-interface" color="white"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="29" leftmargin="0.0104in" hide="web" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>Lists := AltPList : PriPList : SList : EList;
+Lists != ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="29">
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                    <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="#d5ccbb">
+                      <code event="click">
+                        <formula>@Command([FileCloseWindow])</formula>
+                      </code>
+                      <font size="9pt" name="user-interface"/>Done</button>
+                    <run>
+                      <font size="9pt" name="user-interface" color="white"/>
+                    </run>
+                  </par>
+                  <pardef id="30" leftmargin="0.0104in" hide="notes" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>Lists := AltPList : PriPList : SList : EList;
+Lists != ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="30">
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                    <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="#d5ccbb">
+                      <code event="onClick" for="web">
+                        <javascript>window.close(self)</javascript>
+                      </code>
+                      <font size="9pt" name="user-interface"/>Done</button>
+                    <run>
+                      <font size="9pt" name="user-interface" color="white"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="31" leftmargin="0.0104in" hide="web" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltPList = ""  &amp; PriPList = "" &amp; SList = "" &amp; EList = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="31">
+                    <run>
+                      <font size="9pt" name="user-interface" color="white"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="32" leftmargin="0.0104in" keepwithnext="true" keeptogether="true"/>
+                  <par def="32">
+                    <run>
+                      <font size="9pt" name="user-interface" color="white"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <pardef id="33" leftmargin="1%" hide="notes web" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>AltPList = ""  &amp; PriPList = "" &amp; SList = "" &amp; EList = ""</formula>
+              </code>
+            </pardef>
+            <par def="33">
+              <run>
+                <font name="user-interface"/>
+              </run>
+              <run>
+                <font size="9pt" color="red" name="user-interface"/>
+                <field type="text" kind="computedfordisplay" name="CanDelete">
+                  <code event="defaultvalue">
+                    <formula>REM {variable to translate};
+msg := "You are not authorized to delete documents from this database.";
+REM {end variable to translate};
+
+CD := @GetProfileField("TempVars"; "CanDelete");
+@If(@IsDocBeingLoaded; ""; CD = "0"; msg; "")</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font name="user-interface" color="white"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <par def="3">
+        <run>
+          <font name="user-interface"/>
+        </run>
+        <run>
+          <font size="8pt" name="user-interface"/>
+          <field type="text" kind="computed" name="SaveOptions">
+            <code event="defaultvalue">
+              <formula>"0"</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font name="user-interface"/>
+        </run>
+      </par>
+      <pardef id="34"/>
+      <par def="34">
+        <run>
+          <font name="user-interface"/>
+        </run>
+      </par>
+      <par def="34">
+        <run>
+          <font size="11pt"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+  <item name="OriginalModTime" sign="true">
+    <datetime dst="true">20050526T082424,63-04</datetime>
+  </item>
+  <item name="$SubForm_RepIDs" sign="true">
+    <text>0000000000000000</text>
+  </item>
+</form>

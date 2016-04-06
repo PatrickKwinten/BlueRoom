@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sharedfield xmlns="http://www.lotus.com/dxl" name="Abstract">
+  <field computeaftervalidation="true" type="text" kind="computed" name="Abstract">
+    <code event="defaultvalue">
+      <formula>_ellipsis	:= " ...";
+_length	:= 300;
+_range	:= 10;
+
+_abstract	:= @Abstract([TextOnly]; _length; ""; "Body");
+
+REM {to make sure we don't truncate/clip in the middle of a word,};
+REM {get the text up to the last word before the last space};
+REM {and append ellipsis ' ...'};
+
+@If(	@Length(_abstract) &gt;= (_length - _range);
+	@LeftBack(_abstract; " ") + _ellipsis;
+	_abstract
+)</formula>
+    </code>
+  </field>
+  <item name="$HTMLCode" sign="true">
+    <rawitemdata type="1"/>
+  </item>
+</sharedfield>

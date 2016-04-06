@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core">
+
+	<xp:this.beforePageLoad><![CDATA[#{javascript:var response=facesContext.getExternalContext().getResponse();
+response.setHeader("Cache-Control", "no-cache, no-store");
+
+//look who's talking?
+var userName:NotesName = session.createName(session.getEffectiveUserName()); 
+var defaultUnid:String = (userName.getCanonical());
+var defaultOption:String = "member";
+//the life of others...
+var paramUnid = paramValues.get("unid");
+var paramOption = paramValues.get("option");
+
+//are you talking to me? 
+if (!(paramUnid == null || paramUnid == "")) {
+	defaultUnid = paramUnid.toString();
+}			
+if (!(paramOption == null || paramOption == "")) {
+	defaultOption = paramOption.toString();
+}
+//hee ho, let's go!			
+TeamController.reset();
+TeamController.loadObject(defaultOption, defaultUnid);}]]></xp:this.beforePageLoad>
+	<xp:panel>
+		
+		<xp:text escape="true" id="computedField1" value="#{javascript:TeamController.currObject.data.docUNID}"></xp:text>
+		<xp:br></xp:br><xp:text escape="true" id="computedField2" value="#{javascript:TeamController.currObject.data.member}"></xp:text>
+		<xp:br></xp:br><xp:text escape="true" id="computedField3" value="#{javascript:TeamController.currObject.data.title}"></xp:text></xp:panel>
+	<xp:text escape="true" id="computedField4" value="#{javascript:TeamController.currObject.relatedObjects}"></xp:text></xp:view>

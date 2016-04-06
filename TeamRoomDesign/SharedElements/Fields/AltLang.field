@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sharedfield xmlns="http://www.lotus.com/dxl" name="AltLang" language="en">
+  <field type="text" kind="computedwhencomposed" name="AltLang">
+    <code event="defaultvalue">
+      <formula>ver := @TextToNumber(@Version);
+@If(ver &lt; 148; @Return(""); @UserNameLanguage(1))</formula>
+    </code>
+  </field>
+</sharedfield>

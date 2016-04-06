@@ -1,0 +1,643 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+	
+	<xp:this.afterPageLoad>
+		<![CDATA[#{javascript:// load navigation map...
+			viewScope.docTypeDetails = {
+				Status: {xsp: '/statusReports.xsp', parameter: 'documentId', displayName: strings.getString('document.display.name.status')},
+				IndStat: {xsp: '/members.xsp', parameter: 'profile', displayName: strings.getString('document.display.name.indStat')},
+				SubteamStatus: {xsp: '/members.xsp', parameter: 'subteam', displayName: strings.getString('document.display.name.subteamStatus')}
+			}
+		}]]>
+	</xp:this.afterPageLoad>
+	
+	<xp:this.beforePageLoad><![CDATA[#{javascript:sessionScope.statusReportsFilterType = "";}]]></xp:this.beforePageLoad>
+	
+	<xp:eventHandler event="onClientLoad" submit="true" refreshMode="norefresh">
+		<xp:this.onComplete><![CDATA[#{javascript:
+			//This is used to fix SPR #TWET98CH5P
+			//Not working fully as onClientLoad is not always guaranteed
+			//to run when navigating using the browser back button or 
+			//pressing backspace
+			
+			//if(sessionScope.statusReportsFilterEnabled && !sessionScope.activeFilter) {
+				//If filterEnabled == true && activeFilter == false, it means
+				//that the back button has been clicked, or backspace pressed,
+				//to navigate back from the filtered view. In that case,
+				//clear the sessionScope variables for filtering, so status 
+				//reports view works correctly.
+			//	sessionScope.statusReportsFilterEnabled = false;
+			//	sessionScope.statusReportsFilterColumnValue = "";
+			//	sessionScope.statusReportsFilterType = "";
+			//	//sessionScope.statusReportsSelectedTab = "tabAll";
+			//	//sessionScope.statusReportsSelectedTab = sessionScope.remove('statusReportsFilterOldSelectedTab');
+			//}
+			//sessionScope.activeFilter = false;
+		}]]>
+		</xp:this.onComplete>
+		<xp:this.script>
+			<![CDATA[if(!dojo.exists("ibm.xsp.widget.layout.xspClientRCP")){insertLinks();}]]>
+		</xp:this.script>
+	</xp:eventHandler>
+	
+	<xc:layout navigationPath="/statusReports">
+		<xe:dynamicContent id="dc1">
+			<xe:this.defaultFacet><![CDATA[#{javascript://
+				if( param.documentId ){
+					var doc = database.getDocumentByUNID(param.documentId);
+					if( doc ){
+						var formName = doc.getItemValueString('Form');
+						if( 'IndStat' == formName ){
+							return "individualReport";
+						}
+						if( 'Status' == formName || 'SubteamStatus' == formName ){
+							return "teamReport";
+						}
+					}
+				}
+				if( param.action == 'newDocument' ){
+					var formName = param.formName;
+					if( 'IndStat' == formName ){
+						return "individualReport";
+					}
+					if( 'Status' == formName || 'SubteamStatus' == formName ){
+						return "teamReport";
+					}
+				}
+				return null;
+			}]]></xe:this.defaultFacet>
+			<xe:this.facets>
+				<xc:statusIndividualReport id="report1"
+					xp:key="individualReport" />
+				<xc:statusTeamReport id="report2" xp:key="teamReport" />
+			</xe:this.facets>
+			<xp:text escape="true" id="titleField" tagName="h1">
+				<xp:this.value><![CDATA[#{javascript:
+					sessionScope.webFrom = "/statusReports.xsp";
+					sessionScope.webFromName = strings.getString('status.reports');
+					return strings.getString('status.reports');
+				}]]></xp:this.value>
+			</xp:text>
+			<xc:statusReportsFilter></xc:statusReportsFilter>
+			<xp:br></xp:br>
+			<xp:br></xp:br>
+			<xp:panel style="float:#{javascript: context.isDirectionRTL() ? 'right;' : 'left;'}">
+				<xp:button value="New Individual Report" id="button2" themeId="Button.Cancel">
+					<xp:this.loaded><![CDATA[${javascript:(userBean.accessLevel >= lotus.domino.ACL.LEVEL_AUTHOR) && userBean.canCreateDocs}]]></xp:this.loaded>
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="complete">
+						<xp:this.action>
+							<xp:openPage name="/statusReports.xsp"
+								target="newDocument">
+								<xp:this.parameters>
+									<xp:parameter name="formName"
+										value="IndStat" />
+								</xp:this.parameters>
+							</xp:openPage>
+						</xp:this.action>
+					</xp:eventHandler>
+				</xp:button>			
+				<xp:button value="New Subteam Report" id="button3" themeId="Button.Cancel">
+					<xp:this.loaded><![CDATA[${javascript:(userBean.accessLevel >= lotus.domino.ACL.LEVEL_AUTHOR) && userBean.canCreateDocs}]]></xp:this.loaded>
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="complete">
+						<xp:this.action>
+							<xp:openPage name="/statusReports.xsp"
+								target="newDocument">
+								<xp:this.parameters>
+									<xp:parameter name="formName"
+										value="SubteamStatus" />
+								</xp:this.parameters>
+							</xp:openPage>
+						</xp:this.action>
+					</xp:eventHandler>
+				</xp:button>			
+				<xp:button value="New Team Report" id="button4" themeId="Button.Cancel">
+					<xp:this.loaded><![CDATA[${javascript:(userBean.accessLevel >= lotus.domino.ACL.LEVEL_AUTHOR) && userBean.canCreateDocs}]]></xp:this.loaded>
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="complete">
+						<xp:this.action>
+							<xp:openPage name="/statusReports.xsp"
+								target="newDocument">
+								<xp:this.parameters>
+									<xp:parameter name="formName"
+										value="Status" />
+								</xp:this.parameters>
+							</xp:openPage>
+						</xp:this.action>
+					</xp:eventHandler>
+				</xp:button>
+			</xp:panel>
+			<xp:br />
+			<xp:br />
+			<!--					TODO bind the pager data for all the views to the-->
+			<!--					same values-->
+			<xe:dynamicContent id="dc2">
+				<xe:this.afterContentLoad>
+					<![CDATA[#{javascript:
+						var currentFacet = this.getCurrentFacet();
+						switch(currentFacet){
+							case "tabAll": viewScope.isCollapseExpandable = false; break;
+							case "tabAllByTeam": viewScope.isCollapseExpandable = true; break;
+							case "tabTeamReports": viewScope.isCollapseExpandable = true; break;
+							case "tabIndividualReports": viewScope.isCollapseExpandable = true; break;
+							default:  viewScope.isCollapseExpandable = false;
+						}
+					}]]>
+				</xe:this.afterContentLoad>
+				<xe:this.defaultFacet>
+					<![CDATA[#{javascript://
+						if(null != sessionScope.statusReportsSelectedTab){
+							return sessionScope.statusReportsSelectedTab;
+						}
+						return 'tabAll';
+					}]]>
+				</xe:this.defaultFacet>
+				<xe:this.facets>
+					<xp:panel xp:key="tabAll">
+						<xe:pagerSaveState for="viewStatusAll"
+							globalRows="true" id="pagerSaveState1">
+						</xe:pagerSaveState>
+						<!--
+						summary="A collection of status report documents, displaying all"
+						title="All View"
+						-->
+						<xe:dataView id="viewStatusAll" var="rowData"
+							binding="#{viewStateBean.dataIterator}" columnTitles="true"
+							rows="25"
+							ariaLabel="All status reports">
+							<xe:this.data>
+								<xp:dominoView var="view2"
+									viewName="xvwStatusAll" dataCache="full">
+								</xp:dominoView>
+							</xe:this.data>
+							<xe:this.extraColumns>
+								<xe:viewExtraColumn
+									columnName="$WeekEnding" columnTitle="Week Ending">
+								</xe:viewExtraColumn>
+								<xe:viewExtraColumn
+									columnName="$StatusFor" columnTitle="For Person/Team">
+									<xe:this.href>
+										<![CDATA[#{javascript:
+											var form = rowData.getColumnValue("$Form");
+											var detailObj = viewScope.docTypeDetails[form];
+											if("Status" == form){
+												return detailObj.xsp + "?" + detailObj.parameter + "=" + rowData.getUniversalID();
+											}else if("SubteamStatus" == form){
+												return detailObj.xsp + "?" + detailObj.parameter + "=" + rowData.getColumnValue("$SingleSubteamName");
+											}else if("IndStat" == form){
+												return detailObj.xsp + "?" + detailObj.parameter + "=" +
+													peopleBean.getPerson(rowData.getColumnValue('$Author')).abbreviatedName;
+											}
+											return "#";
+										}]]>
+									</xe:this.href>
+									<xe:this.value>
+										<![CDATA[#{javascript:
+											var form = rowData.getColumnValue("$Form");
+											var detailObj = viewScope.docTypeDetails[form];
+											if("Status" == form){
+												return detailObj.displayName;
+											}else if("SubteamStatus" == form){
+												var displayName = strings.status_column_subteam;
+												displayName = I18n.format(displayName, rowData.getColumnValue("$SingleSubteamName"));
+												return displayName;
+											}else if("IndStat" == form){
+												return peopleBean.getPerson(rowData.getColumnValue("$Author")).displayName;
+											}
+											return strings.getString("unknown");
+										}]]>
+									</xe:this.value>
+								</xe:viewExtraColumn>
+							</xe:this.extraColumns>
+							<xe:this.iconColumn>
+								<xe:viewIconColumn>
+									<xe:this.icons>
+										<xe:iconEntry
+											style="height:18px;width:18px">
+											<xe:this.alt>
+												<![CDATA[#{javascript:
+													var alt = strings.getString("status.icon.alt.individual");
+													if("Status" == form || "SubteamStatus" == form){
+														alt =  strings.getString("status.icon.alt.group"); //resource out this string
+													}
+													return alt;
+												}]]>
+											</xe:this.alt>
+											<xe:this.url>
+												<![CDATA[#{javascript:
+													var url = "/report_individual.png";
+													var form = rowData.getColumnValue("$Form");
+													if("Status" == form || "SubteamStatus" == form){
+														url = "/report_group.png";
+													}
+													return url;
+												}]]>
+											</xe:this.url>
+										</xe:iconEntry>
+									</xe:this.icons>
+								</xe:viewIconColumn>
+							</xe:this.iconColumn>
+							<xe:this.summaryColumn>
+								<xe:viewSummaryColumn
+									columnTitle="Key Thought">
+								</xe:viewSummaryColumn>
+							</xe:this.summaryColumn>
+							<xp:this.facets>
+								<xp:panel xp:key="noRows">
+									<xp:br />
+									<xp:div styleClass="xlEmptyFacet">
+										<xp:label
+											value="No documents found in this view">
+										</xp:label>
+									</xp:div>
+								</xp:panel>
+								<xp:panel xp:key="summary"
+									id="summaryPanel" style="display:inline-block">
+									<h4 style="margin:0px">
+										<xp:link id="subjectLink"
+											value="/statusReports.xsp">
+											<xp:this.parameters>
+												<xp:parameter
+													name="documentId"
+													value="#{javascript: rowData.getUniversalID() }">
+												</xp:parameter>
+												<xp:parameter
+													name="action" value="openDocument">
+												</xp:parameter>
+											</xp:this.parameters>
+											<xp:this.text><![CDATA[${javascript://
+												if( !compositeData.columnName ){
+													return "#{rowData['$Subject']}";
+												}
+												return "#{rowData['" + compositeData.columnName+ "']}";
+											}]]></xp:this.text>
+											<xp:label
+												rendered="#{javascript: !getComponent('subjectLink').getText() }"
+												disableTheme="true" value="#{strings.subject_untitled}">
+											</xp:label>
+										</xp:link>
+									</h4>
+								</xp:panel>
+								<xe:pagerExpand xp:key="pagerTopLeft"
+									id="pagerExpand1"
+									rendered="#{javascript:viewScope.isCollapseExpandable}"
+									ariaLabel="Collapse or expand all documents">
+								</xe:pagerExpand>
+								<xp:pager layout="Previous Group Next"
+									id="pager3" xp:key="pagerTopRight" partialRefresh="true"
+									partialExecute="true"
+									ariaLabel="Status reports header pager">
+								</xp:pager>
+								<xp:panel xp:key="pagerBottomLeft"
+									id="panel3">
+									<xe:pagerSizes id="pagerSizes1"
+										sizes="10|25|50|100"
+										ariaLabel="Number of documents to show on the page">
+									</xe:pagerSizes>
+								</xp:panel>
+								<xp:pager layout="Previous Group Next"
+									id="pager4" xp:key="pagerBottomRight" partialRefresh="true"
+									partialExecute="true"
+									ariaLabel="Status reports footer pager">
+								</xp:pager>
+							</xp:this.facets>
+						</xe:dataView>
+					</xp:panel>
+					<xp:panel xp:key="tabAllByTeam">
+						<xe:pagerSaveState for="viewAllByTeam"
+							globalRows="true" id="pagerSaveState2">
+						</xe:pagerSaveState>
+						<xe:dataView id="viewAllByTeam" var="rowData"
+							binding="#{viewStateBean.dataIterator}" columnTitles="true"
+							rows="25"
+							ariaLabel="Status reports categorized by team">
+							<xe:this.data>
+								<xp:dominoView var="view1"
+									viewName="xvwStatusAllByTeam" dataCache="full">
+									<xp:this.categoryFilter>
+										<![CDATA[#{javascript://
+											if( sessionScope.statusReportsFilterEnabled ){
+												return sessionScope.statusReportsFilterColumnValue;
+											}
+										}]]>
+									</xp:this.categoryFilter>
+								</xp:dominoView>
+							</xe:this.data>
+							<xe:this.extraColumns>
+								<xe:viewExtraColumn
+									columnName="$StatusFor" columnTitle="For Person/Team">
+									<xe:this.href>
+										<![CDATA[#{javascript:
+											var form = rowData.getColumnValue("$Form");
+											var detailObj = viewScope.docTypeDetails[form];
+											if("Status" == form){
+												return detailObj.xsp + "?" + detailObj.parameter + "=" + rowData.getUniversalID();
+											}else if("SubteamStatus" == form){
+												return detailObj.xsp + "?" + detailObj.parameter + "=" + rowData.getColumnValue("$SingleSubteamName");
+											}else if("IndStat" == form){
+												return detailObj.xsp + "?" + detailObj.parameter + "=" +
+													peopleBean.getPerson(rowData.getColumnValue('$Author')).abbreviatedName;
+											}
+											return "#";
+										}]]>
+									</xe:this.href>
+									<xe:this.value>
+										<![CDATA[#{javascript:
+											var form = rowData.getColumnValue("$Form");
+											var detailObj = viewScope.docTypeDetails[form];
+											if("Status" == form){
+												return detailObj.displayName;
+											}else if("SubteamStatus" == form){
+												var displayName = strings.status_column_subteam;
+												displayName = I18n.format(displayName, rowData.getColumnValue("$SingleSubteamName"));
+												return displayName;
+											}else if("IndStat" == form){
+												return peopleBean.getPerson(rowData.getColumnValue("$Author")).displayName;
+											}
+											return strings.getString("unknown");
+										}]]>
+									</xe:this.value>
+								</xe:viewExtraColumn>
+								<xe:viewExtraColumn
+									columnName="$WeekEnding" columnTitle="Week Ending">
+								</xe:viewExtraColumn>
+							</xe:this.extraColumns>
+							<xe:this.summaryColumn>
+								<xe:viewSummaryColumn
+									columnTitle="Team/Key Thought">
+								</xe:viewSummaryColumn>
+							</xe:this.summaryColumn>
+							<xe:this.categoryColumn>
+								<xe:viewCategoryColumn
+									columnName="$TeamName" columnTitle="Team">
+								</xe:viewCategoryColumn>
+							</xe:this.categoryColumn>
+							<xe:this.iconColumn>
+								<xe:viewIconColumn>
+									<xe:this.icons>
+										<xe:iconEntry
+											style="height:18px;width:18px">
+											<xe:this.alt>
+												<![CDATA[#{javascript:
+													var alt = strings.getString("status.icon.alt.individual");
+													if("Status" == form || "SubteamStatus" == form){
+														alt =  strings.getString("status.icon.alt.group"); //resource out this string
+													}
+													return alt;
+												}]]>
+											</xe:this.alt>
+											<xe:this.url>
+												<![CDATA[#{javascript:
+													var url = "/report_individual.png";
+													var form = rowData.getColumnValue("$Form");
+													if("Status" == form || "SubteamStatus" == form){
+														url = "/report_group.png";
+													}
+													return url;
+												}]]>
+											</xe:this.url>
+										</xe:iconEntry>
+									</xe:this.icons>
+								</xe:viewIconColumn>
+							</xe:this.iconColumn>
+							<xp:this.facets>
+								<xp:panel xp:key="noRows">
+									<xp:br />
+									<xp:div styleClass="xlEmptyFacet">
+										<xp:label
+											value="No documents found in this view">
+										</xp:label>
+									</xp:div>
+								</xp:panel>
+								<xp:panel xp:key="summary" id="panel4"
+									style="display:inline-block">
+									<h4 style="margin:0px">
+										<xp:link id="subjectLink1"
+											value="/statusReports.xsp">
+											<xp:this.parameters>
+												<xp:parameter
+													name="documentId"
+													value="#{javascript: rowData.getUniversalID() }">
+												</xp:parameter>
+												<xp:parameter
+													name="action" value="openDocument">
+												</xp:parameter>
+											</xp:this.parameters>
+											<xp:this.text><![CDATA[${javascript://
+												if( !compositeData.columnName ){
+													return "#{rowData['$Subject']}";
+												}
+												return "#{rowData['" + compositeData.columnName+ "']}";
+											}]]></xp:this.text>
+											<xp:label
+												rendered="#{javascript: !getComponent('subjectLink1').getText() }"
+												disableTheme="true" value="#{strings.subject_untitled}">
+											</xp:label>
+										</xp:link>
+									</h4>
+								</xp:panel>
+								<xe:pagerExpand xp:key="pagerTopLeft"
+									id="pagerExpand2"
+									rendered="#{javascript:viewScope.isCollapseExpandable}"
+									ariaLabel="Collapse or expand all documents">
+								</xe:pagerExpand>
+								<xp:pager layout="Previous Group Next"
+									id="pager1" xp:key="pagerTopRight" partialRefresh="true"
+									partialExecute="true"
+									ariaLabel="Status reports header pager">
+								</xp:pager>
+								<xp:panel xp:key="pagerBottomLeft"
+									id="panel2">
+									<xe:pagerSizes id="pagerSizes2"
+										sizes="10|25|50|100"
+										ariaLabel="Number of documents to show on the page">
+									</xe:pagerSizes>
+								</xp:panel>
+								<xp:pager layout="Previous Group Next"
+									id="pager2" xp:key="pagerBottomRight" partialRefresh="true"
+									partialExecute="true"
+									ariaLabel="Status reports footer pager">
+								</xp:pager>
+							</xp:this.facets>
+						</xe:dataView>
+					</xp:panel>
+					<xp:panel xp:key="tabTeamReports">
+						<!--
+						summary="a collection of status report documents, displaying team reports"
+						title="Team Report View"
+						-->
+						<xe:pagerSaveState for="viewTeamReports"
+							globalRows="true" id="pagerSaveState3">
+						</xe:pagerSaveState>
+						
+						<xe:dataView id="viewTeamReports" var="rowData"
+							binding="#{viewStateBean.dataIterator}" columnTitles="true"
+							rows="25"
+							ariaLabel="subteam status reports">
+							<xe:this.data>
+								<xp:dominoView var="view4"
+									viewName="xvwStatusTeamReports" dataCache="full">
+									<xp:this.categoryFilter><![CDATA[#{javascript://
+										if( sessionScope.statusReportsFilterEnabled ){
+											return sessionScope.statusReportsFilterColumnValue;
+										}
+									}]]></xp:this.categoryFilter>
+								</xp:dominoView>
+							</xe:this.data>
+							<xe:this.extraColumns>
+								<xe:viewExtraColumn
+									columnName="ReportDate" columnTitle="Report Date">
+								</xe:viewExtraColumn>
+							</xe:this.extraColumns>
+							<xe:this.summaryColumn>
+								<xe:viewSummaryColumn columnName="$34"
+									columnTitle="Subteam Name/Key Thought" 
+									headerStyle="#{javascript:return (context.isDirectionRTL() ? 'padding-right:45px' : 'padding-left:45px');}"
+									style="#{javascript: return (context.isDirectionRTL() ? 'padding-right:35px' : 'padding-left:35px');}">
+									<xe:this.href>
+										<![CDATA[#{javascript:
+											"/statusReports.xsp?documentId=" + rowData.getUniversalID() + "&action=openDocument";
+										}]]>
+									</xe:this.href>
+									<xe:this.value>
+										<![CDATA[#{javascript:
+											var v = rowData.getColumnValue("$34");
+											return ("" != v) ? v : strings.subject_untitled;
+										}]]>
+									</xe:this.value>
+								</xe:viewSummaryColumn>
+							</xe:this.summaryColumn>
+							<xe:this.categoryColumn>
+								<xe:viewCategoryColumn columnName="$35"
+									columnTitle="Subteam Name">
+								</xe:viewCategoryColumn>
+							</xe:this.categoryColumn>
+							<xp:this.facets>
+								<xp:panel xp:key="noRows">
+									<xp:br />
+									<xp:div styleClass="xlEmptyFacet">
+										<xp:label
+											value="No documents found in this view">
+										</xp:label>
+									</xp:div>
+								</xp:panel>
+								<xe:pagerExpand xp:key="pagerTopLeft"
+									id="pagerExpand3"
+									rendered="#{javascript:viewScope.isCollapseExpandable}"
+									ariaLabel="Collapse or expand all documents">
+								</xe:pagerExpand>
+								<xp:pager layout="Previous Group Next"
+									id="pager5" xp:key="pagerTopRight" partialRefresh="true"
+									partialExecute="true"
+									ariaLabel="Status reports header pager">
+								</xp:pager>
+								<xp:panel xp:key="pagerBottomLeft"
+									id="panel5">
+									<xe:pagerSizes id="pagerSizes3"
+										sizes="10|25|50|100"
+										ariaLabel="Number of documents to show on the page">
+									</xe:pagerSizes>
+								</xp:panel>
+								<xp:pager layout="Previous Group Next"
+									id="pager6" xp:key="pagerBottomRight" partialRefresh="true"
+									partialExecute="true"
+									ariaLabel="Status reports footer pager">
+								</xp:pager>
+							</xp:this.facets>
+						</xe:dataView>
+					</xp:panel>
+					<xp:panel xp:key="tabIndividualReports">
+						<xe:pagerSaveState for="viewIndividualReports"
+							globalRows="true" id="pagerSaveState4">
+						</xe:pagerSaveState>
+						<!--
+						summary="a collection of status report documents, displaying individual reports"
+						title="Individual reports"
+						-->
+						<xe:dataView id="viewIndividualReports"
+							var="rowData" binding="#{viewStateBean.dataIterator}"
+							columnTitles="true" rows="25"
+							ariaLabel="Individual status reports">
+							<xe:this.data>
+								<xp:dominoView var="view6"
+									viewName="xvwStatusIndByAuthor" dataCache="full">
+									<xp:this.categoryFilter><![CDATA[#{javascript://
+										if( sessionScope.statusReportsFilterEnabled ){
+											return sessionScope.statusReportsFilterColumnValue;
+										}
+									}]]></xp:this.categoryFilter>
+								</xp:dominoView>
+							</xe:this.data>
+							<xe:this.extraColumns>
+								<xe:viewExtraColumn
+									columnName="$ReportDate" columnTitle="Week Ending">
+								</xe:viewExtraColumn>
+								<xe:viewExtraColumn
+									columnName="$MultipleSubteamNames" columnTitle="Subteams">
+								</xe:viewExtraColumn>
+							</xe:this.extraColumns>
+							<xe:this.summaryColumn>
+								<xe:viewSummaryColumn columnName="$34"
+									columnTitle="Key Thought"
+									headerStyle="#{javascript:return (context.isDirectionRTL() ? 'padding-right:45px' : 'padding-left:45px');}"
+									style="#{javascript:return (context.isDirectionRTL() ? 'padding-right:35px' : 'padding-left:35px');}">
+									<xe:this.href>
+										<![CDATA[#{javascript:
+											"/statusReports.xsp?documentId=" + rowData.getUniversalID() + "&action=openDocument";
+										}]]>
+									</xe:this.href>
+									<xe:this.value>
+										<![CDATA[#{javascript:
+											var v = rowData.getColumnValue("$Subject");
+											return ("" != v) ? v : strings.subject_untitled;
+										}]]>
+									</xe:this.value>
+								</xe:viewSummaryColumn>
+							</xe:this.summaryColumn>
+							<xe:this.categoryColumn>
+								<xe:viewCategoryColumn
+									columnName="$Author" columnTitle="Author">
+								</xe:viewCategoryColumn>
+							</xe:this.categoryColumn>
+							<xp:this.facets>
+								<xp:panel xp:key="noRows">
+									<xp:br />
+									<xp:div styleClass="xlEmptyFacet">
+										<xp:label
+											value="No documents found in this view">
+										</xp:label>
+									</xp:div>
+								</xp:panel>
+								<xe:pagerExpand xp:key="pagerTopLeft"
+									id="pagerExpand4"
+									rendered="#{javascript:viewScope.isCollapseExpandable}"
+									ariaLabel="Collapse or expand all documents">
+								</xe:pagerExpand>
+								<xp:pager layout="Previous Group Next"
+									id="pager8" xp:key="pagerTopRight" partialRefresh="true"
+									partialExecute="true"
+									ariaLabel="Status reports header pager">
+								</xp:pager>
+								<xp:panel xp:key="pagerBottomLeft"
+									id="panel6">
+									<xe:pagerSizes id="pagerSizes30"
+										sizes="10|25|50|100"
+										ariaLabel="Number of documents to show on the page">
+									</xe:pagerSizes>
+								</xp:panel>
+								<xp:pager layout="Previous Group Next"
+									id="pager7" xp:key="pagerBottomRight" partialRefresh="true"
+									partialExecute="true"
+									ariaLabel="Status reports footer pager">
+								</xp:pager>
+							</xp:this.facets>
+						</xe:dataView>
+					</xp:panel>
+				</xe:this.facets>
+				</xe:dynamicContent>
+		</xe:dynamicContent>
+	</xc:layout>
+</xp:view>

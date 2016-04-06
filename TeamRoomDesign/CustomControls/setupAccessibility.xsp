@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+	<xp:label id="label1" style="font-weight:bold">
+		<xp:this.value><![CDATA[#{javascript:return strings.getString("setup.accessibility");}]]></xp:this.value>
+	</xp:label>
+
+	<xp:br></xp:br>
+	<xp:br></xp:br>
+	
+	<xp:checkBox id="checkBox1" value="#{document1.accessibilityOn}">
+		<xp:this.text><![CDATA[#{javascript:return I18n.format(strings.getString("setup.accessibility.setasdefault"));}]]></xp:this.text>
+		<xp:eventHandler event="onchange" submit="true" refreshMode="norefresh">
+			<xp:this.action><![CDATA[#{javascript:
+				sessionScope.selectedViewFormatFacetName = null;
+				sessionScope.accessibilityChanged = "true";
+				}]]></xp:this.action>
+		</xp:eventHandler></xp:checkBox>
+</xp:view>

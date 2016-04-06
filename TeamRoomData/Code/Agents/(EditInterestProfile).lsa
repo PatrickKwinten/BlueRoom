@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(EditInterestProfile)" hide="v3" publicaccess="false" language="en" comment="Used in Leader/Facilitator Options hotspot">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+Use "DiscussionRoutines"
+Option Declare
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Dim session As New notessession	
+	Dim uiwork As New notesuiworkspace
+	Dim uidoc As notesuidocument
+	Dim DbProfile As NotesDocument
+	Dim authorView As notesview
+	Dim authorDoc As notesdocument
+	Dim dbpath As String
+	Dim key As Variant
+	Dim getunid As Variant
+	
+	Set db = session.currentdatabase
+	Set DbProfile = db.GetProfileDocument( "TempVars")
+	key = dbProfile.ProfileKey
+	dbpath = getdbpath
+	
+	Set authorView = db.getview("LookupInterestProfiles")
+	Call authorView.refresh
+	Set authorDoc = authorView.getdocumentbykey(key(0)) 
+	
+	If authorDoc Is Nothing  Then
+		Set uidoc=uiwork.ComposeDocument(, , "Interest Profile") 
+	Elseif Not authorDoc Is Nothing Then
+		Set uidoc=uiwork.EditDocument(True,authorDoc, False)
+	End If
+	
+	dbProfile.ProfileKey =  ""
+	
+End Sub</lotusscript>
+  </code>
+</agent>

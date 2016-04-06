@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:xe="http://www.ibm.com/xsp/coreex">
+	<xp:panel style="float:#{javascript: context.isDirectionRTL() ? 'right;' : 'left;'}">
+		<xe:switchFacet defaultFacet="chooseFilterArea" selectedFacet="#{javascript: if( sessionScope.statusReportsFilterEnabled ) 'filteredArea' }">
+			<xe:this.facets>
+				<xp:panel xp:key="chooseFilterArea"  styleClass="xvwFilterList">
+					<xe:list rendererType="com.ibm.xsp.extlib.OneUIInlineList">
+						<xe:this.firstItemStyle><![CDATA[#{javascript://
+		                    // workaround for issue where there's extra whitespace
+		                    // at the end of the xe:djextLinkSelect, change the trailing
+		                    // side of the first item to not have any spacing.
+		
+		                    var trailingSide = !context.isDirectionRTL()? 'right' : 'left'; 
+		
+		                    'padding-'+trailingSide+':0'
+		                    }]]>
+		            	</xe:this.firstItemStyle>
+	            		<xp:panel style="float: #{javascript: context.isDirectionRTL() ? 'right;padding-left:20px' : 'left;padding-right:20px'};">
+							<xp:label value="Show: " style="float: #{javascript: context.isDirectionRTL() ? 'right' : 'left'};" />
+							<xe:djextLinkSelect id="djextLinkSelect1" value="#{sessionScope.statusReportsSelectedTab}"
+								defaultValue="tabAll" alt="select type of reports to show" title="group of links to filter report types">
+								<xe:this.lastItemStyle><![CDATA[#{javascript://
+									// workaround for issue where there's extra whitespace
+									// at the end of the xe:djextLinkSelect, change the trailing
+									// side of the last item to not have any spacing.
+									var trailingSide = !context.isDirectionRTL()? 'right' : 'left'; 
+									'padding-'+trailingSide+':0'
+								}]]></xe:this.lastItemStyle>
+								<xe:this.dojoAttributes>
+									<xp:dojoAttribute name="enabledLinkClass" value="xvwLinkSelectListItem" loaded="true">
+									</xp:dojoAttribute>
+								</xe:this.dojoAttributes>
+								<xp:selectItem itemLabel="All" itemValue="tabAll">
+								</xp:selectItem>
+								<xp:selectItem itemLabel="All By Team" itemValue="tabAllByTeam">
+								</xp:selectItem>
+								<xp:selectItem itemLabel="Team Reports" itemValue="tabTeamReports">
+								</xp:selectItem>
+								<xp:selectItem itemLabel="Individual Reports" itemValue="tabIndividualReports">
+								</xp:selectItem>
+								<xp:eventHandler event="onChange" submit="true" refreshMode="complete" execMode="partial" execId="dc1" immediate="true">
+									<xe:this.action>
+										<![CDATA[#{javascript:
+											sessionScope.statusReportsSelectedTab = this.getParent().getSubmittedValue();
+											context.reloadPage();
+										}]]>
+									</xe:this.action>
+								</xp:eventHandler>
+							</xe:djextLinkSelect>
+						</xp:panel>
+					</xe:list>
+					<xp:panel style="float: #{javascript: context.isDirectionRTL() ? 'right' : 'left'};" id="filterPanel">
+						<xp:label value="Filter by: " for="comboBox1" id="filterByLabel" style="float: #{javascript: context.isDirectionRTL() ? 'right' : 'left'};" />
+						<xp:label value="This multi-combobox requires a filter selection on each combobox. Press Tab for the next combobox and press Space or Enter on the Apply Filter button."
+							id="filterByDescription" style="display:none;">
+						</xp:label>
+						<xp:comboBox id="comboBox1" style="float: #{javascript: context.isDirectionRTL() ? 'right;margin-left:2px' : 'left;margin-right:2px'};"
+							value="#{sessionScope.statusReportsFilterType}">
+							<!-- 1-4 meaning tab1, column 4 (1-indexed) -->
+							<xp:this.attrs>
+								<xp:attr name="aria-labelledby"
+									value="#{id:filterByLabel}">
+								</xp:attr>
+								<xp:attr name="aria-describedby"
+									value="#{id:filterByDescription}">
+								</xp:attr>
+							</xp:this.attrs>
+							<xp:this.disabled>
+								<![CDATA[#{javascript:												
+									var colNum = 1;
+									var indReports = @DbColumn(@DbName(), "xvwStatusIndByAuthor", colNum);
+									var teamReports = @DbColumn(@DbName(), "xvwStatusAllByTeam", colNum);
+									var subReports = @DbColumn(@DbName(), "StatusLookup", colNum);
+										
+									return ("" == indReports && "" == teamReports && "" == subReports);}]]>
+							</xp:this.disabled>
+							<xp:selectItem itemLabel="Select filter type" itemValue="" />
+							<xp:selectItem itemLabel="Author" itemValue="author" />
+							<xp:selectItem itemLabel="Team (All Reports)" itemValue="team" />
+							<xp:selectItem itemLabel="Team (Team Reports)" itemValue="subteam" />
+							<xp:eventHandler event="onchange" submit="false">
+								<xp:this.script>
+									<![CDATA[
+										//disable the apply button whenever we change the value of this combobox							
+										var applyButton1 = dojo.byId("#{id:applyFilterButton1}");
+										applyButton1.disabled = true;
+										dojo.addClass("#{id:applyFilterButton1}", "disabledLotusFilterButton");
+										
+										//Check if comboBox1 is active focused element
+										//If active=true, then the onChange was triggered by mouse or enter
+										//If active=false, then the onChange was triggered by onkeydown event
+										var active = document.activeElement.name ? document.activeElement.name.indexOf("comboBox1") > -1 : false;
+										//Partial refresh the dynamic filter
+										//if active=false, then make sure focus remains on comboBox2 after refresh
+										XSP.partialRefreshPost("#{id:dynamicFilter}", {
+											onComplete: function() {
+												if(!active) {
+													var filterCombo = dojo.byId("#{id:comboBox2}");
+													filterCombo.focus();
+												}
+										}});
+										
+										return true;								
+										]]>
+								</xp:this.script>
+								<xp:this.action>
+									<![CDATA[#{javascript:
+										sessionScope.statusReportsFilterColumnValue = "";
+									}]]>
+								</xp:this.action>
+							</xp:eventHandler>
+							<xp:eventHandler event="onkeydown" submit="false">
+								<xp:this.script><![CDATA[
+								var kc=thisEvent.keyCode?thisEvent.keyCode:thisEvent.which;
+								if(kc==9 && !thisEvent.shiftKey) {
+									//tab key pressed (and not shift+tab)
+									var filterCombo = dojo.byId("#{id:comboBox2}");
+									var typeCombo = dojo.byId("#{id:comboBox1}");
+									var filterType = typeCombo.value;
+									if("" != filterType) {
+										//filter type was chosen, partial refresh comboBox2
+										XSP.partialRefreshPost("#{id:comboBox2}", {
+											onComplete: function() {
+												//on completion focus on combobox2
+												var filterCombo = dojo.byId("#{id:comboBox2}");
+												filterCombo.focus();
+											}
+										});
+										//prevent default tab event from occuring after partial refresh
+										thisEvent.preventDefault();
+									}else{
+										//no filter type chosen, tab onto individual report
+										XSP.partialRefreshPost("#{id:comboBox2}", {onComplete: function() {
+											var newIndiButton = dojo.byId("#{id:button2}");
+											newIndiButton.focus();
+										}});
+									}
+								}else{
+									return false;
+								}]]></xp:this.script>
+							</xp:eventHandler>
+						</xp:comboBox>
+						<xp:div id="dynamicFilter" style="float: #{javascript: context.isDirectionRTL() ? 'right;margin-left:2px;' : 'left;margin-right:2px;'}">
+							<xp:comboBox id="comboBox2"	value="#{sessionScope.statusReportsFilterColumnValue}">
+								<xp:this.disabled><![CDATA[#{javascript:
+									var selectedFilter = sessionScope.statusReportsFilterType;
+									if( '' == selectedFilter ){
+										return true;
+									}else{
+										return false;
+									}}]]>
+								</xp:this.disabled>
+								<xp:this.attrs>
+									<xp:attr name="aria-label">
+										<xp:this.value>
+											<![CDATA[#{javascript:	
+												var selectedFilter = sessionScope.statusReportsFilterType;
+												if( "" == selectedFilter ){
+													return strings.getString("status_report_filter_arialabel_disabled");
+												}else if( "author" == selectedFilter ){
+													return strings.getString("status_report_filter_arialabel_author");
+												}else if( "team" == selectedFilter ){
+													return strings.getString("status_report_filter_arialabel_team");
+												}else if( "subteam" == selectedFilter ){
+													return strings.getString("status_report_filter_arialabel_subteam");
+												}
+											}]]>
+										</xp:this.value>
+									</xp:attr>
+									<xp:attr name="aria-required"
+										value="#{javascript:return !this.disabled;}">
+									</xp:attr>
+								</xp:this.attrs>
+								<xp:selectItem itemValue="">
+									<xp:this.itemLabel><![CDATA[#{javascript:
+										var selectedFilter = sessionScope.statusReportsFilterType;
+										if( "" == selectedFilter ){
+											return strings.getString("status_report_filter_disabled");
+										}else if( "author" == selectedFilter ){
+											return strings.getString("status_report_filter_author");
+										}else if( "team" == selectedFilter ){
+											return strings.getString("status_report_filter_team");
+										}else if( "subteam" == selectedFilter ){
+											return strings.getString("status_report_filter_subteam");
+										}
+									}]]>
+									</xp:this.itemLabel>
+								</xp:selectItem>
+								<xp:selectItems>
+									<xp:this.value><![CDATA[#{javascript://
+										var selectedFilter = sessionScope.statusReportsFilterType;
+										var tStatus = "- Team Status -";										
+										if( "author" == selectedFilter ){
+											var colNum = 1; // Author
+											var authors = @DbColumn(@DbName(), "xvwStatusIndByAuthor", colNum);
+											if(typeof authors == 'string') {
+												return authors != "" ? authors : null;
+											}else{
+												if("" != authors) {
+													return authors;
+												}else{
+													return null;
+												}
+											}
+										}
+										else if( "team" == selectedFilter ){
+											var colNum = 1; // Team/Subteam
+											var teams = @DbColumn(@DbName(), "xvwStatusAllByTeam", colNum);
+											
+											if(typeof teams == 'string') {
+												return teams == "" ? null : (teams == tStatus ? strings.getString("document.display.name.status")+'|'+tStatus : teams);
+											}else{
+												if("" != teams) {
+													var index = -1;
+													for(var i = 0; i < teams.length; i++) {
+														if("" != teams[i] && teams[i] == tStatus) {
+															index = i;
+															break;
+														}
+													}
+													//we replace '- Team Status -' with a 'label|value' pair of
+													//'<translatedValue>|- Team Status -'
+													if(index > -1) {
+														teams[index] = strings.getString("document.display.name.status")+'|'+tStatus;
+													}
+													return teams;
+												}else{
+													return null;
+												}
+											}
+										}
+										else if( "subteam" == selectedFilter ){
+											var colNum = 1; // Team/Subteam
+											var subs = @DbColumn(@DbName(), "StatusLookup", colNum);
+											
+											if(typeof subs == 'string') {
+												return subs == "" ? null : (subs == tStatus ? strings.getString("document.display.name.status")+'|'+tStatus : subs);
+											}else{
+												if("" != subs) {
+													var index = -1;
+													for(var i = 0; i < subs.length; i++) {
+														if("" != subs[i] && subs[i] == tStatus) {
+															index = i;
+															break;
+														}
+													}
+													//we replace '- Team Status -' with a 'label|value' pair of
+													//'<translatedValue>|- Team Status -'
+													if(index > -1) {
+														subs[index] = strings.getString("document.display.name.status")+'|'+tStatus;
+													}
+													return subs;
+												}else{
+													return null;
+												}
+											}
+										}else{
+											return null;
+										}
+									}]]></xp:this.value>
+								</xp:selectItems>
+								<xp:eventHandler event="onchange" submit="false">
+									<xp:this.script>
+										<![CDATA[var applyButton = dojo.byId("#{id:applyFilterButton1}");
+											var combo = dojo.byId("#{id:comboBox2}");
+											if("" == combo.value) {
+												applyButton.disabled = true;
+												dojo.addClass("#{id:applyFilterButton1}", "disabledLotusFilterButton");
+											}else{
+												applyButton.disabled = false;
+												dojo.removeClass("#{id:applyFilterButton1}", "disabledLotusFilterButton");
+											}]]>
+									</xp:this.script>
+								</xp:eventHandler>
+								<xp:eventHandler event="onkeydown" submit="false">
+									<xp:this.script><![CDATA[
+									var kc=thisEvent.keyCode?thisEvent.keyCode:thisEvent.which;
+									if(kc==9 && !thisEvent.shiftKey) {
+										var filterCombo = dojo.byId("#{id:comboBox2}");
+										var applyButton = dojo.byId("#{id:applyFilterButton1}");
+										var filter = filterCombo.value;
+										if("" != filter) {
+											applyButton.disabled = false;
+											dojo.removeClass("#{id:applyFilterButton1}", "disabledLotusFilterButton");
+											applyButton.focus();
+											thisEvent.preventDefault();
+										}else{
+											//XSP.partialRefreshPost("#{id:applyFilterButton1}", {onComplete: function() {
+												var newIndiButton = dojo.byId("#{id:button2}");
+												newIndiButton.focus();
+												thisEvent.preventDefault();
+											//}});
+										}
+									}else{
+										return false;
+									}]]></xp:this.script>
+								</xp:eventHandler>
+							</xp:comboBox>
+						</xp:div>
+						<xp:button value="Apply Filter"
+							id="applyFilterButton1" title="Apply filter" disabled="true"
+							role="button" style="float: #{javascript: context.isDirectionRTL() ? 'right' : 'left'};">
+							<xp:this.attrs>
+								<xp:attr name="aria-label" value="Apply filter">
+								</xp:attr>
+							</xp:this.attrs>
+							<xp:this.styleClass><![CDATA[#{javascript:
+								if(this.disabled) {
+									return "lotusFormButton lotusFilterButton disabledLotusFilterButton";
+								}else{
+									return "lotusFormButton lotusFilterButton";
+								}}]]></xp:this.styleClass>
+							<xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+								<xp:this.action>
+									<xp:actionGroup>
+										<xp:executeScript>
+											<xp:this.script><![CDATA[#{javascript://
+												sessionScope.statusReportsFilterEnabled = true;
+												sessionScope.activeFilter = true;
+												var filterTab;
+												var selectedFilter = sessionScope.statusReportsFilterType;
+												if( "author" == selectedFilter ){
+													filterTab = "tabIndividualReports";
+												}else if( "team" == selectedFilter ){
+													filterTab = "tabAllByTeam";
+												}else if( "subteam" == selectedFilter ){
+													filterTab = "tabTeamReports";
+												}
+												// switch tab
+												sessionScope.statusReportsFilterOldSelectedTab = sessionScope.statusReportsSelectedTab;
+												sessionScope.statusReportsSelectedTab = filterTab;
+												
+												if(sessionScope.statusReportsFilterColumnValue == "- Team Status -") {
+													sessionScope.statusReportsFilterColumnLabel = strings.getString("document.display.name.status");
+												}else{
+													sessionScope.statusReportsFilterColumnLabel = sessionScope.statusReportsFilterColumnValue;
+												}
+											}]]></xp:this.script>
+										</xp:executeScript>
+										<xe:changeDynamicContentAction
+											for="dc2">
+										</xe:changeDynamicContentAction>
+									</xp:actionGroup>
+								</xp:this.action>
+							</xp:eventHandler>
+						</xp:button>
+					</xp:panel>
+				</xp:panel><!-- end chooseFilterArea -->
+				<xp:panel xp:key="filteredArea">
+					<xp:label value="Filtered by: " id="label1">
+					</xp:label>
+					<xe:djextListTextBox id="filteredByValue" value="#{sessionScope.statusReportsFilterColumnLabel}">
+						<xp:eventHandler event="onChange"
+							submit="true" refreshMode="complete">
+							<xp:this.action>
+								<xp:actionGroup>
+									<xp:executeScript>
+										<xp:this.script><![CDATA[#{javascript://
+											sessionScope.statusReportsFilterEnabled = false;
+											sessionScope.statusReportsFilterType = "";
+											sessionScope.remove('statusReportsFilterColumnValue');
+											sessionScope.statusReportsSelectedTab = sessionScope.remove('statusReportsFilterOldSelectedTab');
+										}]]></xp:this.script>
+									</xp:executeScript>
+									<xe:changeDynamicContentAction
+										for="dc2">
+									</xe:changeDynamicContentAction>
+								</xp:actionGroup>
+							</xp:this.action>
+						</xp:eventHandler>
+					</xe:djextListTextBox>
+					<xp:br></xp:br>
+				</xp:panel><!-- end filteredArea -->
+			</xe:this.facets>
+		</xe:switchFacet>
+	</xp:panel>
+</xp:view>

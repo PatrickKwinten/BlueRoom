@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fileresource xmlns="http://www.lotus.com/dxl" charset="UTF-8" name="strings.properties" publicaccess="false">
+  <revisions>
+    <datetime>20101215T065247,72+00</datetime>
+    <datetime dst="true">20110830T205047,75-04</datetime>
+    <datetime dst="true">20111006T160527,16+01</datetime>
+    <datetime dst="true">20111012T143429,23+01</datetime>
+    <datetime dst="true">20111012T143437,72+01</datetime>
+    <datetime dst="true">20111014T083947,01+01</datetime>
+  </revisions>
+</fileresource>

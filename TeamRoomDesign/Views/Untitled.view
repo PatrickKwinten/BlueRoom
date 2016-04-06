@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<view name='Untitled' xmlns='http://www.lotus.com/dxl' version='9.0' maintenanceversion='1.5'
+ replicaid='C1257F57006DE96D' showinmenu='false' noreplace='true' publicaccess='false'
+ designerversion='8.5.3' unreadmarks='none' onopengoto='lastopened' onrefresh='displayindicator'
+ headers='beveled' opencollapsed='false' showresponsehierarchy='true' showmargin='true'
+ shrinkrows='false' extendlastcolumn='false' showhierarchies='false' unreadcolor='black'
+ rowlinecount='1' headerlinecount='1' rowspacing='1' bgcolor='white' totalscolor='black'
+ headerbgcolor='white' boldunreadrows='false' evaluateactions='false' allownewdocuments='false'
+ allowcustomizations='true' hidemarginborder='false' marginwidth='0px' marginbgcolor='white'
+ uniquekeys='false'>
+<noteinfo noteid='3d02' unid='EF3F71A885039A57C1257F8D00326F7E' sequence='2'>
+<created><datetime dst='true'>20160406T111053,42+02</datetime></created>
+<modified><datetime dst='true'>20160406T111053,46+02</datetime></modified>
+<revised><datetime dst='true'>20160406T111053,45+02</datetime></revised>
+<lastaccessed><datetime dst='true'>20160406T111053,46+02</datetime></lastaccessed>
+<addedtofile><datetime dst='true'>20160406T111053,43+02</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Patrick Kwinten/O=quintessens</name></updatedby>
+<wassignedby><name>CN=Patrick Kwinten/O=quintessens</name></wassignedby><code
+ event='selection'><formula>SELECT @All</formula></code>
+<column hidedetailrows='false' itemname='$0' width='10' resizable='true' separatemultiplevalues='false'
+ sortnoaccent='true' sortnocase='true' showaslinks='false'><columnheader title='#'><font
+ size='9pt' style='bold'/></columnheader><code event='value'><formula>@DocNumber</formula></code></column></view>
+

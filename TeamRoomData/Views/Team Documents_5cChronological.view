@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view xmlns="http://www.lotus.com/dxl" name="Team Documents\Chronological" alias="All Chronological" showinmenu="true" allowdocselection="true" publicaccess="false" language="en" unreadmarks="standard" onopengoto="lastopened" onrefresh="displayindicator" headers="simple" opencollapsed="true" showresponsehierarchy="false" showmargin="true" shrinkrows="true" extendlastcolumn="true" showhierarchies="false" unreadcolor="maroon" rowlinecount="4" headerlinecount="1" rowspacing="1" bgcolor="white" altrowcolor="#efefef" totalscolor="blue" headerbgcolor="#a8cfd4" boldunreadrows="false" evaluateactions="true" allownewdocuments="false" allowcustomizations="true" hidemarginborder="false" marginwidth="0px 0px 1px" marginbgcolor="white" uniquekeys="false" initialbuildrestricted="false" noemptycategories="true">
+  <code event="selection">
+    <formula>SELECT  (form = "MainTopic" &amp; Status != "0") | @IsResponseDoc</formula>
+  </code>
+  <code event="helprequest">
+    <formula>REM {DNT};
+@Command([OpenHelpDocument]; [ClientHelp]; "(Help)"; "TeamRoomVActiveDocs")</formula>
+  </code>
+  <actionbar useappletinbrowser="true" bgcolor="#78b4bc" bordercolor="black">
+    <actionbarstyle height="4.7500ex">
+      <font size="9pt" name="multilingual"/>
+    </actionbarstyle>
+    <actionbuttonstyle margintype="fixed" margin="5" bgcolor="#c4dee1" displayborder="notesstyle" widthtype="background"/>
+    <font size="9pt" name="multilingual"/>
+    <border width="0px 0px 1px"/>
+    <action title="_Forward" showinbar="false" hide="web" systemcommand="forward"/>
+    <action title="_Edit Document" showinbar="false" hide="web" systemcommand="edit"/>
+    <sharedactionref id="35">
+      <action title="New Document" hide="preview previewedit">
+        <code event="click">
+          <formula>@PostedCommand([Compose];"MainTopic")</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="36">
+      <action title="New Response" hide="preview edit previewedit">
+        <code event="click">
+          <formula>@SetProfileField("TempVars"; "viewtitle"; @Subset(@ViewTitle; -1));
+@PostedCommand([Compose];"Response")</formula>
+        </code>
+        <code event="hidewhen">
+          <formula>REM {hide from web if it's in a view};
+@ClientType != "Notes" &amp; !@IsAvailable(form)</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="37">
+      <action title="New Response to Response" hide="preview edit previewedit web">
+        <code event="click">
+          <formula>REM {notes only};
+@PostedCommand([Compose];"ResponseToResponse")</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="55">
+      <action title="Delete\Move to Trash" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>@Command([MoveToTrash])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="56">
+      <action title="Delete\Empty Trash" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>@Command([EmptyTrash])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="44">
+      <action title="Search" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>REM {Web only - used in Views};
+@Command([ViewShowSearchBar])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="70">
+      <action title="Chat\Chat with Author" hide="preview edit previewedit web">
+        <code event="click">
+          <formula>@Command([SendInstantMessage]; From)</formula>
+        </code>
+        <code event="hidewhen">
+          <formula>!@IsAvailable(form)</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="71">
+      <action title="Chat\Chat with Assignee(s)" hide="preview edit previewedit web">
+        <code event="click">
+          <formula>REM {variables to translate};
+xTitle := "Chat";
+xNoAssign := "There are no assignees on this document.";
+xSelect := "Select name(s) to chat with";
+AllTxt  := "-- Chat with all assignees --";
+REM {END variables to translate};
+
+
+listChat := AllTxt : @Name([Abbreviate]; People);
+@If(People = ""; @Return(@Prompt([Ok]; xtitle; xNoAssign)); "");
+AskChat := @Prompt([OkCancelListMult]; xtitle; xSelect; ""; listChat);
+
+ChatList := @If(@Contains(askchat; AllTxt); People; AskChat);
+@Command([SendInstantMessage]; ChatList)</formula>
+        </code>
+        <code event="hidewhen">
+          <formula>!@IsAvailable(form) | DocType != DefaultDocType2 |  @IsResponseDoc</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="72">
+      <action title="Chat\Chat with Attendee(s)" hide="preview edit previewedit web">
+        <code event="click">
+          <formula>REM {variables to translate};
+xTitle := "Chat";
+xNoAssign := "There are no attendees on this document.";
+xSelect := "Select name(s) to chat with";
+AllTxt  := "-- Chat with all attendees --";
+REM {END variables to translate};
+
+listChat :=
+AllTxt : @Name([Abbreviate]; People);
+@If(People = ""; @Return(@Prompt([Ok]; xTitle; xNoAssign)); "");
+AskChat := @Prompt([OkCancelListMult]; xTitle; xSelect; ""; listChat);
+
+ChatList := @If(@Contains(askchat; AllTxt); People; AskChat);
+@Command([SendInstantMessage]; ChatList)</formula>
+        </code>
+        <code event="hidewhen">
+          <formula>!@IsAvailable(form) | DocType != DefaultDocType3 | @IsResponseDoc</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="73">
+      <action title="Chat\Chat with Reviewer(s)" hide="preview edit previewedit web">
+        <code event="click">
+          <formula>REM {variables to translate};
+xTitle := "Chat";
+xNoAssign := "There are no reviewers on this document.";
+xSelect := "Select name(s) to chat with";
+AllTxt  := "-- Chat with all reviewers --";
+REM {END variables to translate};
+
+listChat :=
+AllTxt : @Name([Abbreviate]; People);
+@If(People = ""; @Return(@Prompt([Ok];xTitle; xNoAssign)); "");
+AskChat := @Prompt([OkCancelListMult]; xTitle; xSelect; ""; @Trim(listChat));
+ChatList := @If(@Contains(askchat; AllTxt); People; AskChat);
+@Command([SendInstantMessage]; ChatList)</formula>
+        </code>
+        <code event="hidewhen">
+          <formula>!@IsAvailable(form) | DocType = DefaultDocType2 | DocType = DefaultDocType3</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="60">
+      <action title="Database Help">
+        <code event="click">
+          <formula>@Command([HelpUsingDatabase])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+  </actionbar>
+  <column sort="descending" resort="ascending" hidedetailrows="false" listseparator="comma" itemname="$14" width="5" resizable="true" separatemultiplevalues="true" sortnoaccent="true" sortnocase="true" showaslinks="false" categorized="true" twisties="true" formatdatatype="datetime">
+    <font size="9pt" color="teal" style="bold"/>
+    <columnheader title="Date">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <datetimeformat legacy="true" show="date" date="yearmonthday" fourdigityear="true" time="hourminute" zone="never"/>
+    <numberformat legacy="true" format="general" varying="true" digits="1" punctuated="false" parens="false" percent="false" bytes="false"/>
+    <code event="value">
+      <formula>@Date(@Created)</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" itemname="SametimeInfo" width="7.1250" resizable="true" separatemultiplevalues="false" sortnoaccent="false" sortnocase="true" showaslinks="false" hidden="true">
+    <columnheader title="SametimeInfo">
+      <font size="9pt"/>
+    </columnheader>
+    <numberformat legacy="true" format="general" varying="true" punctuated="false" parens="false" percent="false" bytes="false"/>
+    <code event="value">
+      <formula>from</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" listseparator="comma" itemname="$34" width="72" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false" twisties="true">
+    <font size="9pt"/>
+    <columnheader title="Topic">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <datetimeformat show="date" date="yearmonthday" fourdigityearfor21stcentury="true" time="hourminutesecond" zone="never" dateformat="weekdaymonthdayyear" dayformat="twodigitday" monthformat="twodigitmonth" yearformat="fourdigityear" weekdayformat="shortname" dateseparator1=" " dateseparator2="/" dateseparator3="/" timeseparator=":" preference="usersetting"/>
+    <numberformat format="general" varying="true" digits="2" punctuated="false" parens="false" percent="false" bytes="false" decimalsym="." thousandssep="," currencysymtype="custom" currencysym="$" usecustomsym="false"/>
+    <columnnamesformat showonline="true" columncontainsname="false" columnname="SametimeInfo" verticalorientation="top"/>
+    <code event="value">
+      <formula>REM {Translatable variables};
+InactiveTxt := "[INACTIVE] ";
+PrivateTxt := "PRIVATE: ";
+ExpiredTxt := "EXPIRED: ";
+ParticTxt := "Participant Profile: ";
+EventTxt := "Event: ";
+SubteamTxt := "Subteam: ";
+StatusTxt := "Team Status Report: ";
+STstatusTxt := "Subteam Status Report: ";
+REM {End translatable variables};
+
+AuthorTxt := " (" + @Name([Abbreviate]; From) + ")";
+Author := @If(form = "Mission"; ""; form = "ParticipantProfile"; ""; form = "Interest Profile"; ""; form = "Event"; ""; form = "Subteam"; ""; AuthorTxt);
+Stat := @If(
+Status = "0"  ; InactiveTxt; "");
+RptDate := @If(@Contains(form; "Status"); @Text(@Date(ReportDate)) + " - "; "");
+RespSubj := @If(form = "ResponseToResponse"; ImmediateParentSubject; form = "Response"; OriginalSubject;"");
+Subj := @If( form = "ParticipantProfile"; @Name([Abbreviate]; Who); RptDate + Subject);
+Type := @If(form = "ParticipantProfile"; ParticTxt; form = "Event"; EventTxt; Form = "Subteam"; SubteamTxt; form = "Status"; StatusTxt; form = "SubteamStatus"; STstatusTxt; "");
+
+@If(readers != ""; PrivateTxt; ExpireDate != ""; ExpiredTxt; "") + Stat +Type +  Subj + @If(@IsResponseDoc;  " (RE: " + RespSubj + ")"; Author)</formula>
+    </code>
+  </column>
+</view>

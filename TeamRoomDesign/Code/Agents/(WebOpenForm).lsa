@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(WebOpenForm)" hide="v3" runaswebuser="true" publicaccess="false" language="en" comment="This is used to set a flag if the Subteam profile, Participant profile, or Event is a new document.  The value is used in the hide-when formulas on the action buttons in the form.">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+Option Declare
+
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>'WebOpenForm: 
+
+
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	
+	Dim s As New notessession
+'	Dim db As notesdatabase
+'	Dim DbProfile As NotesDocument
+	Dim note As notesdocument
+	Dim dbug As New noteslog("WebOpenForm")
+	
+	Set note = s.documentcontext
+	
+'logging is for debug purposes
+	Set dbug = New NotesLog("WebOpenForm")
+'to turn off the debug log, set this to False     
+	dbug.LogActions = True
+	dbug.OpenAgentLog
+	dbug.logaction("Running WebOpenForm")
+	
+	On Error Goto ErrorHere
+	
+	If note.isnewnote Then
+		Call note.replaceitemvalue("webNewDoc", "1")
+	Else
+		Call note.replaceitemvalue("webNewDoc", "0")
+	End If
+	
+	
+	dbug.logaction("webnewdoc = " + note.webnewdoc(0))
+	
+ErrorHere:
+	dbug.logaction(Err &amp; " - " &amp; Error)
+	
+End Sub</lotusscript>
+  </code>
+</agent>

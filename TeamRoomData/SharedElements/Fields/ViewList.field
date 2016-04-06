@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sharedfield xmlns="http://www.lotus.com/dxl" name="ViewList" language="en">
+  <field type="text" kind="computedfordisplay" name="ViewList">
+    <code event="defaultvalue">
+      <formula>REM {variables to translate};
+GoBack := "Go Back";
+AllView := "Index of All Documents";
+MissionView :=  "TeamRoom Overview";
+ActiveView := "By Date";
+Help := "Help";
+REM {end variables to translate};
+
+DB := @ReplaceSubstring(@ReplaceSubstring(@Subset(@DbName; -1);" ";"+");"\\";"/");
+"[&lt;hr&gt;&lt;b&gt;&lt;a href=/" + DB + "/" + "($All)?OpenView&gt;" +  AllView +  "&lt;/a&gt;&lt;/b&gt;&amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp" +
+"&lt;b&gt;&lt;a href=/" + db + "/TeamOverview?OpenView&gt;"+ MissionView +"&lt;/a&gt;&lt;/b&gt;&amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp" +
+"&lt;b&gt;&lt;a href=/" + db + "/ActiveDate?OpenView&gt;"+ ActiveView  +"&lt;/a&gt;&lt;/b&gt;&amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp" +
+"&lt;b&gt;&lt;a href=\"javascript: onClick=history.back()\"&gt;" +  GoBack + "&lt;/a&gt;&lt;/b&gt;&amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp"</formula>
+    </code>
+  </field>
+</sharedfield>

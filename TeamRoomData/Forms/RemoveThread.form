@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="RemoveThread" alias="RemoveThread" nocompose="true" noquery="true" publicaccess="false" language="en" inherit="true">
+  <code event="windowtitle">
+    <formula>"Remove Thread"</formula>
+  </code>
+  <code event="webquerysave">
+    <formula>@Command([ToolsRunMacro]; "(WebRemoveThread)")</formula>
+  </code>
+  <code event="helprequest">
+    <formula>REM {DNT};
+@Command([OpenHelpDocument]; [ClientHelp]; "(Help)"; "TeamRoomFRemoveThread")</formula>
+  </code>
+  <actionbar useappletinbrowser="true" bgcolor="#78b4bc" bordercolor="black">
+    <actionbarstyle height="4.7500ex">
+      <font size="9pt" name="multilingual"/>
+    </actionbarstyle>
+    <actionbuttonstyle margintype="fixed" margin="5" bgcolor="#c4dee1" displayborder="notesstyle" widthtype="background"/>
+    <font size="9pt" name="multilingual"/>
+    <border width="0px 0px 1px"/>
+    <sharedactionref id="32">
+      <action title="Save &amp; Close" showinmenu="false" hide="preview read previewedit">
+        <code event="click">
+          <formula>REM {Can't use @isvalid on the web};
+@If(
+@ClientType != "Notes";
+@Do(@Command([FileSave]); @Command([FileCloseWindow]));
+@IsValid;
+@Do(@Command([FileSave]); @Command([FileCloseWindow])); "")</formula>
+        </code>
+        <code event="hidewhen">
+          <formula>REM {Hide if 'New doc' button was clicked};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w = "1" |  (@ClientType != "Notes" &amp; form = "MainTopic") | (@ClientType != "Notes" &amp; form = "Mission") | (@ClientType != "Notes" &amp; form = "IndStat")</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="57">
+      <action title="Cancel" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>REM {web only; saved docs};
+REM {hidden if 'NewDoc' button was clicked for Participant, Event, or Subteam};
+@Command([FileCloseWindow])</formula>
+        </code>
+        <code event="hidewhen">
+          <formula>REM {Hide if person clicked 'New doc' button};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w = "1" | @IsNewDoc</formula>
+        </code>
+      </action>
+    </sharedactionref>
+  </actionbar>
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="notes web" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1"/>
+      <pardef id="2" align="none" leftmargin="1in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <subformref name="WebFont"/>
+      <par def="1"/>
+      <table widthtype="fitmargins" refwidth="9.7708in">
+        <tablecolumn width="50%"/>
+        <tablecolumn width="50%"/>
+        <tablerow>
+          <tablecell>
+            <pardef id="4" leftmargin="1%" rightmargin="100%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="4">
+              <run>
+                <font size="9pt" color="red"/>Used by WebRemoveThread agent to get the Interest Profile UNID</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <pardef id="5" leftmargin="1%" rightmargin="100%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="5">
+              <run>
+                <font size="9pt" color="red"/>
+              </run>
+              <run>
+                <font size="9pt" color="red"/>
+                <field type="text" kind="editable" name="HTTP_Referer" htmlid="HTTP_Referer"/>
+              </run>
+              <run>
+                <font size="9pt" color="red"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="4">
+              <run>
+                <font size="9pt" color="red"/>This is the list of active threads from the Interest Profile</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="5">
+              <run>
+                <font size="9pt" color="red"/>
+              </run>
+              <run>
+                <font size="9pt" color="red"/>
+                <field type="text" allowmultivalues="true" kind="computedwhencomposed" name="ArchiveThreads" listinputseparators="comma semicolon" listdisplayseparator="semicolon" htmlid="ArchiveThreads">
+                  <code event="defaultvalue">
+                    <formula>ProfileThreadSubjects</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="red"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="4">
+              <run>
+                <font size="9pt" color="red"/>Make sure that this form is not saved.</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="5">
+              <run>
+                <font size="9pt" color="red"/>
+              </run>
+              <run>
+                <font size="9pt" color="red"/>
+                <field type="text" kind="computed" name="SaveOptions" htmlid="SaveOptions">
+                  <code event="defaultvalue">
+                    <formula>"0"</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="red"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="6" leftmargin="1in" hide="read edit copy preview previewedit notes web"/>
+      <par def="6">
+        <run>
+          <font size="9pt"/>
+        </run>
+      </par>
+      <table widthtype="fitmargins" refwidth="9.7813in">
+        <tablecolumn width="100%"/>
+        <tablerow>
+          <tablecell borderwidth="0px">
+            <pardef id="7" leftmargin="1%" rightmargin="100%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="7"/>
+            <table widthtype="fitmargins" leftmargin="0" rightmargin="100%" refwidth="9.7813in">
+              <tablecolumn width="100%"/>
+              <tablerow>
+                <tablecell borderwidth="0px 0px 2px" bgcolor="#78b4bc">
+                  <pardef id="9" leftmargin="0.1000in" keepwithnext="true" keeptogether="true"/>
+                  <par def="9">
+                    <run>
+                      <font size="12pt" style="bold" color="white"/>Remove Thread from Newsletter Profile</run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="white">
+            <pardef id="10" leftmargin="1%" rightmargin="100%" keepwithnext="true" keeptogether="true"/>
+            <par def="10">
+              <run>
+                <font size="9pt" color="white"/> </run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt" style="bold"/>Select a Thread to Remove from your Newsletter Profile</run>
+            </par>
+            <pardef id="11" leftmargin="1%" rightmargin="100%" spaceafter="1.5" keeptogether="true"/>
+            <par def="11">
+              <run>
+                <font size="9pt"/>
+              </run>
+              <run>
+                <font size="9pt"/>
+                <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="Removesubjects" description="Select a Thread to Remove from your Newsletter Profile" listinputseparators="comma" listdisplayseparator="comma" htmlid="Removesubjects" htmltitle="Select a Thread to Remove from your Newsletter Profile">
+                  <keywords columns="1" ui="checkbox">
+                    <formula>ArchiveThreads</formula>
+                  </keywords>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="white"/>
+              </run>
+            </par>
+            <par def="11">
+              <run>
+                <font size="9pt" color="white"/> </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="12" leftmargin="5in" firstlineleftmargin="1in" hide="read edit copy preview previewedit notes web"/>
+      <par def="12">
+        <run>
+          <font size="9pt"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+  <item name="$HTMLDocumentStyles" summary="true" sign="true">
+    <rawitemdata type="1">
+0ggBAAAA/wDSCAEA/wAAANIIAQCAAIAA
+</rawitemdata>
+  </item>
+  <item name="$SignatureStatus">
+    <text>1</text>
+  </item>
+  <item name="$SubForm_RepIDs" sign="true">
+    <text>0000000000000000</text>
+  </item>
+</form>

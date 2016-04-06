@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(DeleteDocsViaMission)" hide="v3" runaswebuser="true" publicaccess="false" language="en">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+Option Declare
+Use "DiscussionRoutines"
+Use "wStringResource"
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>Dim dbug As Variant
+Dim DbProfile As NotesDocument	
+Dim pClientType As Variant
+
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Dim ACLentry As Variant
+	Dim acl As notesacl
+	Dim CurrentUsername As Variant	
+	Dim canDelete As Variant
+	Dim ACLlevel As Variant
+	Dim LinkDone As String
+	
+	Set s = New notessession	
+	Set db = s.currentdatabase
+	Set DbProfile = db.GetProfileDocument( "TempVars")
+	DbProfile.CanDelete = ""
+	
+	Set acl = db.acl	
+	CurrentUsername = Evaluate( "@name([abbreviate]; @username)")
+	Set ACLentry = acl.getentry(CurrentUsername(0))
+	If ACLentry Is Nothing Then
+		Set ACLentry = acl.getentry("-Default-")  'DNT
+	End If
+	
+	pClientType = dbProfile.ClientType
+	
+%REM
+'Check to see if the user has deletion rights in db
+	canDelete = aclentry.candeletedocuments
+	If canDelete = False And pClientType(0) = "" Then
+		DbProfile.CanDelete = "0"
+		dbprofile.notify = getString(27)
+		Goto xEnd
+	Elseif canDelete = False And pClientType(0) = "Notes" Then
+		Msgbox GetString(27)		
+		Goto xEnd
+	End If
+%END REM
+	
+	Call DeleteDocuments
+	
+xEnd:
+	dbProfile.ClientType  = ""
+	Call dbProfile.save(False,False,True)	
+End Sub
+
+
+</lotusscript>
+  </code>
+  <code event="DeleteDocuments">
+    <lotusscript>Sub DeleteDocuments
+	Dim DelNote As notesdocument
+	Dim DeletionList As Variant
+	Dim subteamList As Variant
+	Dim eventList As Variant
+	Dim View As notesview
+	Dim Doc As notesdocument
+	Dim Pcount As Integer
+	
+	On Error Goto AuthError
+	
+	Pcount = 0
+	
+	Set DelNote = s.documentcontext
+	Set View = db.getview("DelDocLookup")
+	
+'delete participants
+	DeletionList = DelNote.getitemvalue("ParticipantList")
+	If deletionlist(0) = "" Then
+		Goto DelSubteams
+	Else
+		Forall x In DeletionList
+			Set doc = view.getdocumentbykey(x)
+			doc.remove(True)
+			Call SubteamListUpdate(x)
+		End Forall
+		Pcount=Pcount+1
+	End If
+	
+DelSubteams:
+	DeletionList = DelNote.getitemvalue("SubteamList")
+	If deletionlist(0) = "" Then
+		Goto DelEvents
+	Else
+		Forall x In DeletionList
+			Set doc = View.getdocumentbykey(x, True)
+			doc.remove(True)
+		End Forall
+		Pcount=Pcount+1
+	End If
+	
+	
+DelEvents:
+	Dim evView As notesview
+	Set evView = db.getview("DelEventLookup")
+	DeletionList = DelNote.getitemvalue("EventList")
+	If deletionlist(0) = "" Then
+		Goto getCount
+	Else
+		Forall x In DeletionList
+			Set doc = evView.getdocumentbykey(x, True)
+			doc.remove(True)
+		End Forall
+		Pcount=Pcount+1
+	End If
+	
+getCount:	
+	If Pcount &gt; 0 And pClientType(0) = ""  Then
+		dbprofile.notify = getstring(31)
+	Elseif Pcount &gt; 0 And pClientType(0) = "Notes" Then
+		Msgbox getString(31)	
+	End If
+	
+AuthError:
+	If Err = 4000 And pClientType(0) = "" Then
+		dbprofile.notify = getstring(27)	
+		Exit Sub
+	Elseif Err = 4000 And pClientType(0) = "Notes" Then
+		Msgbox(getString(27)), 16
+		Exit Sub
+	End If
+End Sub
+</lotusscript>
+  </code>
+  <code event="SubteamListUpdate">
+    <lotusscript>Sub SubteamListUpdate(ParticSelection As Variant )
+	Dim subteamView As notesview
+	Dim STdoc As notesdocument
+	Dim STnames As Variant
+	Dim count As Integer 
+	Dim x As String
+	Dim item As notesitem
+	
+	
+	Set subteamView = db.getview("SubteamLookup")
+	Set STdoc = subteamView.getFirstDocument
+	
+	While Not STdoc Is Nothing
+		STnames = STdoc.getitemvalue("STMembers")	
+'check to see if the participant a member of the subteam
+		x = ParticSelection
+		count = 0
+		Forall y In STnames
+			If Lcase(x) = Lcase(y) Then
+				STNames(count) = ""
+'				Set item = STDoc.replaceitemvalue("STMembers", STNames)
+				Call STDoc.replaceitemvalue("STMembers", STNames)  
+				Call STDoc.replaceitemvalue("PriNameSelection", STNames)
+				Call STdoc.computewithform(0,0)
+				Call STdoc.save(True, False)	
+			End If
+			count = count + 1
+		End Forall		
+		Set STdoc = subteamView.getnextdocument(STdoc)
+	Wend
+	
+	
+End Sub</lotusscript>
+  </code>
+</agent>

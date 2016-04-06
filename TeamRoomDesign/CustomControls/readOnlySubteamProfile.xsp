@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:xc="http://www.ibm.com/xsp/custom"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+
+	<xp:this.data>
+		<xp:dominoDocument formName="Subteam" action="openDocument"
+			var="subteam" ignoreRequestParams="true" computeWithForm="onsave">
+			<xp:this.documentId><![CDATA[#{javascript://
+var db:NotesDatabase	= database;
+var vw:NotesView		= db.getView("xwvAllSubteamsLookup");
+var ve:NotesViewEntry	= vw.getEntryByKey(param.subteam, true);
+var unid				= null;
+if (null != ve) {
+	unid = ve.getUniversalID();
+}
+return(unid);}]]></xp:this.documentId>
+		</xp:dominoDocument>
+	</xp:this.data>
+
+	<xp:panel id="readOnlyProfile">
+
+		<xc:controlReadForm id="readForm">
+
+			<xc:this.title>
+						<![CDATA[${javascript:I18n.format(strings.getString("subteam.profile.header"), subteam.getItemValueString("STName"));}]]>
+			</xc:this.title>
+
+			<xp:this.facets>
+				<xp:panel id="pnlSubheading" xp:key="subheading">
+					<xp:text id="reportDateOutput" value="#{subteam.Position}"
+						disableTheme="true">
+					</xp:text>
+				</xp:panel>
+
+				<xp:panel id="pnlMeta" xp:key="meta">
+					<xe:listInline>
+						<xp:panel>
+							<xp:label value="Created "></xp:label>
+							<xp:text id="createdDateOut" value="#{javascript:@Created()}"></xp:text>
+						</xp:panel>
+						<xp:panel>
+							<xp:label value="Subteam Status: "></xp:label>
+							<xp:span id="eventStatusOut">
+								<xp:text disableTheme="true"
+									value="#{javascript: strings.getString('status.active')}"
+									rendered="#{javascript:subteam.getItemValueString('FileThisStatusDoc') == '0'}"></xp:text>
+								<xp:text disableTheme="true"
+									value="#{javascript: strings.getString('status.inactive')}"
+									rendered="#{javascript:subteam.getItemValueString('FileThisStatusDoc') == '1'}"></xp:text>
+							</xp:span>
+						</xp:panel>
+					</xe:listInline>
+				</xp:panel>
+
+				<xp:panel id="pnlActions" xp:key="actions">
+					<xe:listInline>
+						<xp:link text="Edit" id="link1">
+							<xp:this.loaded><![CDATA[${javascript:(userBean.accessLevel > lotus.domino.ACL.LEVEL_AUTHOR) && userBean.canCreateDocs}]]></xp:this.loaded>
+							<xp:eventHandler event="onclick" submit="true"
+								refreshMode="partial" refreshId="subteamProfileDynamicContent">
+								<xp:this.action>
+									<xp:actionGroup>
+										<xp:executeScript
+											script="#{javascript:viewScope.editableProfile_documentId = subteam.getDocument().getUniversalID()}">
+										</xp:executeScript>
+										<xe:changeDynamicContentAction
+											for="subteamProfileDynamicContent" facetName="editableProfile">
+										</xe:changeDynamicContentAction>
+									</xp:actionGroup>
+								</xp:this.action>
+							</xp:eventHandler>
+						</xp:link>
+						<xp:link
+							rendered="#{javascript:subteam.getItemValueString('FileThisStatusDoc') == '0'}"
+							text="Mark as inactive" id="markAsInactiveLink">
+							<xp:this.loaded><![CDATA[${javascript:(userBean.accessLevel >= lotus.domino.ACL.LEVEL_AUTHOR) && userBean.canCreateDocs}]]></xp:this.loaded>
+							<xp:eventHandler event="onclick" submit="true"
+								refreshMode="complete">
+								<xp:this.action><![CDATA[#{javascript:					
+					subteam.replaceItemValue("DateFiled", new Date());	
+					subteam.replaceItemValue("ViewDateFiled", new Date());
+					subteam.replaceItemValue('FileThisStatusDoc', '1');
+	
+					subteam.replaceItemValue("Status", "0");
+					subteam.replaceItemValue("NeverFile", "0");		
+					
+					subteam.save();
+					context.redirectToPage('/members.xsp');}]]></xp:this.action>
+							</xp:eventHandler>
+						</xp:link>
+						<xp:link
+							rendered="#{javascript:subteam.getItemValueString('FileThisStatusDoc') == '1' }"
+							text="Mark as active" id="markAsActiveLink">
+							<xp:this.loaded><![CDATA[${javascript:(userBean.accessLevel >= lotus.domino.ACL.LEVEL_AUTHOR) && userBean.canCreateDocs}]]></xp:this.loaded>
+							<xp:eventHandler event="onclick" submit="true"
+								refreshMode="complete">
+								<xp:this.action><![CDATA[#{javascript:				
+					subteam.removeItem("FileByDate");	
+					subteam.removeItem("DateFiled");	
+					subteam.removeItem("ViewDateFiled");
+					subteam.replaceItemValue('FileThisStatusDoc', '0');
+	
+					subteam.replaceItemValue("Status", "1")
+					subteam.replaceItemValue("NeverFile", "1")
+	
+					subteam.save();
+					context.redirectToPage('/members.xsp');}]]></xp:this.action>
+							</xp:eventHandler>
+						</xp:link>
+					</xe:listInline>
+				</xp:panel>
+			</xp:this.facets>
+
+			<xp:label value="Members:" style="font-weight:bold;font-size:larger">
+			</xp:label>
+			<xc:controlReadFormRichText inputId="subjectOut"
+				id="subject">
+				<xe:djextNameTextBox id="djextNameTextBox1"
+					multipleSeparator="," value="#{subteam.PriNameSelection}"></xe:djextNameTextBox>
+			</xc:controlReadFormRichText>
+		</xc:controlReadForm>
+	</xp:panel>
+</xp:view>

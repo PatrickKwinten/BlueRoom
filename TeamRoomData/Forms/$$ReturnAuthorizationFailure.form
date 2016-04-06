@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="$$ReturnAuthorizationFailure" nocompose="true" noquery="true" publicaccess="false" language="en" bgcolor="#efefef">
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="notes web" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>
+        </run>
+      </par>
+      <pardef id="2" align="none" leftmargin="1in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <subformref name="WebFont"/>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>
+        </run>
+      </par>
+      <table widthtype="fitmargins" refwidth="9.7813in">
+        <tablecolumn width="100%"/>
+        <tablerow>
+          <tablecell bgcolor="white">
+            <pardef id="4" leftmargin="0.0104in" keepwithnext="true" keeptogether="true"/>
+            <par def="4">
+              <run>
+                <font size="11pt"/> </run>
+              <picture width="36px" height="36px" align="bottom">
+                <gif>
+R0lGODlhJAAkAPf/AGtpaoiGh5CNj4uIihIREisqK317fXp4enZ0dnJwcnBucDU0NZWTlZGPkYmH
+iYeFh4SChIKAgoF/gXFwcZqXm3RydZaUl4OBhIF/gnRydoyKjoqIjH99gZKQlJGQkk1LUH99gjAv
+MnNxd318f39+gQIBBVBPU3t6fnp5fZaUnTc2O318gXV0eoSDiYB/hUJAU0dFVyUkLUlIURUUIJyZ
+vKqowDo4WCEgMi0sPi8uPZCNt3BujY+Msz07aUE/ZltZj2VjjzY1Snl3pG9tlR4dQCgnTTw7ZgAA
+DwAACgAABQICGgsLFRAQFwUFBnd3fHd3e8DAwDEyCv//APv6APn5APj3APT0APDwAO/vAOblAOPj
+AN/eAN3dANrbANbVANPTAM7OAMvMAMrKAMjIAMfGAMXFAMPDAL69AL29ALq5ALa2ALSzAK2sAKam
+AJ2dAJyaAJqaAJiXAJWUAJSTAJOTAImIAIiGAIaFAIKBAH59AHd3AHJyAF9eAEJCADIyAAYGAJ+d
+Af//Ar6+AsXFA52dAvb2BMrJBcHBBZ2cBP//B+rpB///Cbu6Cf//Df//D7u6DP//Efn4EdTTD///
+E6SjDYCACv//Ffz8FXFwCuDfFuzsGP//G5eWEPf3Hf//IfX1JZubGf//LPT0K6SiIP//N9XVMOvr
+Nvj3PPPyO///Qu3sRfDvSmRjIN3cT//+Xe7tW///ZsC/UqWkU6CfXwcHBQoKCAkJCHNxADEwAKKf
+B4OBDoyIFX17FqqnIHJwFk5NEFJRFHd0I4uJL6qnOoWCNaupR9rYaunndvTyfvDufnRzTcPBhYWE
+X4yIMZiUPZyYQZeTQZ6aSo6KSKyoYNrWiPPwrcLAlb+6hOLfuLeyhbGulODdwAkIAKCacbq0i7y3
+j7q0jbWvjhkYE8W+mYeDb8W+odXQv9DJuMC7rszFtQ8ODK2pobu1qqWhmoF8dJmWkrWwqqKemZSR
+jjg3Njw7Ok5NTJ6al5KPjpeUkyUkJJCOjo2LiwAAAAAAAAAAAAAAACH5BAEAAFAALAAAAAAkACQA
+QAj/AKEIHEhwYLpibhAJI5euoMOHD6/lwiKlokWLoIoACAARojQ2FyvW4UeSH7cyFxdVE2eiBcRr
+b6yEDGnpkxYwohrNtEiJyAQI6AbuyhJmjJijSJMqXXoUTCwgtRo8gICio0Bog6aEtGaDngCrVsPh
+uainJEk0FSGV4rcBBFgozgxp3UkGFz8+FHcu8zGvgT2CcXbObPWDpBBTgitOKlUiwwp2b6mdubgt
+hgp4b99Oe5Q3pCwj9fRlfjiuDpWKyXaUrHGqYhslDzCMFtiNTsiyZtFWvHTsDwIXb5uN2YlMNUnW
+M7HlWKAB4jRGVxKTmkXrmE7BxXrU27du4Dc7iS0S/ypBMomgxIHUHIkdVE7494I9GeNXYQALgvJQ
+SNjPv7////xFAMGAVWUWzRpSXGIOE+6cM9tb0qRxkSN+vOBBOw9CFIwYM6UCDA4W7JNhQZhkIRgs
+ysxgAQkjCpRHFYpp0gUXXHSyiBSwbFDCAAXOls0cc0lRCRIlHXFIRavwYIsBEMzmTS9bkGUWP7pJ
+ockQISSAT2blDMOhlLldVMgHMigQD1jmPHNeSJL8UhIviswUBQwcnNkRMWbs5AgnJWWSyEyW9BFE
+B+9A5IsXiakiQhPaRCJYKqzcQAFHBd3SmWBf7PGeK8wswcAJA4FzB3yvCEESDagk5koK/EBwQlCA
+wFf4HhxhJmaKDgQg4AAUb8AnRSit0AHHK5uEF0gW/GTwwD2jdOHrs5sYA0QBBwQAKhS6qIPEttx2
+6+233fKTDwMDXsAiQfY4QcK67Lbr7rvrcjDCCE8IFBAAOw==
+</gif>
+              </picture>
+              <run>
+                <font size="11pt"/>
+              </run>
+              <run>
+                <font style="bold" name="Arial" pitch="variable" truetype="true" familyid="20"/>You are not authorized to perform that operation.</run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="5" leftmargin="1in">
+        <code event="hidewhen" enabled="false">
+          <formula>@TextToNumber(@Version)&lt;141</formula>
+        </code>
+      </pardef>
+      <par def="5">
+        <run html="true">
+          <font name="Arial" pitch="variable" truetype="true" familyid="20"/>&lt;/h3&gt;</run>
+      </par>
+      <pardef id="6" align="none" leftmargin="1in" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="6">
+        <run html="true">
+          <font name="Arial" pitch="variable" truetype="true" familyid="20"/>&lt;a href="javascript: onClick=history.back()"&gt;</run>
+        <run html="true">
+          <font name="Arial" pitch="variable" truetype="true" familyid="20"/>
+          <computedtext>
+            <code event="value">
+              <formula>"Go back"</formula>
+            </code>
+          </computedtext>
+        </run>
+        <run html="true">
+          <font name="Arial" pitch="variable" truetype="true" familyid="20"/>&lt;/a&gt;</run>
+      </par>
+      <pardef id="7" leftmargin="1in" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="7">
+        <run>
+          <font name="Arial" pitch="variable" truetype="true" familyid="20"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+  <item name="$SubForm_RepIDs" sign="true">
+    <text>0000000000000000</text>
+  </item>
+</form>

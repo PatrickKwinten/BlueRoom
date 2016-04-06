@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(CategorizeTeamDocs)" hide="v3" publicaccess="false" language="en">
+  <trigger type="agentlist"/>
+  <documentset type="selected"/>
+  <code event="options">
+    <lotusscript>Option Public
+Option Declare
+
+</lotusscript>
+  </code>
+  <code event="GetString">
+    <lotusscript>Function GetString ( StringType As Integer) As String
+	
+	Select Case StringType
+	Case 1  
+		GetString = "The TeamRoom Setup has not yet been created."
+	Case 2
+		GetString = "There are no categories defined in the TeamRoom Setup."
+	Case 3  'title bar
+		GetString = "Categorize Team Documents"
+	Case 4
+		getString = "Select one or more categories for the selected team documents: "
+	Case 5  'title bar for errors 1 and 2 above
+		getString = "Unable To Proceed"
+	Case 6
+		getString = "No documents are selected."
+	End Select
+	
+End Function
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Dim s As New notessession	
+	Dim uiwork As New notesuiworkspace
+	Dim uiview As notesuiview
+	Dim uidoc As notesuidocument
+	Dim db As notesdatabase
+	Dim collection As notesdocumentcollection	
+	Dim doc As notesdocument
+	Dim missionView As notesview
+	Dim missionDoc As notesdocument
+	Dim catList As Variant
+	Dim getPrompt As Variant
+	Dim i As Integer
+	
+	Set db = s.CurrentDatabase
+	Set collection = db.UnprocessedDocuments
+	Set UIdoc = UIwork.currentdocument
+	
+	Set missionView = db.getview("MissionLookup")
+	Set missionDoc = missionView.getdocumentbykey("Mission")   'DNT
+	
+	If collection.Count = 0 Then
+		Msgbox getString(6), 16, getstring(5)                    'check to see if teamroom setup exists
+		Exit Sub		
+	Elseif missionDoc Is Nothing Then
+		Msgbox getString(1), 16, getstring(5)                    'check to see if teamroom setup exists
+		Exit Sub
+	Else
+		catList = missionDoc.getitemvalue("Categories")   'check to see if any categories have been defined in teamroom setup
+		If catList(0) = "" Then
+			Msgbox getString(2), 16, getstring(5)
+			Exit Sub
+		End If
+	End If
+	
+	getPrompt = uiwork.prompt(PROMPT_OKCANCELLISTMULT, getString(3), getString(4), "", catList)
+	
+	For i = 1 To collection.Count
+		Set doc = collection.GetNthDocument( i )
+		Call doc.replaceitemvalue("Categories", getPrompt)
+		Call doc.save(True, False, True)
+	Next			
+	
+End Sub</lotusscript>
+  </code>
+</agent>

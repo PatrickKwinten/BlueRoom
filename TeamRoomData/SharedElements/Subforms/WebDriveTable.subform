@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<subform xmlns="http://www.lotus.com/dxl" name="WebDriveTable" language="en">
+  <body>
+    <richtext>
+      <pardef id="1" hide="notes web"/>
+      <par def="1">
+        <run>
+          <font size="9pt" color="gray"/>This is for web use only.  In the Notes client, this field </run>
+        <run>
+          <font size="9pt" style="italic" color="gray"/>cannot</run>
+        <run>
+          <font size="9pt" color="gray"/> be present on the form containing the field-driven table.  On the web, it </run>
+        <run>
+          <font size="9pt" style="italic" color="gray"/>must</run>
+        <run>
+          <font size="9pt" color="gray"/> be present.</run>
+      </par>
+      <pardef id="2" hide="read edit copy preview previewedit" tabs="L3in"/>
+      <par def="2">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="editable" name="$MissionPage">
+            <code event="inputtranslation">
+              <formula>@If(@IsDocBeingSaved; "Mission"; $MissionPage)</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>	field driven table name</run>
+      </par>
+    </richtext>
+  </body>
+</subform>

@@ -1,0 +1,1224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="Team Member Profile" alias="PersonalProfile|ParticipantProfile" nocompose="true" htmlallfields="true" publicaccess="false" language="en">
+  <code event="windowtitle">
+    <formula>REM {variables to translate};
+NewTxt := "New Team Member Profile";
+Txt := "Team Member Profile for: ";
+REM {END variables to translate};
+
+ABName := @Name([Abbreviate]; Who);
+@If(@IsNewDoc; NewTxt; Txt + ABName)</formula>
+  </code>
+  <code event="webqueryopen">
+    <formula>@Command([ToolsRunMacro]; "(WebOpenForm)")</formula>
+  </code>
+  <code event="helprequest">
+    <formula>REM {DNT};
+@Command([OpenHelpDocument];[ClientHelp];  "(Help)"; "TeamRoomFParticipantProfile")</formula>
+  </code>
+  <code event="options">
+    <lotusscript>Option Declare
+
+</lotusscript>
+  </code>
+  <code event="queryclose">
+    <lotusscript>Sub Queryclose(Source As Notesuidocument, Continue As Variant)
+
+	
+End Sub</lotusscript>
+  </code>
+  <code event="jsheader" for="web">
+    <javascript>function validate(){
+
+var msg;
+var msgflag;
+
+partMsg1 = 'Please enter the team member\'s name.';
+partMsg2 = 'A team member with this name already exists.  Please enter a different name.';
+
+msgflag = 'false';
+//determine if the person already exists
+partlist = document.forms[0].wPartList.value
+LCpartlist = partlist.toLowerCase()
+vPartName = document.forms[0].enterWho.value
+vWebError = document.forms[0].WebError.value
+LCvpartname = vPartName.toLowerCase()
+strSlash = LCpartlist.lastIndexOf( ";" + LCvpartname + ';')
+if(strSlash != -1 &amp; vPartName != '' &amp; vWebError == '1') 
+	{
+	msg= partMsg2;
+	msgflag='true';
+	}
+
+ if(document.forms[0].enterWho.value == ''){
+	msg=  partMsg1;
+	msgflag='true';
+                document.forms[0].enterWho.focus()
+	}
+
+ if(msgflag == 'true'){
+     alert(msg);
+}
+if(msgflag == 'false'){
+document.forms[0].submit()
+}
+}
+</javascript>
+  </code>
+  <actionbar useappletinbrowser="true" bgcolor="#78b4bc" bordercolor="black">
+    <actionbarstyle height="4.7500ex">
+      <font size="9pt" name="multilingual"/>
+    </actionbarstyle>
+    <actionbuttonstyle margintype="fixed" margin="5" bgcolor="#c4dee1" displayborder="notesstyle" widthtype="background"/>
+    <font size="9pt" name="multilingual"/>
+    <border width="0px 0px 1px"/>
+    <action title="Forward" showinbar="false" hide="preview previewedit web">
+      <code event="click">
+        <formula>@Command([MailForward])</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>@IsNewDoc</formula>
+      </code>
+    </action>
+    <action title="Forward as Bookmark" showinbar="false" hide="preview previewedit web">
+      <code event="click">
+        <formula>@Command([Compose]; @MailDbName; "Bookmark")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>@IsNewDoc</formula>
+      </code>
+    </action>
+    <action title="Edit Document" hide="preview edit previewedit">
+      <code event="click">
+        <formula>REM {For all forms except Main Document form, which needs special casing for assignees to edit};
+@Command([EditDocument])</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>lcabAuthors := @LowerCase(@Name([Abbreviate]; Authors));
+lcabFrom := @LowerCase(@Name([Abbreviate]; From));
+lcabAltFrom := @LowerCase(@Name([Abbreviate]; AltFrom));
+lcabUN := @LowerCase(@Name([Abbreviate]; @UserName));
+Filename := @DbName;
+Level := @V4UserAccess(Filename);
+Getlevel := @TextToNumber(@Subset(Level; 1));
+
+getLevel &lt; 4 &amp;
+(
+!@Contains(lcabAuthors; lcabUN) |
+!@Contains(lcabFrom; lcabUN) |
+!@Contains(lcabAltFrom; lcabUN))</formula>
+      </code>
+    </action>
+    <action title="Save &amp; Close" hide="preview read previewedit">
+      <code event="click">
+        <formula>REM {Can't use @isvalid on the web};
+@If(
+@ClientType != "Notes";
+@Do(@Command([FileSave]); @Command([FileCloseWindow]));
+@IsValid;
+@Do(@Command([FileSave]); @Command([FileCloseWindow])); "")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>REM {Hide if 'New doc' button was clicked};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w = "1" |  (@ClientType != "Notes" &amp; form = "MainTopic") | (@ClientType != "Notes" &amp; form = "Mission") | (@ClientType != "Notes" &amp; form = "IndStat")</formula>
+      </code>
+    </action>
+    <action title="Save &amp; Close" showinmenu="false" hide="notes">
+      <code event="hidewhen">
+        <formula>REM {Hide if 'New doc' button not clicked};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w != "1"</formula>
+      </code>
+      <code event="onClick" for="web">
+        <javascript>validate()</javascript>
+      </code>
+      <code event="onBlur" for="web">
+        <javascript>/*
+used only in Participant, Event, and Subteam profiles
+hidden if NewDoc has not been clicked
+*/</javascript>
+      </code>
+    </action>
+    <action title="Chat with Team Member" hide="preview edit previewedit web">
+      <code event="click">
+        <formula>@Command([SendInstantMessage]; EnterWho)</formula>
+      </code>
+    </action>
+    <action title="Cancel" showinmenu="false" hide="notes">
+      <code event="hidewhen">
+        <formula>REM {Hide if person clicked 'New doc' button};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w != "1"</formula>
+      </code>
+      <code event="onClick" for="web">
+        <javascript>window.close(self)</javascript>
+      </code>
+      <code event="onBlur" for="web">
+        <javascript>/*
+only used in Participant, Subteam, and Event profiles
+Hidden if they did not click the 'New document' button
+*/</javascript>
+      </code>
+    </action>
+    <action title="Cancel" hide="preview previewedit web">
+      <code event="click">
+        <formula>REM {Notes only};
+REM {cannot issue the SaveOptions command below on the web};
+FIELD SaveOptions := 0;
+@Command([FileCloseWindow])</formula>
+      </code>
+    </action>
+    <action title="Cancel" showinmenu="false" hide="notes">
+      <code event="click">
+        <formula>REM {web only; saved docs};
+REM {hidden if 'NewDoc' button was clicked for Participant, Event, or Subteam};
+@Command([FileCloseWindow])</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>REM {Hide if person clicked 'New doc' button};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w = "1" | @IsNewDoc</formula>
+      </code>
+    </action>
+  </actionbar>
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" rightmargin="0%" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in">
+        <parstyle name="HTML">
+          <font size="9pt" color="teal" name="face14"/>
+        </parstyle>
+      </pardef>
+      <pardef id="2" leftmargin="1in" rightmargin="0%" spaceafter="1.5">
+        <parstyle name="Body"/>
+      </pardef>
+      <pardef id="3" align="none" leftmargin="1in" hide="notes web" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="3"/>
+      <pardef id="4" align="none" leftmargin="1in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <subformref name="WebFont"/>
+      <par def="3"/>
+      <pardef id="5" leftmargin="2.5000in" firstlineleftmargin="1in" hide="read edit copy preview previewedit notes web" tabs="L2.5000in" keeptogether="true"/>
+      <par def="5">
+        <run>
+          <font size="9pt" color="gray"/>Hidden Fields:</run>
+      </par>
+      <par def="5">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="AbbreviateFrom"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt"/>used in the Newsletter profile searches</run>
+      </par>
+      <pardef id="6" leftmargin="1in" hide="read edit copy preview previewedit notes web"/>
+      <par def="6">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <sharedfieldref name="$$Return"/>
+        <run>
+          <font size="9pt" color="gray"/>		used for saving the document on the web</run>
+      </par>
+      <par def="6">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="QUERY_STRING_DECODED"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>used in hide-when formulas in the action buttons on this form</run>
+      </par>
+      <par def="6">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="deleteQueryString"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>removes the QueryString whenever the doc. is edited and saved</run>
+      </par>
+      <pardef id="7" leftmargin="1in" hide="notes web"/>
+      <par def="7">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" allowmultivalues="true" kind="computedfordisplay" name="nPartList" listinputseparators="semicolon" listdisplayseparator="semicolon">
+            <code event="defaultvalue">
+              <formula>@DbColumn("" : "nocache"; ""; "PeopleLookup"; 1)</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="blue"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="computedfordisplay" name="wPartList">
+            <code event="defaultvalue">
+              <formula>list := @DbColumn("" : "nocache"; ""; "PeopleLookup"; 1);
+";" + @Implode(list; ";") + ";"</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="19" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>  used for determining whether a person already exists</run>
+      </par>
+      <pardef id="8" leftmargin="1in" hide="web"/>
+      <par def="8">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+      </par>
+      <table widthtype="fixedleft" refwidth="5.9375in">
+        <tablecolumn width="5.9375in"/>
+        <tablerow>
+          <tablecell borderwidth="0px">
+            <pardef id="10" leftmargin="1%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="10">
+              <run>
+                <font size="12pt" style="bold"/>
+              </run>
+            </par>
+            <table widthtype="fitmargins" leftmargin="0" refwidth="5.9375in">
+              <tablecolumn width="100%"/>
+              <tablerow>
+                <tablecell borderwidth="0px 0px 2px" bgcolor="#78b4bc">
+                  <pardef id="12" leftmargin="0.1000in" spacebefore="1.5" keepwithnext="true" keeptogether="true"/>
+                  <par def="12">
+                    <run>
+                      <font size="12pt" style="bold" color="white"/>Team Member Profile</run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <pardef id="13" leftmargin="1%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="13">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="14" leftmargin="1%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="14">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <table widthtype="fitmargins" leftmargin="1%" refwidth="5.8785in">
+              <tablecolumn width="22.2431%"/>
+              <tablecolumn width="77.7569%"/>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="16" keepwithnext="true" keeptogether="true"/>
+                  <par def="16">
+                    <run>
+                      <font size="9pt" style="bold"/>Name</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="17" hide="notes web" keepwithnext="true" keeptogether="true"/>
+                  <par def="17">
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                  </par>
+                  <table leftmargin="0" widthtype="fixedleft" refwidth="3.1903in">
+                    <tablecolumn width="2.5208in"/>
+                    <tablecolumn width="0.3347in"/>
+                    <tablecolumn width="0.3347in"/>
+                    <tablerow>
+                      <tablecell borderwidth="0px">
+                        <pardef id="19" leftmargin="0.0104in" hide="read preview" keepwithnext="true" keeptogether="true"/>
+                        <par def="19">
+                          <run>
+                            <font size="9pt"/>
+                          </run>
+                          <run>
+                            <font size="9pt"/>
+                            <field defaultfocus="true" usenotesstyle="false" height="0.2201in" width="2.5000in" borderstyle="single" type="text" kind="editable" name="enterWho" description="Enter the full Notes name. (eg Ann Smith/USA/West)" htmlid="Who_2" htmltitle="Enter the full Notes name. (eg Ann Smith/USA/West)">
+                              <code event="htmlattributes">
+                                <formula>"size=40"</formula>
+                              </code>
+                              <code event="defaultvalue">
+                                <formula>@Name([Abbreviate]; Who)</formula>
+                              </code>
+                            </field>
+                          </run>
+                          <run>
+                            <font size="9pt" style="bold"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px">
+                        <pardef id="20" hide="read preview previewedit notes" keepwithnext="true" keeptogether="true"/>
+                        <par def="20">
+                          <run>
+                            <font size="9pt"/>
+                          </run>
+                          <imagemap lastdefaultid="33" lastrectangleid="59">
+                            <picture width="25px" height="22px" scaledheight="0.2292in" scaledwidth="0.2604in" alttext="Address book">
+                              <gif>
+R0lGODlhGQAWAMQAAP8A/8FA/0FB/4CA/4LA/xBAYADBwj+AgMH/1QDhAACAAODgdP/78GBAAEAg
+AP+BQdCwoKEfEsIAAP///+Dg4NLS0sDAwICAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAA
+GQAWAAAFrqAljmRpjphFrWzrvtSVUmdtymo52TuJ0yLBYELUTRgQx+g3KgyJxAv0CGksZ6NEYkIo
+XixEAtIqYooU2/BE2qWSLWaLJML1grkMhOGaEzXoamxEeQd8QBYNDXU7X2EMCwuGI4lQXYJHCw+S
+foptcHdiAQCbiA1tlosEAW9xiQ0XBBWfFQQXrqRltqawiRdfPlgnuq81cTY2xsfCKb7Nzs/QzRjT
+1NXW19bR2tsXIQA7
+</gif>
+                            </picture>
+                            <area type="rectangle" htmlid="webAddressHotspot">
+                              <point x="2" y="1"/>
+                              <point x="25" y="22"/>
+                              <code event="onClick" for="web">
+                                <javascript>var pathname = window.location.pathname;
+filename = pathname.substring(0,(pathname.lastIndexOf('nsf')+4)) 
+
+window.open(filename + '(wAddress)?OpenForm','Address','status=yes,scrollbars=yes,resizable=yes,top=80,left=100,width=625,height=585');</javascript>
+                              </code>
+                            </area>
+                          </imagemap>
+                          <run>
+                            <font size="9pt"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px">
+                        <pardef id="21" leftmargin="0.0104in" hide="read preview previewedit web" keepwithnext="true" keeptogether="true"/>
+                        <par def="21">
+                          <run>
+                            <font size="9pt"/>
+                          </run>
+                          <imagemap lastdefaultid="33" lastrectangleid="59">
+                            <picture width="25px" height="22px" alttext="Address book">
+                              <gif>
+R0lGODlhGQAWAMQAAP8A/8FA/0FB/4CA/4LA/xBAYADBwj+AgMH/1QDhAACAAODgdP/78GBAAEAg
+AP+BQdCwoKEfEsIAAP///+Dg4NLS0sDAwICAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAA
+GQAWAAAFrqAljmRpjphFrWzrvtSVUmdtymo52TuJ0yLBYELUTRgQx+g3KgyJxAv0CGksZ6NEYkIo
+XixEAtIqYooU2/BE2qWSLWaLJML1grkMhOGaEzXoamxEeQd8QBYNDXU7X2EMCwuGI4lQXYJHCw+S
+foptcHdiAQCbiA1tlosEAW9xiQ0XBBWfFQQXrqRltqawiRdfPlgnuq81cTY2xsfCKb7Nzs/QzRjT
+1NXW19bR2tsXIQA7
+</gif>
+                            </picture>
+                            <area type="rectangle" htmlid="NotesAddressHotspot">
+                              <point x="0" y="0"/>
+                              <point x="25" y="22"/>
+                              <code event="onClick">
+                                <formula>REM {variables to translate};
+xTitle := "Alert";
+xMsg := "Only one name may be added to this profile.";
+REM {end variables to translate};
+
+FIELD enterWho:=enterWho;
+pick := @Name([Abbreviate];@PickList( [Name] ) );
+@If(@Elements(pick) &gt; 1; @Return(@Prompt([Ok]; xTitle; xMsg)); "");
+@SetField( "enterWho"; pick);
+@SetField("Email";enterWho)</formula>
+                              </code>
+                            </area>
+                          </imagemap>
+                          <run>
+                            <font size="9pt" style="bold"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                  </table>
+                  <pardef id="22" hide="read edit copy preview previewedit" keepwithnext="true" keeptogether="true"/>
+                  <par def="22">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field defaultfocus="true" lookupeachchar="true" lookupaddressonrefresh="false" type="names" kind="editable" name="Who" description="Enter the full Notes name. (eg Ann Smith/USA/West)" htmlid="Who" htmltitle="Enter the full Notes name. (eg Ann Smith/USA/West)">
+                        <code event="htmlattributes">
+                          <formula>"size=30"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@Name([Canonicalize]; enterWho)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <pardef id="23" hide="edit copy previewedit" keepwithnext="true" keeptogether="true"/>
+                  <par def="23">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field defaultfocus="true" showdelimiters="false" lookupeachchar="true" lookupaddressonrefresh="false" type="names" kind="computedfordisplay" name="dspWho" description="Enter the full Notes name. (eg Ann Smith/USA/West)" htmlid="Who_1">
+                        <code event="htmlattributes">
+                          <formula>"size=30"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>@Name([Abbreviate]; Who)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="24" hide="edit copy previewedit" keepwithnext="true" keeptogether="true"/>
+                  <par def="24">
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="25" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+                  <par def="25">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <pardef id="26" hide="web" keepwithnext="true" keeptogether="true"/>
+                  <par def="26">
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="16">
+                    <run>
+                      <font size="9pt" style="bold"/>Department</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="27" hide="read preview" keepwithnext="true" keeptogether="true"/>
+                  <par def="27">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.2201in" width="2.5000in" multiline="true" borderstyle="single" type="text" kind="editable" name="Department" description="Enter the person's department." htmlid="Department">
+                        <code event="htmlattributes">
+                          <formula>"size = 40"</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <par def="23">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" kind="computedfordisplay" name="dspDepartment" description="Enter the person's department." htmlid="Department_1">
+                        <code event="htmlattributes">
+                          <formula>"size = 30"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>Department</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="2" afterbegincount="5">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="28" hide="read preview" keepwithnext="true" keeptogether="true"/>
+                  <par def="28">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="25">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <par def="26">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="16">
+                    <run>
+                      <font size="9pt" style="bold"/>Location</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="27">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.2201in" width="2.5000in" multiline="true" borderstyle="single" type="text" kind="editable" name="Location" description="Enter the person's location." htmlid="Location">
+                        <code event="htmlattributes">
+                          <formula>"size = 40"</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <par def="23">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" kind="computedfordisplay" name="dspLocation" description="Enter the person's location." htmlid="Location_1">
+                        <code event="htmlattributes">
+                          <formula>"size = 30"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>Location</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="2" afterbegincount="5">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="28">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="25">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <par def="26">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="16">
+                    <run>
+                      <font size="9pt" style="bold"/>E-mail</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="27">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.2201in" width="2.5000in" multiline="true" borderstyle="single" type="text" kind="editable" name="Email" description="Enter the Email address. (eg ASmith@usa.com)" htmlid="Email">
+                        <code event="htmlattributes">
+                          <formula>"size = 40"</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <par def="23">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" kind="computedfordisplay" name="dspEmail" description="Enter the Email address. (eg ASmith@usa.com)" htmlid="Email_1">
+                        <code event="htmlattributes">
+                          <formula>"size = 30"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>email</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="2" afterbegincount="5">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="28">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="25">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <par def="26">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="16">
+                    <run>
+                      <font size="9pt" style="bold"/>Phone</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="27">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.2201in" width="2.5000in" multiline="true" borderstyle="single" type="text" kind="editable" name="Phone" description="Enter the person's phone number." htmlid="Phone">
+                        <code event="htmlattributes">
+                          <formula>"size = 40"</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <par def="23">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" kind="computedfordisplay" name="dspPhone" description="Enter the person's phone number." htmlid="Phone_1">
+                        <code event="htmlattributes">
+                          <formula>"size = 30"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>phone</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="2" afterbegincount="5">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="28">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="25">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <par def="26">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="16">
+                    <run>
+                      <font size="9pt" style="bold"/>Job title</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="27">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.2201in" width="2.5000in" multiline="true" borderstyle="single" type="text" kind="editable" name="JobTitle" description="Enter the person's job title" htmlid="JobTitle">
+                        <code event="htmlattributes">
+                          <formula>"size=40"</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <par def="23">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" kind="computedfordisplay" name="dspJobTitle" description="Enter the person's job title" htmlid="JobTitle_1">
+                        <code event="htmlattributes">
+                          <formula>"size=30"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>JobTitle</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="2" afterbegincount="5">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="29" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+                  <par def="29">
+                    <run>
+                      <font size="9pt" style="bold" name="user-interface"/>Thumnail URL</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="25">
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                      <field useoscontrolinbrowser="true" type="richtext" kind="editable" name="thumbnailUrl" htmlid="thumbnailUrl"/>
+                    </run>
+                    <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="2" afterbegincount="5">
+Yg4BAIQAAAAAAAEAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="29">
+                    <run>
+                      <font size="9pt" style="bold"/>Thumbnail URL (Bluepages)</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="25">
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" kind="editable" name="thumbnailBluePagesUrl"/>
+                    </run>
+                    <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="16">
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="25">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <par def="26">
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="16">
+                    <run>
+                      <font size="9pt" style="bold"/>Status</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="30" keepwithnext="true" keeptogether="true"/>
+                  <par def="30">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <sharedfieldref name="FileThisStatusDoc"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <par def="13">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="14">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="31" hide="read notes"/>
+      <par def="31">
+        <run>
+          <font size="9pt" color="silver"/>
+        </run>
+      </par>
+      <pardef id="32" leftmargin="3.1875in" firstlineleftmargin="1in" hide="read edit copy preview previewedit" keeptogether="true"/>
+      <par def="32">
+        <run>
+          <font size="9pt" color="silver"/>
+        </run>
+        <run>
+          <font size="9pt" color="silver"/>
+          <field type="text" kind="editable" name="WebLookup" htmlid="WebLookup">
+            <code event="inputtranslation">
+              <formula>View := "PeopleLookup";
+AbrWho := @Name([Abbreviate]; Who);
+Lookup := @DbLookup("" : "NoCache"; ""; View; AbrWho; 1);
+Found := @If(@IsError(Lookup); ""; Lookup);
+Found</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="11" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>if the web "Retrieve N&amp;A..." buttons is pressed, this looks up to see if the person already has a profile</run>
+      </par>
+      <par def="32">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="editable" name="webNewDoc" htmlid="webNewDoc"/>
+        </run>
+        <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>	determines if the web new document.  Used in $$Return.</run>
+      </par>
+      <par def="32">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="computed" name="Subject" htmlid="Subject">
+            <code event="defaultvalue">
+              <formula>"Team Member Profile for " + @Name([Abbreviate]; Who)</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>	Participant profile subject</run>
+      </par>
+      <par def="32">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="Status"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>	participant's status</run>
+      </par>
+      <par def="32">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="DateFiled"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>	date marked "inactive"</run>
+      </par>
+      <par def="32">
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="computed" name="GetAlternateName">
+            <code event="defaultvalue">
+              <formula>getName := @NameLookup([ForceUpdate] : [Exhaustive]; Who; "AltFullName");
+REM {Some people do not have alternate names; in that case, use the second item that is returned};
+@If(getName = ""; Who; @Unique(getName))</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>    	Alternate name of the participant</run>
+      </par>
+      <par def="32">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="computed" name="getLanguage">
+            <code event="defaultvalue">
+              <formula>getLanguage1 := @NameLookup([ForceUpdate] : [Exhaustive] ; Who; "AltFullNameLanguage");
+@Unique(getLanguage1)</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>    	Alternate Name language of participant</run>
+      </par>
+      <par def="32">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="editable" name="getWhoUNID">
+            <code event="inputtranslation">
+              <formula>abWho := @Name([Abbreviate]; EnterWho);
+getWho := @DbLookup("" : "nocache"; ""; "PeopleLookup"; @LowerCase(abWho); 5);
+@If(@IsDocBeingLoaded; ""; @IsError(getWho); ""; getWho )</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>	looks for existing participant with this name</run>
+      </par>
+      <par def="32">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="computed" name="thisDocUNID">
+            <code event="defaultvalue">
+              <formula>@Text(@DocumentUniqueID)</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>	this document's unid</run>
+      </par>
+      <par def="32">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="editable" name="TestForExistingParticipant">
+            <code event="inputvalidation">
+              <formula>REM {Variables to translate};
+BLNotesText := "Please enter the team member's name.";
+ExStMsg := "A team member by this name already exists.  Please enter a different name.";
+REM {End variables to translate};
+LCabwho := @LowerCase(@Name([Abbreviate]; enterWho));
+GetWho := @DbLookup("" : "nocache"; ""; "PeopleLookup"; LCabWho; 5);
+@If(@IsDocBeingSaved &amp; enterWho = "" &amp; @ClientType = "Notes"; @Failure(BLNotesText);
+!@IsError(GetWho) &amp; GetWhounid != ThisDocunid; @Failure(ExStMsg);
+@Success)</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>	tests to see if this participant exists</run>
+      </par>
+      <par def="32">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="computed" name="WebError">
+            <code event="defaultvalue">
+              <formula>@If(GetWhounid != ThisDocunid; "1"; "")</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>	used in JSheader</run>
+      </par>
+      <par def="32">
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" allowmultivalues="true" kind="computedwhencomposed" name="from" listinputseparators="comma" listdisplayseparator="comma">
+            <code event="defaultvalue">
+              <formula>@UserName</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>	person who created the profile</run>
+      </par>
+      <par def="32">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="authors" kind="computed" name="Authors">
+            <code event="defaultvalue">
+              <formula>From : who</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>people who can edit this profile</run>
+      </par>
+    </richtext>
+  </body>
+  <item name="EDITX" summary="false" sign="true">
+    <number>0</number>
+  </item>
+  <item name="WhenRequestDone" summary="false" sign="true">
+    <rawitemdata type="400">
+AAAAAAAAAAA=
+</rawitemdata>
+  </item>
+  <item name="WhenCommitDone" summary="false" sign="true">
+    <rawitemdata type="400">
+AAAAAAAAAAA=
+</rawitemdata>
+  </item>
+  <item name="WhenDone" summary="false" sign="true">
+    <rawitemdata type="400">
+AAAAAAAAAAA=
+</rawitemdata>
+  </item>
+  <item name="$CIAOTime" sign="true">
+    <datetime>19970218T101329,04-05</datetime>
+  </item>
+  <item name="sortorder" summary="false" sign="true">
+    <number>0</number>
+  </item>
+  <item name="$HTMLDocumentStyles" summary="true" sign="true">
+    <rawitemdata type="1">
+0ggBAAAA/wDSCAEA/wAAANIIAQCAAIAA
+</rawitemdata>
+  </item>
+  <item name="OriginalModTime" sign="true">
+    <datetime dst="true">20050913T143710,48-04</datetime>
+  </item>
+  <item name="$SubForm_RepIDs" sign="true">
+    <text>0000000000000000</text>
+  </item>
+  <item name="$XPageAlt" sign="true">
+    <text>members.xsp</text>
+  </item>
+  <item name="DateFiled" summary="false" sign="true">
+    <rawitemdata type="400">
+AAAAAAAAAAA=
+</rawitemdata>
+  </item>
+</form>

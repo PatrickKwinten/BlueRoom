@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<outline xmlns="http://www.lotus.com/dxl" name="OtherVOutline" hide="v3 v4strict" publicaccess="false" language="en">
+  <outlineentry label="Action Items by Priority" type="namedelementlink" hide="notes web" displayimage="false">
+    <namedelementlink type="view" name="AIPriority"/>
+  </outlineentry>
+  <outlineentry label="All Chronological" type="namedelementlink" hide="notes web" displayimage="false">
+    <namedelementlink type="view" name="All Chronological"/>
+  </outlineentry>
+  <outlineentry label="By Alternate Name" type="namedelementlink" hide="notes web" displayimage="false">
+    <namedelementlink type="view" name="By Alternate Name"/>
+  </outlineentry>
+  <outlineentry label="By Author" type="namedelementlink" hide="notes web" displayimage="false">
+    <namedelementlink type="view" name="AuthorView"/>
+  </outlineentry>
+  <outlineentry label="By Category" type="namedelementlink" hide="notes web" displayimage="false">
+    <namedelementlink type="view" name="ActiveCategory"/>
+  </outlineentry>
+  <outlineentry label="By Date" type="namedelementlink" hide="notes web" displayimage="false">
+    <namedelementlink type="view" name="ActiveDate"/>
+  </outlineentry>
+  <outlineentry label="By Event" type="namedelementlink" hide="notes web" displayimage="false">
+    <namedelementlink type="view" name="ActiveEvent"/>
+  </outlineentry>
+  <outlineentry label="By Subteam" type="namedelementlink" hide="notes web" displayimage="false">
+    <namedelementlink type="view" name="ActiveBySubteam"/>
+  </outlineentry>
+  <outlineentry label="Calendar" type="namedelementlink" hide="notes web" displayimage="false">
+    <namedelementlink type="view" name="Calendar"/>
+  </outlineentry>
+  <outlineentry label="Documents Assigned to me" type="namedelementlink" hide="notes web" displayimage="false">
+    <namedelementlink type="view" name="PersAssignedToMe"/>
+  </outlineentry>
+  <outlineentry label="Documents I Created" type="namedelementlink" hide="notes web" displayimage="false">
+    <namedelementlink type="view" name="PersDocsICreated"/>
+  </outlineentry>
+  <outlineentry label="Inactive Documents" type="namedelementlink" hide="notes web" displayimage="false">
+    <namedelementlink type="view" name="Filed"/>
+  </outlineentry>
+  <outlineentry label="Index of All Documents" type="namedelementlink" hide="notes web" displayimage="false">
+    <namedelementlink type="view" name="($All)"/>
+  </outlineentry>
+  <outlineentry label="Individual Status Reports" type="namedelementlink" hide="notes web" displayimage="false">
+    <namedelementlink type="view" name="IndStat"/>
+  </outlineentry>
+  <outlineentry label="Open by Assignment" type="namedelementlink" hide="notes web" displayimage="false">
+    <namedelementlink type="view" name="OpenAssignnment"/>
+  </outlineentry>
+  <outlineentry label="Open by Due Date" type="namedelementlink" hide="notes web" displayimage="false">
+    <namedelementlink type="view" name="ActiveDueDate"/>
+  </outlineentry>
+  <outlineentry label="Team Announcements" type="namedelementlink" hide="notes web" displayimage="false">
+    <namedelementlink type="view" name="Announcements"/>
+  </outlineentry>
+  <outlineentry label="TeamRoom Setup &amp; Participants" type="namedelementlink" hide="notes web" displayimage="false">
+    <namedelementlink type="view" name="TeamOverview"/>
+  </outlineentry>
+  <outlineentry label="TeamStatus" type="namedelementlink" hide="notes web" displayimage="false">
+    <namedelementlink type="view" name="StatusLookup"/>
+  </outlineentry>
+  <outlineentry type="namedelementlink" hide="notes web" displayimage="false">
+    <namedelementlink type="view" name="SubteamInactiveLookup"/>
+  </outlineentry>
+  <outlineentry type="otherviews" displayimage="false"/>
+  <outlineentry type="otherprivateviews" hide="web" displayimage="false"/>
+  <outlineentry type="otherfolders" displayimage="false"/>
+  <outlineentry type="otherprivatefolders" hide="web" displayimage="false"/>
+</outline>

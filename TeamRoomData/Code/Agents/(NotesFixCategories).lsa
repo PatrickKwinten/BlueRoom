@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(NotesFixCategories)" hide="v3" publicaccess="false" language="en" comment="This is run via the 'Map Categories' button in the map cat. form">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+Use "wStringResource"
+Option Declare
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>Dim oldcat As Variant
+Dim currentcat As Variant
+Dim db As notesdatabase
+Dim selected As Integer
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Dim s As New notessession
+	Dim uiwork As New notesuiworkspace
+	Dim uidoc As notesuidocument
+	Dim note As notesdocument
+	
+	Set db =  s.currentdatabase	
+	Set uidoc  = uiwork.currentdocument
+	Set note = uidoc.document
+	
+	oldcat = note.getitemvalue("OldCat")
+	currentcat = note.getitemvalue("CurrentCat")
+	selected = Ubound(oldcat)
+	
+	If oldcat(0) = "" Then
+		Messagebox getstring(33), 16, getstring(37)
+		Exit Sub
+	Elseif currentcat(0) = "" Then
+		Messagebox getstring(34), 16, getstring(37)
+		Exit Sub
+	End If
+	
+	MapCategories
+	
+	If selected = 0 Then
+		Msgbox getstring(35), 64, getstring(38)
+	Else
+		Msgbox getstring(36), 64, getstring(38)
+	End If
+	
+	Call uidoc.fieldsettext("OldCat", "")
+	Call uidoc.fieldsettext("CurrentCat", "")
+	Call uidoc.refresh
+End Sub
+
+</lotusscript>
+  </code>
+  <code event="MapCategories">
+    <lotusscript>Sub MapCategories
+	Dim View As NotesView
+	Dim Item As NotesItem
+	Dim i As Integer
+	Dim cats As Variant
+	Dim Doc As NotesDocument
+	
+	Set View=Db.GetView("($All)")
+	Set Doc= View.GetFirstDocument
+	
+	While Not(doc Is Nothing)
+		cats=Doc.GetItemValue("Categories")
+		i = 0		
+		
+		Forall x In cats
+			Forall y In OldCat
+				If Lcase(x) = Lcase(y) Then
+					cats(i) = CurrentCat(0)
+					Set item = doc.replaceitemvalue("Categories", cats)
+				End If
+			End Forall
+			i= i+1
+		End Forall
+		Call Doc.Save( True, True)        		
+		Set Doc=View.GetNextdocument(Doc)
+	Wend
+	
+End Sub</lotusscript>
+  </code>
+</agent>

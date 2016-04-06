@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="SendReminder" hide="v3" runaswebuser="true" publicaccess="false" language="en" comment="Enable/Disable this agent through the TeamRoom Setup" activatable="false">
+  <trigger type="scheduled">
+    <schedule type="daily" runlocation="any">
+      <starttime>
+        <datetime>T010000,00</datetime>
+      </starttime>
+    </schedule>
+  </trigger>
+  <documentset type="all"/>
+  <code event="options">
+    <lotusscript>Option Public
+Option Declare
+
+Use "DiscussionRoutines"
+Use "wStringResource"
+
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>'SendReminder:
+
+Dim Doc As NotesDocument
+Dim RevNotDone As Variant
+Dim People As Variant
+Dim NothingToDo As Boolean
+
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Dim s As New NotesSession
+	Dim view As NotesView
+	Dim DueDate As Variant
+	Dim nowDate As Variant
+	Dim x As Variant    
+	Dim Item As NotesItem
+	
+	InstantiateObjects
+	
+	NothingToDo = true
+	
+	Dim count As Integer
+	count = 0
+	
+	Set View=Db.GetView("ActiveDueDate")
+	Set Doc= View.GetFirstDocument
+	nowDate = Evaluate("@today")
+	
+	While Not(Doc Is Nothing)
+		DueDate = doc.getitemvalue("DueDate")
+		RevNotDone = doc.getitemvalue("ReviewedByNotDone")
+		People = doc.getitemvalue("People")
+		
+		If DueDate(0) = "" Or People(0) = "" Then 
+			Goto GetNext
+		Elseif DueDate(0) &gt; nowDate(0) Then
+			Goto GetNext
+		Else
+			count = count + 1
+			Call sendTheReminder
+		End If
+		
+GetNext:
+		Set Doc=View.GetNextdocument(Doc)
+		
+	Wend
+	
+	Call ReminderDoneMsg
+	
+End Sub
+
+</lotusscript>
+  </code>
+  <code event="GetString2">
+    <lotusscript>Function GetString2 ( StringType As Integer) As String
+	
+	Select Case StringType
+		Case 1
+			getString2 = "Reminders have been sent successfully."
+		Case 2
+			getString2 = "Any/all other reminders have been sent."
+		Case 3
+			getString2 = "No reminders sent as nothing is currently overrdue."
+	End Select
+	
+End Function
+
+</lotusscript>
+  </code>
+  <code event="sendTheReminder">
+    <lotusscript>Sub sendTheReminder
+	Dim mailnote As notesdocument
+	Dim DDrtitem As notesrichtextitem
+	Dim RVrtitem As notesrichtextitem
+	Dim reminderSendTo As Variant
+	Dim docSubject As Variant
+	Dim docTRName As Variant
+	Dim peopleView As notesview 
+	Dim partdoc As notesdocument
+	Dim partAddress As Variant
+	Dim WebAddress As Variant
+	Dim getWebAddress As String
+	
+	Dim errList As String
+	Dim L As Integer
+	Dim trimComma  As String
+	Dim Sname As String
+	
+	Dim session As New NotesSession
+	Dim profiledoc As NotesDocument
+	
+	Dim isUseXPageUrl As Variant
+	
+	Dim wMail As String
+	
+	Set mailnote = New NotesDocument(db)
+	mailnote.Subject = "TeamRoom item is overdue."
+	docSubject = doc.getitemvalue("Subject")
+	docTRName = doc.getitemvalue("TeamRoomName")
+	
+	getWebAddress = getURL
+	dbpath = getdbpath
+	Set profiledoc = db.getprofiledocument("tempvars")	
+	isUseXPageUrl = profiledoc.getitemvalue("useXPageUrl")
+	
+	If getWebAddress = "" Then
+		wMail = getString(58)
+	ElseIf isUseXPageUrl(0) = "true" Then
+		Dim localDb As Boolean
+		Let localDb = False
+		Dim serverName As String
+		Let serverName = getWebAddress
+		dbpath = db.Filepath
+		dbpath = Replace(dbpath, "\", "/")
+		If serverName = "127.0.0.1" Then
+			serverName = db.Server
+			If serverName &lt;&gt; "" Then
+				Dim newName As NotesName
+				Set newName = session.Createname(serverName)
+				serverName = newName.Common	
+			Else
+				localDb = True
+			End If
+		End If
+		If localDb &lt;&gt; True Then
+			wMail = "  http://" + serverName +"/"+ dbpath +"/topicThread.xsp?action=openDocument&amp;documentId="+doc.universalid
+		Else
+			' This is a local replica, all we can do is to create a local Notes link with a server hint
+			Dim redirectName As String  ' Would be VERY useful to get the server name of the remote replica !
+			Let redirectName = "" '"?Redirect&amp;Name=" + serverName
+			wMail = "  notes:///" + dbpath +"/($All)" + +"/"+ doc.universalid + redirectName			
+		End If	
+	Else
+		wMail = "  http://"+ getWebAddress +"/"+ dbpath+"/$All/"+doc.universalid
+	End If
+	
+	'if RevNotDone is blank, then it's an Action Item, and we use the People field instead
+	If RevNotDone(0) = "" Then
+		Forall x In people
+			'get address 
+			Set peopleView = db.getview("PeopleLookup")
+			Set partdoc = peopleview.getdocumentbykey(x)
+			
+			If partdoc Is Nothing Then
+				Goto ignoreMissingTeamMember
+			End If
+			
+			partAddress = partdoc.getitemvalue("email")		
+			If partAddress(0) &lt;&gt; "" Then
+				x = partAddress(0)
+			End If
+			
+			Set DDrtitem = New NotesRichTextItem(mailnote, "Body")
+			SName = x
+			mailnote.SendTo = x
+			If Not (isUseXPageUrl(0) = "true") Then
+				Call DDrtitem.AppendDocLink(doc, "")
+				Call DDrtitem.AddTab(1)
+			End If
+			Call DDrtitem.AppendText(wMail)
+			Call DDrtitem.AddNewline(2)
+			Call DDrtitem.AppendText(getString(5))              'body of message
+			Call DDrtitem.AddNewline(2)
+			Call DDrtitem.AppendText(getString(54) + DocTRName(0) )   'teamroom name
+			Call DDrtitem.AddNewline(2)
+			Call DDrtitem.AppendText(getString(57) + DocSubject(0))      'subject
+			mailNote.Form = "Memo"
+			NothingToDo = false
+			Call mailNote.Send (False)
+			On Error GoTo errorMessage
+ignoreMissingTeamMember:
+		End Forall
+	Else 
+		Forall x In RevNotDone
+			Set peopleView = db.getview("PeopleLookup")
+			Set partdoc = peopleview.getdocumentbykey(x)
+			If partdoc Is Nothing Then
+				Goto ignoreMissingTeamMember2
+			End If	
+			
+			partAddress = partdoc.getitemvalue("email")
+			
+			If partAddress(0) &lt;&gt; "" Then
+				x = partAddress(0)
+			End If
+			
+			Set DDrtitem = New NotesRichTextItem(mailnote, "Body")
+			SName = x
+			mailnote.SendTo = x
+			If Not (isUseXPageUrl(0) = "true") Then
+				Call DDrtitem.AppendDocLink(doc, "")
+				Call DDrtitem.AddTab(1)
+			End If
+			Call DDrtitem.AppendText(wMail)
+			Call DDrtitem.AddNewline(2)
+			Call DDrtitem.AppendText(getString(5))              'body of message
+			Call DDrtitem.AddNewline(2)
+			Call DDrtitem.AppendText(getString(54) + DocTRName(0))   'teamroom name
+			Call DDrtitem.AddNewline(2)
+			Call DDrtitem.AppendText(getString(57) + DocSubject(0))      'subject
+			Call DDrtitem.AddNewline(2)
+			NothingToDo = False
+			Call mailNote.Send (False)
+			On Error GoTo errorMessage
+			
+ignoreMissingTeamMember2:
+		End Forall
+	End If
+	
+	GoTo finish	
+	
+errorMessage:
+	errList = errList + ", " + SName
+	L = Len(errList)
+	Resume Next
+
+finish:
+	If errList &lt;&gt; "" Then
+		trimComma = Right(errList, L-2)
+		errList = trimComma
+		profiledoc.MailSent = "There was an error sending reminders to the following people: " + errList + ".  " + getString2(2)
+	Else
+		profileDoc.MailSent = getString2(1)	
+	End If
+	
+End Sub
+
+</lotusscript>
+  </code>
+  <code event="ReminderDoneMsg">
+    <lotusscript>Sub ReminderDoneMsg
+	Dim clientType As Variant
+	Dim dbProfile As notesdocument
+	Dim dbpath As Variant
+	Dim AllView As String
+	Dim MissionView As String
+	Dim ActiveView As String
+	
+	Set dbprofile = db.getprofiledocument("TempVars")
+	
+	If NothingToDo = True then
+		dbprofile.MailSent = getString2(3)
+	End if
+	
+	clientType = dbProfile.ClientType
+	If clientType(0) = "" Then
+		Exit Sub
+	End If
+	
+	dbpath = getdbpath
+	
+	AllView =   "&lt;hr&gt;&lt;font size=2&gt;&lt;a href=/" + dbpath + "/($All)?OpenView&gt;"+ getString(50) +"&lt;/a&gt;&amp;nbsp&amp;nbsp&amp;nbsp"
+	MissionView = "&lt;a href=/" + dbpath + "/TeamOverview?OpenView&gt;"+GetString(51)+"&lt;/a&gt;&amp;nbsp&amp;nbsp&amp;nbsp"
+	ActiveView = "&lt;a href=/" + dbpath + "/ActiveDate?OpenView&gt;"+GetString(52)+"&lt;/a&gt;&lt;hr&gt;"
+	
+	If clientType(0) = "Notes" Then
+		Messagebox getString(53), 64, getString(48)
+	Elseif clientType(0) = "Web" Then
+		Print "&lt;b&gt;&lt;font size=4&gt;" + getString(53) + "&lt;/b&gt;"  +  AllView + MissionView + ActiveView
+	End If
+	
+	dbprofile.ClientType = ""
+	Call dbprofile.save(False,False,True)
+End Sub</lotusscript>
+  </code>
+</agent>

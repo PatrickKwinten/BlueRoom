@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(UpdateSubteams)" hide="v3" publicaccess="false" language="en">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Dim s As New notessession
+	Dim doc As notesdocument
+	Set db = s.currentdatabase
+	Set view = db.getview("SubteamLookup")
+	
+	
+	Set doc = view.getfirstdocument
+	While Not doc Is Nothing
+		Call doc.computewithform(0,0)
+		Call CrAltMembers(doc)		
+		Call doc.save(False,False)
+		Set doc = view.getnextdocument(doc)
+	Wend
+	
+	
+End Sub
+</lotusscript>
+  </code>
+  <code event="CrAltMembers">
+    <lotusscript>Sub CrAltMembers(note As notesdocument)
+	Dim s As New notessession
+	Dim db As notesdatabase
+	Dim view As notesview
+	Dim altSelection As Variant
+'	Dim note As notesdocument
+	Dim TMNote As notesdocument
+	Dim uBoundSel As Integer
+	Dim getAltName As Variant
+	Dim commonName As String
+	
+	Set db = s.currentdatabase
+	Set view = db.getview("PeopleLookup")
+'	Set note = 	source.document
+	AltSelection = note.getitemvalue("AltNameSelection")
+	uBoundSel = Ubound(AltSelection)
+	Dim count As Integer
+	
+	Redim AltMembers(uBoundSel) As Variant
+	
+	count = 0
+	
+'determine alternate names for all members selected	
+	Forall x In AltSelection
+		
+		Set TMNote = view.getdocumentbykey(x)
+		If TMNote Is Nothing Then 
+			Goto GetNextP
+		Else
+			getAltName = TMNote.getitemvalue("GetAlternateName")	
+		End If
+		
+		AltMembers(count) = getAltName(0)
+GetNextP:
+		count = count + 1
+	End Forall
+	
+	Dim b As Variant
+	b = Fulltrim(AltMembers)
+	
+	Call note.replaceitemvalue("AltNameMembers", b)	
+End Sub</lotusscript>
+  </code>
+</agent>

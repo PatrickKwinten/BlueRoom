@@ -1,0 +1,730 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="_Individual Status Report" alias="IndStat" publicaccess="false" language="en">
+  <code event="windowtitle">
+    <formula>NewTxt := "New Individual Status";
+Txt := "Individual Status Report for: " + @Name([CN]; From);
+@If(@IsNewDoc; NewTxt; Txt)</formula>
+  </code>
+  <code event="helprequest">
+    <formula>REM {DNT};
+@Command([OpenHelpDocument];[ClientHelp]; "(Help)"; "TeamRoomFIndStatus")</formula>
+  </code>
+  <code event="jsheader" for="web">
+    <javascript>function validate(){
+
+//variables to translate
+stMsg4 = 'You must select a subteam.  If you are not a member of a subteam, select [No Subteam] from the list.';
+//end variables to translate
+
+var msg;
+var msgflag;
+
+msgflag = 'false';
+
+vSTName = document.forms[0].SubTeamName.selectedIndex ;
+
+ if(vSTName == -1){
+	msg=  stMsg4;
+	msgflag='true';
+                document.forms[0].SubTeamName.focus()
+	}
+
+ if(msgflag == 'true'){
+     alert(msg);
+}
+if(msgflag == 'false'){
+if( navigator.appVersion.indexOf("Mac") == 0 )
+{
+  document.forms[0].Body.value = document.applets.lnaBody.getText("text/html")
+}
+
+if (document.forms[0].onsubmit &amp;&amp; (false == document.forms[0].onsubmit())) {
+			return;
+			}
+			
+document.forms[0].submit()
+}
+}
+
+</javascript>
+  </code>
+  <actionbar useappletinbrowser="true" bgcolor="#78b4bc" bordercolor="black">
+    <actionbarstyle height="4.7500ex">
+      <font size="9pt" name="multilingual"/>
+    </actionbarstyle>
+    <actionbuttonstyle margintype="fixed" margin="5" bgcolor="#c4dee1" displayborder="notesstyle" widthtype="background"/>
+    <font size="9pt" name="multilingual"/>
+    <border width="0px 0px 1px"/>
+    <action title="Forward" showinbar="false" hide="preview previewedit web">
+      <code event="click">
+        <formula>@Command([MailForward])</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>@IsNewDoc</formula>
+      </code>
+    </action>
+    <action title="Forward as Bookmark" showinbar="false" hide="preview previewedit web">
+      <code event="click">
+        <formula>@Command([Compose]; @MailDbName; "Bookmark")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>@IsNewDoc</formula>
+      </code>
+    </action>
+    <action title="Edit Document" hide="preview edit previewedit">
+      <code event="click">
+        <formula>REM {For all forms except Main Document form, which needs special casing for assignees to edit};
+@Command([EditDocument])</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>lcabAuthors := @LowerCase(@Name([Abbreviate]; Authors));
+lcabFrom := @LowerCase(@Name([Abbreviate]; From));
+lcabAltFrom := @LowerCase(@Name([Abbreviate]; AltFrom));
+lcabUN := @LowerCase(@Name([Abbreviate]; @UserName));
+Filename := @DbName;
+Level := @V4UserAccess(Filename);
+Getlevel := @TextToNumber(@Subset(Level; 1));
+
+getLevel &lt; 4 &amp;
+(
+!@Contains(lcabAuthors; lcabUN) |
+!@Contains(lcabFrom; lcabUN) |
+!@Contains(lcabAltFrom; lcabUN))</formula>
+      </code>
+    </action>
+    <action title="Save &amp; Close" hide="preview read previewedit web">
+      <code event="click">
+        <formula>REM {NOTES ONLY};
+
+REM {Can't use @isvalid on the web};
+@If(
+@ClientType != "Notes";
+@Do(@Command([FileSave]); @Command([FileCloseWindow]));
+@IsValid;
+@Do(@Command([FileSave]); @Command([FileCloseWindow])); "")</formula>
+      </code>
+    </action>
+    <action title="Save &amp; Close" hide="preview read previewedit notes">
+      <code event="onClick" for="web">
+        <javascript>//web only
+validate()</javascript>
+      </code>
+    </action>
+    <action title="Chat with Author" hide="preview edit previewedit web">
+      <code event="click">
+        <formula>@Command([SendInstantMessage]; From)</formula>
+      </code>
+    </action>
+    <action title="Cancel" hide="preview previewedit web">
+      <code event="click">
+        <formula>REM {Notes only};
+REM {cannot issue the SaveOptions command below on the web};
+FIELD SaveOptions := 0;
+@Command([FileCloseWindow])</formula>
+      </code>
+    </action>
+    <action title="Cancel" showinmenu="false" hide="notes">
+      <code event="click">
+        <formula>REM {web new docs};
+CurrentView := @GetProfileField("tempvars"; "viewtitle");
+@Command([OpenView]; CurrentView)</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>REM {Hide if person clicked 'New doc' button};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w = "1" |
+(Form != "Mission" &amp; Form != "Interest Profile" &amp; !@IsNewDoc)</formula>
+      </code>
+    </action>
+    <action title="Cancel" showinmenu="false" hide="notes">
+      <code event="click">
+        <formula>REM {web only; saved docs};
+REM {hidden if 'NewDoc' button was clicked for Participant, Event, or Subteam};
+@Command([FileCloseWindow])</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>REM {Hide if person clicked 'New doc' button};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w = "1" | @IsNewDoc</formula>
+      </code>
+    </action>
+  </actionbar>
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="notes web" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1"/>
+      <pardef id="2" align="none" leftmargin="1in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <subformref name="WebFont"/>
+      <par def="1"/>
+      <pardef id="3" leftmargin="2.8125in" firstlineleftmargin="1in" hide="read edit preview previewedit" keeptogether="true"/>
+      <par def="3">
+        <run>
+          <font size="9pt" color="gray"/>Hidden Fields:</run>
+      </par>
+      <par def="3">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="datetime" kind="computedwhencomposed" name="OrigDate" htmlid="OrigDate">
+            <datetimeformat show="datetime" date="yearmonthday" showtodaywhenappropriate="true" time="hourminutesecond" zone="never"/>
+            <code event="defaultvalue">
+              <formula>@Now</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" style="bold" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>Date originally composed</run>
+      </par>
+      <par def="3">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="editable" name="Categories" htmlid="Categories">
+            <code event="defaultvalue">
+              <formula>" ** Team Status ** "</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>	"Team Status"</run>
+      </par>
+      <par def="3">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="computed" name="DocType" htmlid="DocType">
+            <code event="defaultvalue">
+              <formula>"Status"</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>	"Status Report"</run>
+      </par>
+      <par def="3">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="TeamRoomName"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>	Lookup to Mission Definition to get team name</run>
+      </par>
+      <par def="3">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="From"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>	document's author</run>
+      </par>
+      <par def="3">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="AbbreviateFrom"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt"/>used in the Newsletter profile searches</run>
+      </par>
+      <par def="3">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="$$Return"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>	used for web saving</run>
+      </par>
+      <par def="3">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="AltFrom"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>	the author's alternate name</run>
+      </par>
+      <par def="3">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="AltLang"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>the author's alternate language</run>
+      </par>
+      <par def="3">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="computed" name="Day" description="Today is:">
+            <code event="defaultvalue">
+              <formula>REM {DNT};
+@V2If(@Weekday(@Today) = 1; "SUNDAY"; @V2If(@Weekday(@Today) = 2; "MONDAY"; @V2If(@Weekday(@Today) = 3; "TUESDAY"; @V2If(@Weekday(@Today) = 4; "WEDNESDAY"; @V2If(@Weekday(@Today) = 5; "THURSDAY"; @V2If(@Weekday(@Today) = 6; "FRIDAY"; @V2If(@Weekday(@Today) = 7; "SATURDAY"; @Failure("not available"))))))))</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="datetime" kind="computed" name="date" description="today's date">
+            <datetimeformat show="date" date="yearmonthday" time="hourminutesecond" zone="never"/>
+            <code event="defaultvalue">
+              <formula>@Created</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/> 	determines the week-ending date</run>
+      </par>
+      <pardef id="4" leftmargin="3.8125in" firstlineleftmargin="1in" keeptogether="true"/>
+      <par def="4">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+      </par>
+      <table widthtype="fitmargins" cellbordercolor="#78b4bc" rightmargin="98%" refwidth="14.5465in">
+        <tablecolumn width="1.9375in"/>
+        <tablecolumn width="100%"/>
+        <tablerow>
+          <tablecell borderwidth="2px 1px 2px 2px" bgcolor="#e8d7b3">
+            <cellbackground repeat="once">
+              <imageref name="TRMainDocHeader.gif|TRMainDocHeader.gif"/>
+            </cellbackground>
+            <pardef id="6" align="center" leftmargin="1%" rightmargin="97%" keepwithnext="true" keeptogether="true"/>
+            <par def="6">
+              <run>
+                <font size="14pt" style="bold"/>Individual</run>
+            </par>
+            <pardef id="7" align="center" leftmargin="1%" keepwithnext="true" keeptogether="true"/>
+            <par def="7">
+              <run>
+                <font size="14pt" style="bold"/>Status Report</run>
+            </par>
+            <par def="7">
+              <run>
+                <font size="9pt" style="bold"/>for</run>
+            </par>
+            <par def="7">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="7">
+              <run>
+                <font size="9pt" style="bold"/>
+              </run>
+              <run>
+                <font size="11pt" style="bold"/>
+                <sharedfieldref name="tmpFrom"/>
+              </run>
+              <run>
+                <font size="9pt" style="bold"/>
+              </run>
+            </par>
+            <par def="7">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="2px 2px 2px 1px" bgcolor="#e1eff1">
+            <pardef id="8" leftmargin="1%" keepwithnext="true" keeptogether="true"/>
+            <par def="8">
+              <run>
+                <font size="8pt" style="bold"/>
+              </run>
+            </par>
+            <table widthtype="fitmargins" leftmargin="0.1000in" refwidth="12.5090in">
+              <tablecolumn width="1.1000in"/>
+              <tablecolumn width="100%"/>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="10" leftmargin="1%" spaceafter="1.5" keepwithnext="true" keeptogether="true"/>
+                  <par def="10">
+                    <run>
+                      <font size="9pt"/>Week Ending</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="11" leftmargin="1%" spaceafter="1.5" hide="read preview" keepwithnext="true" keeptogether="true"/>
+                  <par def="11">
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.2201in" width="1in" multiline="true" borderstyle="single" type="datetime" kind="editable" name="ReportDate" description="Enter the date for this status report" htmlid="ReportDate">
+                        <datetimeformat date="yearmonthday" time="hourminutesecond" zone="never"/>
+                        <code event="htmlattributes">
+                          <formula>"size=10"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>REM {DNT};
+@If(@IsNewDoc &amp; @Contains(Day; "MONDAY"); @Adjust(@Today; 0; 0; 4; 0; 0; 0); @IsNewDoc &amp; @Contains(Day; "TUESDAY"); @Adjust(@Today; 0; 0; 3; 0; 0; 0); @IsNewDoc &amp; @Contains(Day; "WEDNESDAY"); @Adjust(@Today; 0; 0; 2; 0; 0; 0); @IsNewDoc &amp; @Contains(Day; "THURSDAY"); @Adjust(@Today; 0; 0; 1; 0; 0; 0); @IsNewDoc &amp; @Contains(Day; "FRIDAY"); @Adjust(@Today; 0; 0; 0; 0; 0; 0); @IsNewDoc &amp; @Contains(Day; "SATURDAY"); @Adjust(@Today; 0; 0; -1; 0; 0; 0); @IsNewDoc &amp; @Contains(Day; "SUNDAY"); @Adjust(@Today; 0; 0; 5; 0; 0; 0); Period)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                  </par>
+                  <pardef id="12" leftmargin="1%" spaceafter="1.5" hide="edit copy previewedit" keepwithnext="true" keeptogether="true"/>
+                  <par def="12">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" kind="computedfordisplay" name="dspReportDate">
+                        <code event="defaultvalue">
+                          <formula>ReportDate</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="7" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="8pt" style="bold"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="13" spaceafter="1.5" keepwithnext="true" keeptogether="true"/>
+                  <par def="13">
+                    <run>
+                      <font size="9pt"/>Report status</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="14" spaceafter="1.5" keepwithnext="true" keeptogether="true"/>
+                  <par def="14">
+                    <run>
+                      <font size="9pt"/>
+                      <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="FileThisStatusDoc" htmlid="FileThisStatusDoc">
+                        <keywords columns="2" ui="radiobutton">
+                          <textlist>
+                            <text>Active | 0</text>
+                            <text>Inactive | 1</text>
+                          </textlist>
+                        </keywords>
+                        <code event="defaultvalue">
+                          <formula>"0"</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="15" leftmargin="1%" keepwithnext="true" keeptogether="true"/>
+                  <par def="15">
+                    <run>
+                      <font size="9pt"/>Subteam</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="16" leftmargin="0" spaceafter="1.5" hide="read preview" keepwithnext="true" keeptogether="true"/>
+                  <par def="16">
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.7500in" width="2.5000in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="SubTeamName" listinputseparators="comma" listdisplayseparator="comma" htmlid="SubTeamName">
+                        <keywords helperbutton="false" columns="1" ui="listbox">
+                          <formula>REM {Variable to translate};
+noST := "No subteam";
+REM {END variable to translate};
+
+View := "SubteamLookup";
+sp := "[" + noST + "]";
+list := @DbColumn("": "NoCache"; ""; View; 1);
+@If(list = ""; sp; sp : list)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size = 4"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@Trim(SubTeamName)</formula>
+                        </code>
+                        <code event="inputvalidation">
+                          <formula>BLFailureText := "You must select a subteam.  If you are not a member of a subteam, select [No Subteam] from the list.";
+@If(SubTeamName = "" &amp; @ClientType = "Notes"; @Failure(BLFailureText);@Success)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <pardef id="17" leftmargin="0" spaceafter="1.5" hide="edit copy previewedit" keepwithnext="true" keeptogether="true"/>
+                  <par def="17">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                      <field type="text" kind="computedfordisplay" name="dspSubteam">
+                        <code event="defaultvalue">
+                          <formula>SubTeamName</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="7" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="8pt" style="bold"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="18" keepwithnext="true" keeptogether="true"/>
+                  <par def="18">
+                    <run>
+                      <font size="9pt"/>Key thought</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="19" spaceafter="1.5" hide="read preview" keepwithnext="true" keeptogether="true"/>
+                  <par def="19">
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.2201in" width="4in" multiline="true" borderstyle="single" type="text" kind="editable" name="Subject" description="Enter a subject for this status report" htmlid="Subject">
+                        <code event="htmlattributes">
+                          <formula>"size=50"</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <pardef id="20" hide="edit copy previewedit" keepwithnext="true" keeptogether="true"/>
+                  <par def="20">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                      <field type="text" kind="computedfordisplay" name="dspKeyThought">
+                        <code event="defaultvalue">
+                          <formula>Subject</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="7" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <pardef id="21" leftmargin="1%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="21">
+              <run>
+                <font size="8pt" style="bold"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="22" leftmargin="1in" tabs="L1.2500in L1.5000in L2in L4in L5.5000in"/>
+      <par def="22">
+        <run>
+          <font size="9pt" style="bold" color="navy"/>
+        </run>
+      </par>
+      <par def="22">
+        <run>
+          <font size="9pt" style="bold"/>This week's accomplishments</run>
+      </par>
+      <par def="22">
+        <run>
+          <font size="9pt" style="bold" color="fuchsia"/>
+        </run>
+      </par>
+      <pardef id="23" leftmargin="1.2500in" tabs="L1.2500in"/>
+      <par def="23">
+        <run>
+          <font size="9pt" style="bold" color="green"/>
+        </run>
+        <run>
+          <font size="9pt"/>
+          <field allowtabout="true" useoscontrolinbrowser="true" type="richtext" kind="editable" name="ThisWeek" description="Accomplishments" htmlid="Summary" htmltitle="Accomplishments">
+            <code event="htmlattributes">
+              <formula>"height=\"200\" width=600\" rows=\"15\" cols=\"90\""</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="12" containertype="65418" aftercontainercount="2" afterbegincount="5">
+Yg4BAIQAAAAAAAEAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" style="bold" color="green"/>
+        </run>
+      </par>
+      <par def="22">
+        <run>
+          <font size="9pt" style="bold" color="green"/>
+        </run>
+      </par>
+      <par def="22">
+        <run>
+          <font size="9pt" style="bold"/>Goals for next week</run>
+      </par>
+      <par def="22">
+        <run>
+          <font size="9pt" style="bold" color="fuchsia"/>
+        </run>
+      </par>
+      <par def="23">
+        <run>
+          <font size="9pt" style="bold" color="green"/>
+        </run>
+        <run>
+          <font size="9pt"/>
+          <field allowtabout="true" useoscontrolinbrowser="true" type="richtext" kind="editable" name="Goals" description="Goals for next week" htmlid="Body" htmltitle="Goals for next week">
+            <code event="htmlattributes">
+              <formula>"height=\"200\" width=600\" rows=\"15\" cols=\"90\""</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="11" containertype="65418" aftercontainercount="2" afterbegincount="5">
+Yg4BAIQAAAAAAAEAAAA=
+</compositedata>
+        <run>
+          <font size="9pt"/>
+        </run>
+      </par>
+      <par def="23">
+        <run>
+          <font size="9pt"/>
+        </run>
+      </par>
+      <par def="22">
+        <run>
+          <font size="9pt" style="bold"/>Issues</run>
+      </par>
+      <par def="22">
+        <run>
+          <font size="9pt" style="bold" color="fuchsia"/>
+        </run>
+      </par>
+      <par def="23">
+        <run>
+          <font size="9pt" style="bold" color="green"/>
+        </run>
+        <run>
+          <font size="9pt"/>
+          <field allowtabout="true" useoscontrolinbrowser="true" type="richtext" kind="editable" name="Issues" description="Issues" htmlid="Body_1" htmltitle="Issues">
+            <code event="htmlattributes">
+              <formula>"height=\"200\" width=600\" rows=\"15\" cols=\"90\""</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="11" containertype="65418" aftercontainercount="2" afterbegincount="5">
+Yg4BAIQAAAAAAAEAAAA=
+</compositedata>
+        <run>
+          <font size="9pt"/>
+        </run>
+      </par>
+      <par def="23">
+        <run>
+          <font size="9pt"/>
+        </run>
+      </par>
+      <par def="23">
+        <run>
+          <font size="9pt"/>
+        </run>
+      </par>
+      <pardef id="24" leftmargin="1in" hide="notes web mobile" tabs="L1.2500in"/>
+      <par def="24">
+        <run>
+          <font size="9pt"/>
+        </run>
+        <run>
+          <font size="9pt"/>
+          <field type="datetime" kind="editable" name="IndStatInactive">
+            <datetimeformat show="date" date="yearmonthday" fourdigityearfor21stcentury="true" zone="never" dateformat="weekdaymonthdayyear" dayformat="twodigitday" monthformat="twodigitmonth" yearformat="fourdigityear" weekdayformat="shortname" dateseparator1=" " dateseparator2="/" dateseparator3="/" timeseparator=":" preference="usersetting"/>
+            <code event="inputtranslation">
+              <formula>@If(FileThisStatusDoc = "1"; @Date(@Now); "")</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+  <item name="FilebyDate" summary="false" sign="true">
+    <rawitemdata type="400">
+AAAAAAAAAAA=
+</rawitemdata>
+  </item>
+  <item name="$HTMLDocumentStyles" summary="true" sign="true">
+    <rawitemdata type="1">
+0ggBAAAA/wDSCAEA/wAAANIIAQCAAIAA
+</rawitemdata>
+  </item>
+  <item name="DateFiled" summary="false" sign="true">
+    <rawitemdata type="400">
+AAAAAAAAAAA=
+</rawitemdata>
+  </item>
+  <item name="$SubForm_RepIDs" sign="true">
+    <text>0000000000000000</text>
+  </item>
+</form>

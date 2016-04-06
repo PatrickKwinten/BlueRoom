@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" 
+	xmlns:xc="http://www.ibm.com/xsp/custom" 
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+    
+    <xp:this.beforePageLoad>
+        <![CDATA[#{javascript:
+            // redirect back to the home page if no contextual
+            // query string parameters are available on the url...
+            if(!param.containsKey("documentId")){
+                context.redirectToHome();
+            }
+        }]]>
+    </xp:this.beforePageLoad>
+	
+	<xp:panel styleClass="mblThreadPanel">
+		<xp:this.rendered><![CDATA[#{javascript:
+			sessionScope.backURL = "event\u0026action=openDocument\u0026documentId="+currentDocument.getNoteID();
+			return true;
+		}]]></xp:this.rendered>
+		<xp:table styleClass="xlTableWidth">
+			<xp:tr>
+				<xp:td>
+				</xp:td>
+				<xp:td>
+					<xp:div styleClass="mblThreadDiv">
+						<xp:text value="#{currentDocument.EventSummary}"
+							styleClass="mblThreadDivText">
+						</xp:text>
+						<xp:br></xp:br>
+						<xp:label for="Goals2" value="#{javascript:strings.getString('mobile.view.date')}" styleClass="mblThreadRichText" />
+						<xp:text id="computedField2" value="#{document1.EventDate}" styleClass="mblThreadRichText">
+							<xp:this.converter>
+								<xp:convertDateTime type="date">
+								</xp:convertDateTime>
+							</xp:this.converter>
+						</xp:text>
+						<xp:br></xp:br>
+						<xp:link styleClass="lotusPerson" id="from"
+							text="#{javascript:peopleBean.getPerson(currentDocument.getItemValueString('From')).displayName}">
+							<xp:eventHandler event="onclick"
+								submit="true" refreshMode="complete">
+								<xp:this.action>
+									<xp:actionGroup>
+										<xe:moveTo
+											direction="Left to Right" transitionType="slide"
+											targetPage="memberProfile&amp;profile=#{javascript:peopleBean.getPerson(currentDocument.getItemValueString('From')).abbreviatedName}"
+											forceFullRefresh="true">
+										</xe:moveTo>
+									</xp:actionGroup>
+								</xp:this.action>
+							</xp:eventHandler>
+						</xp:link>
+						&#160;
+						<xp:label for="dateField" value="#{javascript:strings.getString('mobile.created')}"></xp:label>
+						&#160;
+						<xp:text value="#{javascript:currentDocument.getDocument().getCreated().toJavaDate()}"
+							styleClass="mblThreadSmallText" id="dateField">
+							<xp:this.converter>
+								<xp:convertDateTime type="date"></xp:convertDateTime>
+							</xp:this.converter>
+						</xp:text>
+						<xp:br></xp:br>				
+						<hr></hr>
+					</xp:div>
+					<xp:text id="computedField1" value="#{currentDocument.EventDetail}">
+					</xp:text>
+				</xp:td>
+			</xp:tr>
+		</xp:table>
+	</xp:panel>
+</xp:view>

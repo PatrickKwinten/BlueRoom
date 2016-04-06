@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sharedfield xmlns="http://www.lotus.com/dxl" name="MissionError" language="en">
+  <field type="text" kind="computedfordisplay" name="MissionError">
+    <code event="defaultvalue">
+      <formula>REM {Variables to translate};
+Error := "The TeamRoom Setup has not yet been completed.  Some field data will be missing.";
+REM {End variables to translate};
+
+View := "MissionLookup";
+Lookup := @DbColumn("" : "NoCache"; ""; View;  1);
+@If(Lookup != "Mission"; Error; "")</formula>
+    </code>
+  </field>
+</sharedfield>

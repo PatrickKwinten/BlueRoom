@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view xmlns="http://www.lotus.com/dxl" name="($Profiles)" alias="($Profiles)" showinmenu="false" publicaccess="false" language="en" unreadmarks="standard" onopengoto="lastopened" onrefresh="displayindicator" headers="beveled" opencollapsed="false" showresponsehierarchy="false" showmargin="true" shrinkrows="false" extendlastcolumn="false" showhierarchies="false" unreadcolor="maroon" rowlinecount="1" headerlinecount="1" rowspacing="1" bgcolor="white" altrowcolor="#efefef" totalscolor="blue" headerbgcolor="white" boldunreadrows="false" evaluateactions="false" allownewdocuments="false" allowcustomizations="true" hidemarginborder="false" marginwidth="0px" marginbgcolor="white" uniquekeys="false" indexrefresh="automatic" initialbuildrestricted="false" noemptycategories="false">
+  <code event="selection">
+    <formula>SELECT @Contains(Form; "Profile") | form = "MapCategories"</formula>
+  </code>
+  <actionbar bordercolor="black">
+    <actionbuttonstyle bgcolor="silver"/>
+    <action title="_Forward" icon="7" showinmenu="false" showinbar="false" hide="previewedit" systemcommand="forward"/>
+    <action title="Categori_ze" showinmenu="false" showinbar="false" hide="previewedit" systemcommand="categorize"/>
+    <action title="Edit Message" showinmenu="false" showinbar="false" hide="previewedit" systemcommand="edit"/>
+    <action title="Send" showinmenu="false" showinbar="false" hide="previewedit" systemcommand="send"/>
+    <action title="_Move to Folder..." showinmenu="false" showinbar="false" systemcommand="movetofolder"/>
+    <action title="_Remove from Folder..." showinmenu="false" showinbar="false" systemcommand="removefromfolder"/>
+  </actionbar>
+  <column sort="ascending" hidedetailrows="false" itemname="$70" width="30" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <font size="9pt" color="gray"/>
+    <columnheader title="Type">
+      <font size="9pt"/>
+    </columnheader>
+    <datetimeformat legacy="true" show="date" date="yearmonthday" time="hourminutesecond" zone="never"/>
+    <code event="value">
+      <formula>Form + PersonName</formula>
+    </code>
+  </column>
+  <column sort="ascending" hidedetailrows="false" itemname="PersonName" width="20" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <font size="9pt" color="navy"/>
+    <columnheader title="Person Name">
+      <font size="9pt"/>
+    </columnheader>
+  </column>
+</view>

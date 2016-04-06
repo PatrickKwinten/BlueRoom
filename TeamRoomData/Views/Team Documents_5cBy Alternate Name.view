@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view xmlns="http://www.lotus.com/dxl" name="Team Documents\By Alternate Name" alias="By Alternate Name" showinmenu="true" allowdocselection="true" publicaccess="false" language="en" unreadmarks="standard" onopengoto="lastopened" onrefresh="displayindicator" headers="simple" opencollapsed="true" showresponsehierarchy="false" showmargin="true" shrinkrows="true" extendlastcolumn="true" showhierarchies="false" unreadcolor="maroon" rowlinecount="4" headerlinecount="1" rowspacing="1" haslinkcolumn="true" bgcolor="white" altrowcolor="#efefef" totalscolor="blue" headerbgcolor="#a8cfd4" boldunreadrows="false" evaluateactions="false" allownewdocuments="false" allowcustomizations="true" hidemarginborder="false" marginwidth="0px 0px 1px" marginbgcolor="white" uniquekeys="false" initialbuildrestricted="false" noemptycategories="true">
+  <code event="selection">
+    <formula>SELECT form != "Interest Profile" &amp; !@Contains(@LowerCase(form); "archive") &amp;
+(AltFrom != "" &amp; AltLang != "")</formula>
+  </code>
+  <actionbar useappletinbrowser="true" bgcolor="#78b4bc" bordercolor="black">
+    <actionbarstyle height="4.7500ex">
+      <font size="9pt" name="multilingual"/>
+    </actionbarstyle>
+    <actionbuttonstyle margintype="fixed" margin="5" bgcolor="#c4dee1" displayborder="notesstyle" widthtype="background"/>
+    <font size="9pt" name="multilingual"/>
+    <border width="0px 0px 1px"/>
+    <action title="_Forward" showinbar="false" hide="web" systemcommand="forward"/>
+    <action title="_Edit Document" showinbar="false" hide="web" systemcommand="edit"/>
+    <sharedactionref id="35">
+      <action title="New Document" hide="preview previewedit">
+        <code event="click">
+          <formula>@PostedCommand([Compose];"MainTopic")</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="36">
+      <action title="New Response" hide="preview edit previewedit">
+        <code event="click">
+          <formula>@SetProfileField("TempVars"; "viewtitle"; @Subset(@ViewTitle; -1));
+@PostedCommand([Compose];"Response")</formula>
+        </code>
+        <code event="hidewhen">
+          <formula>REM {hide from web if it's in a view};
+@ClientType != "Notes" &amp; !@IsAvailable(form)</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="37">
+      <action title="New Response to Response" hide="preview edit previewedit web">
+        <code event="click">
+          <formula>REM {notes only};
+@PostedCommand([Compose];"ResponseToResponse")</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="55">
+      <action title="Delete\Move to Trash" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>@Command([MoveToTrash])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="56">
+      <action title="Delete\Empty Trash" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>@Command([EmptyTrash])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="44">
+      <action title="Search" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>REM {Web only - used in Views};
+@Command([ViewShowSearchBar])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="60">
+      <action title="Database Help">
+        <code event="click">
+          <formula>@Command([HelpUsingDatabase])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+  </actionbar>
+  <column sort="ascending" hidedetailrows="false" itemname="$35" width="3" resizable="true" separatemultiplevalues="true" sortnoaccent="true" sortnocase="true" showaslinks="false" categorized="true" twisties="true">
+    <font size="9pt" color="teal" style="bold"/>
+    <columnheader>
+      <font size="9pt"/>
+    </columnheader>
+    <code event="value">
+      <formula>@Locale([LanguageName]; AltLang)</formula>
+    </code>
+  </column>
+  <column sort="ascending" hidedetailrows="false" listseparator="comma" itemname="$33" width="2" resizable="false" separatemultiplevalues="true" sortnoaccent="true" sortnocase="true" showaslinks="false" categorized="true" twisties="true">
+    <font size="9pt" color="teal" style="bold"/>
+    <columnheader title=" ">
+      <font size="9pt"/>
+    </columnheader>
+    <datetimeformat legacy="true" show="date" date="yearmonthday" time="hourminutesecond" zone="never"/>
+    <code event="value">
+      <formula>REM {variable to translate};
+AnonTxt := "Anonymous";
+REM {end variable to translate};
+
+@If(
+@Contains(form; "Anonymous"); AnonTxt; @Name([Abbreviate]; AltFrom))</formula>
+    </code>
+  </column>
+  <column sort="descending" resort="ascending" hidedetailrows="false" listseparator="comma" itemname="$14" width="9" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false" twisties="true" formatdatatype="datetime">
+    <font size="9pt"/>
+    <columnheader title="Date">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <datetimeformat legacy="true" show="date" date="yearmonthday" fourdigityear="true" time="hourminute" zone="never"/>
+    <numberformat legacy="true" format="general" varying="true" digits="1" punctuated="false" parens="false" percent="false" bytes="false"/>
+    <code event="value">
+      <formula>@Created</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" listseparator="comma" itemname="$34" width="34.7500" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="true">
+    <font size="9pt"/>
+    <columnheader title="Topic">
+      <font size="9pt"/>
+    </columnheader>
+    <datetimeformat legacy="true" show="date" date="yearmonthday" time="hourminutesecond" zone="never"/>
+    <numberformat legacy="true" format="general" digits="2" punctuated="false" parens="false" percent="false" bytes="false"/>
+    <code event="value">
+      <formula>REM {Variables to translate};
+PrivateTxt := "PRIVATE: ";
+ExpiredTxt := "EXPIRED: ";
+REM {End variables to translate};
+subj := @If(!@IsAvailable(subject) | subject = ""; "Untitled"; subject);
+Author := @If(Form = "MainTopic" &amp; Subject = ""; " (" + @Name([CN]; From) + ")"; "");
+useSubject :=
+@If(form = "ResponseToResponse"; ImmediateParentSubject; form = "Response"; OriginalSubject; "");
+
+@If(readers != ""; PrivateTxt; ExpireDate != ""; ExpiredTxt; "") + Subject + @If(useSubject != ""; " (RE: " + useSubject + ")"; Author)</formula>
+    </code>
+  </column>
+</view>

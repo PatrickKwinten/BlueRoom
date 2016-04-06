@@ -1,0 +1,927 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="($Replication)" alias="$Replication" nocompose="true" noquery="true" publicaccess="false" language="en">
+  <globals>
+    <code event="options">
+      <lotusscript>Option Public
+Option Declare
+%INCLUDE "lsconst.lss"
+
+</lotusscript>
+    </code>
+    <code event="declarations">
+      <lotusscript>Const COMPILE_SUCCESS_TITLE = "Compiled Successfully"
+Const COMPILE_SUCCESS_BODY = "There are no syntax errors, the formula compiled successfully."
+Const COMPILE_FAILURE_TITLE = "Syntax Error"
+Const COMPILE_FAILURE_BODY = "There is a least one syntax error in the formula.  It did not compile."
+Const COMPILE_FAILURE_SAVE_BODY = "There is a least one syntax error in the formula.  This document could not be saved."</lotusscript>
+    </code>
+  </globals>
+  <code event="windowtitle">
+    <formula>"Replication Form"</formula>
+  </code>
+  <code event="querysave">
+    <lotusscript>Sub Querysave(Source As Notesuidocument, Continue As Variant)
+	Dim note As NotesDocument
+	Dim item As NotesItem
+	Source.Refresh
+	Set note = Source.document
+	Set item = note.getFirstItem( "$HLFormula")
+	If note.getItemValue( "$QueryType")(0) = "adv" Then
+		If item.type &lt;&gt; FORMULA Then
+			Messagebox COMPILE_FAILURE_SAVE_BODY,  MB_ICONSTOP, COMPILE_FAILURE_TITLE 
+			Source.goToField "AdvFormula"
+			Continue = False
+		End If
+	End If
+	Set item = note.replaceitemvalue("$MainTable", "basics")
+End Sub</lotusscript>
+  </code>
+  <actionbar bgcolor="#7f604f" bordercolor="black">
+    <actionbarstyle height="4.7500ex">
+      <font size="9pt" name="multilingual"/>
+    </actionbarstyle>
+    <actionbuttonstyle margintype="fixed" margin="5" bgcolor="none" displayborder="notesstyle" widthtype="background"/>
+    <font size="9pt" name="multilingual"/>
+    <border width="0px 0px 1px"/>
+    <action title="Save &amp; Close" hide="preview read previewedit">
+      <code event="click">
+        <formula>@If( @Command([FileSave]); @Command([FileCloseWindow]); "")</formula>
+      </code>
+    </action>
+    <action title="Cancel" hide="preview previewedit">
+      <code event="click">
+        <formula>FIELD SaveOptions := "0";
+@Command([FileCloseWindow])</formula>
+      </code>
+    </action>
+  </actionbar>
+  <body>
+    <richtext>
+      <pardef id="1" spaceafter="1.5" hide="read edit copy preview previewedit notes web"/>
+      <par def="1">
+        <run>
+          <font size="9pt" style="underline"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray" style="underline"/>
+          <sharedfieldref name="AltNameDisplay"/>
+        </run>
+        <run>
+          <font size="9pt" style="underline"/>
+        </run>
+      </par>
+      <table widthtype="fitmargins" leftmargin="0.7500in" refwidth="11.1042in">
+        <tablecolumn width="100%"/>
+        <tablerow>
+          <tablecell borderwidth="0px">
+            <pardef id="3" leftmargin="1%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="3">
+              <run>
+                <font style="bold" color="#7f604f"/>
+              </run>
+            </par>
+            <table widthtype="fitmargins" rowdisplay="compute" htmlid="MainTable" leftmargin="0.1000in" refwidth="11.0028in">
+              <tablecolumn width="100%"/>
+              <tablerow tablabel="form" name="basics">
+                <tablecell borderwidth="0px" htmlid="basics">
+                  <pardef id="5" leftmargin="0.0500in" keepwithnext="true" keeptogether="true"/>
+                  <par def="5">
+                    <run>
+                      <font size="9pt"/>Retrieve these documents   </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.2340in" width="3in" multiline="true" borderstyle="inset" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="$QueryType">
+                        <keywords helperbutton="false" recalconchange="true" columns="1" ui="combobox">
+                          <textlist>
+                            <text>All | all</text>
+                            <text>Those matching the selected criteria | sel</text>
+                            <text>Those matching the selection formula (advanced) | adv</text>
+                          </textlist>
+                        </keywords>
+                        <code event="defaultvalue">
+                          <formula>"sel"</formula>
+                        </code>
+                        <code event="entering">
+                          <lotusscript>Sub Entering(Source As Field)
+	Dim uiwork As New notesuiworkspace
+	Set uidoc = uiwork.currentdocument	
+	Call uidoc.refresh
+End Sub</lotusscript>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <pardef id="6" leftmargin="0.3000in" keepwithnext="true" keeptogether="true"/>
+                  <par def="6">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <table widthtype="fitmargins" rowdisplay="compute" htmlid="QueryType" leftmargin="0" refwidth="11.0014in">
+                    <tablecolumn width="100%"/>
+                    <tablerow tablabel="sel" name="sel">
+                      <tablecell borderwidth="0px" htmlid="sel">
+                        <pardef id="8" leftmargin="0.0500in" keepwithnext="true" keeptogether="true"/>
+                        <par def="8">
+                          <run>
+                            <font size="9pt"/>Select the criteria:</run>
+                        </par>
+                        <pardef id="9" leftmargin="0.3000in" keepwithnext="true" keeptogether="true"/>
+                        <par def="9">
+                          <run>
+                            <font size="9pt"/>
+                          </run>
+                        </par>
+                        <table widthtype="fitmargins" leftmargin="0" refwidth="11.0014in">
+                          <tablecolumn width="16.1736%"/>
+                          <tablecolumn width="83.8264%"/>
+                          <tablerow>
+                            <tablecell borderwidth="0px">
+                              <pardef id="11" leftmargin="0.0104in" keepwithnext="true" keeptogether="true"/>
+                              <par def="11">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="DocType" description="Document type" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Document type">
+                                    <keywords helperbutton="false" recalconchange="true" columns="1" ui="checkbox">
+                                      <textlist>
+                                        <text>By document type|1</text>
+                                      </textlist>
+                                    </keywords>
+                                    <code event="defaultvalue">
+                                      <formula>""</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px">
+                              <pardef id="12" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>DocType = ""</formula>
+                                </code>
+                              </pardef>
+                              <par def="12">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field usenotesstyle="false" height="0.7500in" width="1.5000in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="DocTypeSelection" description="Document type selection" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Document type selection">
+                                    <keywords helperbutton="false" columns="1" ui="listbox">
+                                      <textlist>
+                                        <text>Discussions|1</text>
+                                        <text>ActionItems|2</text>
+                                        <text>Meetings|3</text>
+                                        <text>Reference|4</text>
+                                      </textlist>
+                                    </keywords>
+                                    <code event="defaultvalue">
+                                      <formula>"1"</formula>
+                                    </code>
+                                    <code event="inputtranslation">
+                                      <formula>@If(DocType = ""; "1"; DocTypeSelection)</formula>
+                                    </code>
+                                    <code event="inputvalidation">
+                                      <formula>msg := "Since you selected 'By document type', you must select at least one document type from the list.";
+@If(DocType = "1" &amp; DocTypeSelection = ""; @Failure(msg); @Success)</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                          </tablerow>
+                          <tablerow>
+                            <tablecell borderwidth="0px">
+                              <pardef id="13" leftmargin="0.0104in" spacebefore="1.5" keepwithnext="true" keeptogether="true"/>
+                              <par def="13">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="Status" description="By Status" listinputseparators="comma" listdisplayseparator="comma" htmltitle="By Status">
+                                    <keywords helperbutton="false" recalconchange="true" columns="1" ui="checkbox">
+                                      <textlist>
+                                        <text>By Document Status|1</text>
+                                      </textlist>
+                                    </keywords>
+                                    <code event="defaultvalue">
+                                      <formula>""</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px">
+                              <pardef id="14" leftmargin="0.0104in" spacebefore="1.5" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>Status = ""</formula>
+                                </code>
+                              </pardef>
+                              <par def="14">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field usenotesstyle="false" height="0.2340in" width="2.5000in" multiline="true" borderstyle="inset" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="StatusSelection" description="status selection" htmltitle="status selection">
+                                    <keywords helperbutton="false" columns="1" ui="combobox">
+                                      <textlist>
+                                        <text>Open items only|1</text>
+                                        <text>Completed items only|2</text>
+                                      </textlist>
+                                    </keywords>
+                                    <code event="defaultvalue">
+                                      <formula>"3"</formula>
+                                    </code>
+                                    <code event="inputtranslation">
+                                      <formula>@If(Status = ""; "3"; StatusSelection)</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                          </tablerow>
+                          <tablerow>
+                            <tablecell borderwidth="0px">
+                              <pardef id="15" spacebefore="1.5" keepwithnext="true" keeptogether="true"/>
+                              <par def="15">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="Category" description="By Category" listinputseparators="comma" listdisplayseparator="comma" htmltitle="By Category">
+                                    <keywords helperbutton="false" recalconchange="true" columns="1" ui="checkbox">
+                                      <textlist>
+                                        <text>By Document Category|1</text>
+                                      </textlist>
+                                    </keywords>
+                                    <code event="defaultvalue">
+                                      <formula>""</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px">
+                              <pardef id="16" spacebefore="1.5" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>Category = ""</formula>
+                                </code>
+                              </pardef>
+                              <par def="16">
+                                <run>
+                                  <font size="9pt"/>
+                                  <field allowtabout="true" usenotesstyle="false" height="0.7500in" width="1.5000in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="CategoryList" description="Category list" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Category list" fieldhint="Separate author names with a semicolon, comma, or new line.  Full hierarchical name is not necessary.">
+                                    <keywords helperbutton="false" columns="1" ui="listbox">
+                                      <formula>View := "MissionLookup";
+list := @DbColumn("":"nocache"; ""; View; 4);
+list</formula>
+                                    </keywords>
+                                    <code event="inputtranslation">
+                                      <formula>@If(Category = ""; ""; CategoryList)</formula>
+                                    </code>
+                                    <code event="inputvalidation">
+                                      <formula>msg := "Since you selected 'By category', you must select at least one category from the list.";
+@If(Category = "1" &amp; CategoryList = ""; @Failure(msg); @Success)</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                          </tablerow>
+                          <tablerow>
+                            <tablecell borderwidth="0px">
+                              <par def="15">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="Priority" description="By priority" listinputseparators="comma" listdisplayseparator="comma" htmltitle="By priority">
+                                    <keywords helperbutton="false" recalconchange="true" columns="1" ui="checkbox">
+                                      <textlist>
+                                        <text>By Document Priority |1</text>
+                                      </textlist>
+                                    </keywords>
+                                    <code event="defaultvalue">
+                                      <formula>""</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px">
+                              <pardef id="17" spacebefore="1.5" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>Priority = ""</formula>
+                                </code>
+                              </pardef>
+                              <par def="17">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field usenotesstyle="false" height="0.5000in" width="1.5000in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="PrioritySelection" description="Priority selection" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Priority selection">
+                                    <keywords helperbutton="false" columns="1" ui="listbox">
+                                      <textlist>
+                                        <text>1 (highest) |1</text>
+                                        <text>2</text>
+                                        <text>3</text>
+                                        <text>4</text>
+                                        <text>5 (lowest) |5</text>
+                                      </textlist>
+                                    </keywords>
+                                    <code event="defaultvalue">
+                                      <formula>"3"</formula>
+                                    </code>
+                                    <code event="inputtranslation">
+                                      <formula>@If(Priority = ""; "3"; PrioritySelection)</formula>
+                                    </code>
+                                    <code event="inputvalidation">
+                                      <formula>msg := "Since you selected 'By priority', you must select at least one priority from the list.";
+@If(Priority = "1" &amp; PrioritySelection = ""; @Failure(msg); @Success)</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                          </tablerow>
+                          <tablerow>
+                            <tablecell borderwidth="0px">
+                              <par def="13">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="Author" description="By author" listinputseparators="comma" listdisplayseparator="comma" htmltitle="By author">
+                                    <keywords helperbutton="false" recalconchange="true" columns="1" ui="checkbox">
+                                      <textlist>
+                                        <text>By Author|1</text>
+                                      </textlist>
+                                    </keywords>
+                                    <code event="defaultvalue">
+                                      <formula>""</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px">
+                              <pardef id="18" leftmargin="0.0104in" spacebefore="1.5" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>Author = ""</formula>
+                                </code>
+                              </pardef>
+                              <par def="18">
+                                <run>
+                                  <font size="9pt"/>
+                                  <field usenotesstyle="false" height="0.2340in" width="1.5000in" multiline="true" borderstyle="inset" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="AuthorSelection" description="Author selection" htmltitle="Author selection">
+                                    <keywords helperbutton="false" recalconchange="true" columns="1" ui="combobox">
+                                      <textlist>
+                                        <text>Documents I created|1</text>
+                                        <text>Selected authors|2</text>
+                                      </textlist>
+                                    </keywords>
+                                    <code event="defaultvalue">
+                                      <formula>"1"</formula>
+                                    </code>
+                                    <code event="inputtranslation">
+                                      <formula>@If(Author = ""; "1"; AuthorSelection)</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                              </par>
+                              <pardef id="19" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>Author = "" | AltNameDisplay = "0"</formula>
+                                </code>
+                              </pardef>
+                              <par def="19">
+                                <sharedfieldref name="AltNameSelection"/>
+                              </par>
+                              <pardef id="20" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>Author = "" | AltNameDisplay = "1"</formula>
+                                </code>
+                              </pardef>
+                              <par def="20">
+                                <sharedfieldref name="PriNameSelection"/>
+                              </par>
+                              <pardef id="21" leftmargin="0.0104in" hide="notes web" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>Author = "" | AuthorSelection != "2"</formula>
+                                </code>
+                              </pardef>
+                              <par def="21">
+                                <run>
+                                  <font size="9pt"/>
+                                  <field allowtabout="true" type="text" allowmultivalues="true" kind="computed" name="AuthorList" description="Author list" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Author list" fieldhint="Separate author names with a semicolon, comma, or new line.  Full hierarchical name is not necessary.">
+                                    <code event="defaultvalue">
+                                      <formula>@If(PriNameSelection = ""; AuthorList; @Trim(PriNameSelection))</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <compositedata type="98" prevtype="65513" nexttype="222" afterparcount="11" containertype="65418" aftercontainercount="3" afterbegincount="6">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                          </tablerow>
+                          <tablerow>
+                            <tablecell borderwidth="0px">
+                              <par def="13">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="StatusReports" description="Status reports" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Status reports">
+                                    <keywords helperbutton="false" recalconchange="true" columns="1" ui="checkbox">
+                                      <textlist>
+                                        <text>Status reports|1</text>
+                                      </textlist>
+                                    </keywords>
+                                    <code event="defaultvalue">
+                                      <formula>""</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px">
+                              <pardef id="22" leftmargin="0.0104in" spacebefore="1.5" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>StatusReports = ""</formula>
+                                </code>
+                              </pardef>
+                              <par def="22">
+                                <run>
+                                  <font size="9pt"/>
+                                  <field usenotesstyle="false" height="0.7500in" width="2.5000in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="StatusReportSelection" description="Status report selection" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Status report selection">
+                                    <keywords helperbutton="false" recalconchange="true" recalcchoices="true" columns="1" ui="listbox">
+                                      <textlist>
+                                        <text>My status reports|1</text>
+                                        <text>Selected individual. status reports|2</text>
+                                        <text>Team status reports|3</text>
+                                        <text>Subteam status reports|4</text>
+                                      </textlist>
+                                    </keywords>
+                                    <code event="defaultvalue">
+                                      <formula>"1"</formula>
+                                    </code>
+                                    <code event="inputtranslation">
+                                      <formula>@If(StatusReports = ""; "1"; StatusReportSelection)</formula>
+                                    </code>
+                                    <code event="inputvalidation">
+                                      <formula>REM {Variables to translate};
+msg1 := "Since you selected 'Status reports', you must select at least one status report type from the list.";
+msg2 := "Since you selected 'Status reports' and also 'Selected individual status reports', you must select at least one name from the list.";
+msg3 := "Since you selected 'Status reports' and also 'Selected subteam status reports', you must select at least one subteam from the list.";
+REM {END variables to translate};
+@If(StatusReports = "1" &amp; StatusReportSelection = ""; @Failure(msg1);
+StatusReports = "1" &amp; StatusReportSelection = "2" &amp; StatusReportNameList = ""; @Failure(msg2);
+StatusReports = "1" &amp; SubteamSelection = "2" &amp; StatusReportSubteamList = ""; @Failure(msg3);
+@Success)</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                              <table widthtype="fitmargins" leftmargin="0.0104in" refwidth="9.2118in">
+                                <tablecolumn width="100%"/>
+                                <tablerow>
+                                  <tablecell borderwidth="0px">
+                                    <pardef id="24" keepwithnext="true" keeptogether="true">
+                                      <code event="hidewhen">
+                                        <formula>StatusReports = "" |  !@Contains(StatusReportSelection;"2")</formula>
+                                      </code>
+                                    </pardef>
+                                    <par def="24">Select individual status reports for these team members</par>
+                                    <par def="24">
+                                      <run>
+                                        <font size="9pt"/>
+                                        <field allowtabout="true" usenotesstyle="false" height="0.7500in" width="2.5000in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="StatusReportNameList" description="Individual status reports" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Individual status reports" fieldhint="Separate author names with a semicolon, comma, or new line.  Full hierarchical name is not necessary.">
+                                          <keywords helperbutton="false" columns="1" ui="listbox">
+                                            <formula>NoParticipantMessage := "No team members have been specified for this TeamRoom.";
+ParticipantLookup := @If(AltNameDisplay = "1"; @DbColumn("" : "nocache"; ""; "PeopleLookup"; 3); @DbColumn("" : "nocache"; ""; "PeopleLookup"; 1));
+
+@If(@IsError(ParticipantLookup) | ParticipantLookup = ""; NoParticipantMessage; ParticipantLookup)</formula>
+                                          </keywords>
+                                          <code event="inputtranslation">
+                                            <formula>@If(StatusReports = ""; ""; StatusReportNameList)</formula>
+                                          </code>
+                                        </field>
+                                      </run>
+                                      <run>
+                                        <font size="9pt"/>
+                                      </run>
+                                    </par>
+                                  </tablecell>
+                                </tablerow>
+                                <tablerow>
+                                  <tablecell borderwidth="0px">
+                                    <pardef id="25" keepwithnext="true" keeptogether="true">
+                                      <code event="hidewhen">
+                                        <formula>StatusReports = "" | !@Contains(StatusReportSelection;"4")</formula>
+                                      </code>
+                                    </pardef>
+                                    <par def="25">Select these subteam status reports</par>
+                                    <par def="25">
+                                      <run>
+                                        <font size="9pt"/>
+                                        <field usenotesstyle="false" height="0.2340in" width="2.5000in" multiline="true" borderstyle="inset" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="SubteamSelection" description="Subteam selection" htmltitle="Subteam selection">
+                                          <keywords helperbutton="false" recalconchange="true" columns="1" ui="combobox">
+                                            <textlist>
+                                              <text>All subteam status reports|1</text>
+                                              <text>Selected subteam status reports|2</text>
+                                            </textlist>
+                                          </keywords>
+                                          <code event="defaultvalue">
+                                            <formula>"1"</formula>
+                                          </code>
+                                          <code event="inputtranslation">
+                                            <formula>@If(StatusReports = ""; "1"; SubteamSelection)</formula>
+                                          </code>
+                                        </field>
+                                      </run>
+                                    </par>
+                                    <pardef id="26" keepwithnext="true" keeptogether="true">
+                                      <code event="hidewhen">
+                                        <formula>StatusReports = "" | !@Contains(SubteamSelection;"2")</formula>
+                                      </code>
+                                    </pardef>
+                                    <par def="26">Select subteam status reports for these subteams</par>
+                                    <par def="26">
+                                      <run>
+                                        <font size="9pt"/>
+                                        <field allowtabout="true" usenotesstyle="false" height="0.7500in" width="2.5000in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="StatusReportSubteamList" description="Subteam status reports" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Subteam status reports" fieldhint="Separate author names with a semicolon, comma, or new line.  Full hierarchical name is not necessary.">
+                                          <keywords helperbutton="false" columns="1" ui="listbox">
+                                            <formula>SubteamLookup := @DbColumn("" : "nocache"; ""; "SubteamLookup"; 1);
+
+@If(@IsError(SubteamLookup) | SubteamLookup = ""; ""; SubteamLookup)</formula>
+                                          </keywords>
+                                          <code event="inputtranslation">
+                                            <formula>@If(StatusReports = ""; ""; StatusReportSubteamList)</formula>
+                                          </code>
+                                        </field>
+                                      </run>
+                                      <run>
+                                        <font size="9pt"/>
+                                      </run>
+                                    </par>
+                                  </tablecell>
+                                </tablerow>
+                              </table>
+                              <pardef id="27" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>StatusReports = "" | !@Contains(StatusReportSelection;"4")</formula>
+                                </code>
+                              </pardef>
+                              <par def="27"/>
+                              <par def="27"/>
+                              <par def="27"/>
+                            </tablecell>
+                          </tablerow>
+                        </table>
+                        <pardef id="28" leftmargin="1%" spaceafter="1.5" hide="notes web" keepwithnext="true" keeptogether="true"/>
+                        <par def="28">
+                          <run>
+                            <font size="9pt"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                    <tablerow tablabel="adv">
+                      <tablecell borderwidth="0px">
+                        <par def="8">
+                          <run>
+                            <font size="9pt"/>Selection formula</run>
+                        </par>
+                        <pardef id="29" leftmargin="0.1000in" keepwithnext="true" keeptogether="true"/>
+                        <par def="29">
+                          <run>
+                            <font size="9pt"/>
+                            <field usenotesstyle="false" height="2in" width="4.5000in" multiline="true" borderstyle="single" type="text" kind="editable" name="AdvFormula" description="Advanced formula" htmltitle="Advanced formula">
+                              <code event="defaultvalue">
+                                <formula>"SELECT @All"</formula>
+                              </code>
+                              <code event="inputtranslation">
+                                <formula>REM {***THE ONLY PART OF THIS FORMULA THAT CAN BE TRANSLATED ARE THE REM STATEMENTS***};
+
+@If( $QueryType = "all"; @Return( "Select @All"); $QueryType = "adv"; @Return( AdvFormula); Continue);
+
+GetDocType1 := @If(@Contains(DocTypeSelection; "1"); "DefaultDocType1"; "");
+GetDocType2 := @If(@Contains(DocTypeSelection; "2"); "DefaultDocType2"; "");
+GetDocType3 := @If(@Contains(DocTypeSelection; "3"); "DefaultDocType3"; "");
+GetDocType4 := @If(@Contains(DocTypeSelection; "4"); "DefaultDocType4"; "");
+
+REM {DOC TYPE};
+AllDocTypes := @Trim(GetDocType1 : GetDocType2 : GetDocType3 : GetDocType4);
+ImpDocTypes := @Implode(AllDocTypes; ") : @Lowercase(");
+DocTypeStr := @If( DocType = "1";
+"@contains(@LowerCase(DocType); @LowerCase(" +  ImpDocTypes + ")) " ; "");
+
+REM {STATUS};
+REM {Open Status string};
+OMtgStat := "(MtgDate != \"\" &amp;  MtgDate &gt; @today) | ";
+OOtherStat := "Current_Status = \"0\" ";
+OpenStat := OMtgStat + OOtherStat;
+REM {Completed status string};
+CMtgStat := "(MtgDate != \"\" &amp; MtgDate &lt; @today) | ";
+COtherStat := "Current_Status = \"1\" ";
+CompStat := CMtgStat + COtherStat;
+
+REM {If they want both Open and Completed, then the status string doesn't need to be included};
+StatusStr := @If(Status = "1" &amp; StatusSelection = "1"; OpenStat; Status = "1" &amp; StatusSelection = "2"; CompStat; "");
+
+REM {CATEGORY};
+GetCat := "\"" + @Implode(CategoryList; "\" : \"") + "\"";
+RGetCat := @ReplaceSubstring(GetCat; "\"\""; "\\\"");
+CatStr := @If(Category = "1"; "@contains(Categories; " + RGetCat + ") " ; "");
+
+
+REM {PRIORITY};
+GetPri := "\"" + @Implode(PrioritySelection; "\":\"") + "\"";
+PriStr := @If(Priority = "1"; "@contains(Priority; " + GetPri + ") " ; "");
+
+REM {AUTHOR};
+GetAuthList := "\"" + @Implode(AuthorSelection; "\":\"") + "\"";
+GetAuth := @If(AuthorSelection = "1"; @UserName + "\""; @Name([Canonicalize]; AuthorList) + "\"");
+ImpAuth := "\"" + @LowerCase(@Implode(GetAuth; " : \""));
+AuthStr := @If(Author = "1"; "@contains(@lowercase(From); " +  ImpAuth + ")"; "");
+
+REM {STATUS REPORTS};
+ImpSubtList := "\"" + @Implode(StatusReportSubteamList;  " \" : \" ") + "\"";
+RImpSubtList := @ReplaceSubstring(ImpSubtList; "\"\""; "\\\"");
+ImpIndList := "\"" + @Implode(@LowerCase(@Name([Canonicalize]; StatusReportNameList));  "\" : \"") + "\"";
+
+GetTeamForm := @If(@Contains(StatusReportSelection; "3"); "form = \"Status\"" ; "");
+GetMyIndForm := @If(@Contains(StatusReportSelection; "1"); "(form = \"IndStat\" &amp; @contains(@lowercase(from); \"" + @LowerCase(@UserName) + "\"))" ; "");
+GetNameIndForm := @If(@Contains(StatusReportSelection; "2"); "(form = \"IndStat\" &amp; @contains(@lowercase(from); " + ImpIndList + "))" ; "");
+GetSubtForm := @If(
+@Contains(StatusReportSelection; "4") &amp; SubteamSelection = "1"; "(form = \"SubteamStatus\")";
+@Contains(StatusReportSelection; "4") &amp; SubteamSelection = "2"; "(form = \"SubteamStatus\" &amp; @contains(SubteamName; " + RImpSubtList + "))" ; "");
+SubStr := @If(StatusReports = "1"; @Trim(GetTeamForm : GetMyIndForm : GetNameIndForm : GetSubtForm)  ; "");
+
+tQuery :=  @Implode(@Trim(DocTypeStr : StatusStr : CatStr : PriStr : AuthStr : SubStr) ;
+@If( AndOr = "and" ; " &amp; "; " | "));
+@If( @Length( tQuery) = 0; "@All"; RequiredItems + tQuery + " | @AllDescendants")</formula>
+                              </code>
+                            </field>
+                          </run>
+                        </par>
+                        <par def="29">
+                          <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="#d5ccbb">
+                            <font size="9pt"/>Check Syntax<code event="options">
+                              <lotusscript>Option Declare
+</lotusscript>
+                            </code>
+                            <code event="click">
+                              <lotusscript>Sub Click(Source As Button)
+	Dim ws As New NotesUIWorkspace
+	Dim doc As NotesUIDocument
+	Dim note As NotesDocument
+	Dim item As NotesItem
+	
+	Set doc = ws.currentDocument
+	doc.refresh
+	Set note = doc.document
+	Set item = note.getFirstItem( "$HLFormula")
+	If item.type = FORMULA Then
+		Messagebox COMPILE_SUCCESS_BODY,  MB_ICONINFORMATION, COMPILE_SUCCESS_TITLE 
+	Else
+		Messagebox COMPILE_FAILURE_BODY,  MB_ICONSTOP, COMPILE_FAILURE_TITLE 
+		
+	End If
+End Sub</lotusscript>
+                            </code>
+                          </button>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                  </table>
+                  <pardef id="30" leftmargin="1%" keepwithnext="true" keeptogether="true"/>
+                  <par def="30">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <pardef id="31" leftmargin="3%" spaceafter="1.5" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="31">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="32" spaceafter="1.5" hide="notes web"/>
+      <par def="32">
+        <run>
+          <font size="9pt"/>
+        </run>
+        <run>
+          <font size="9pt"/>
+          <field type="text" kind="computedwhencomposed" name="RequiredItems">
+            <code event="defaultvalue">
+              <formula>REM {DNT};
+
+"REM \"The first portion of this formula (prior to the new line) represents documents in the TeamRoom database that are required by the template for it to run properly.  Do not remove any of these items from the formula or your selective replica may not operate properly.\";" +
+@Char(13) + "SELECT (form = \"Subteam\" | form = \"Event\" | form = \"ParticipantProfile\" | form = \"Mission\") | " + @Char(13) + @Char(13)</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="7" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt"/>
+          <field type="formula" kind="computed" name="$HLFormula" listdisplayseparator="semicolon">
+            <code event="defaultvalue">
+              <formula>AdvFormula</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt"/>
+          <field type="text" kind="editable" name="$HLTitle">
+            <code event="defaultvalue">
+              <formula>"Enter a replication title"</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="18" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font style="bold" color="gray"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+  <item name="$$ProfileAuthors" summary="false" sign="true">
+    <text>'++LotusScript Development Environment:2:5:(Options):0:66
+
+'++LotusScript Development Environment:2:5:(Forward):0:1
+Declare Sub Exiting(Source As Field)
+
+'++LotusScript Development Environment:2:5:(Declarations):0:2
+
+'++LotusScript Development Environment:2:2:BindEvents:1:129
+Private Sub BindEvents(Byval Objectname_ As String)
+	Static Source As FIELD
+	Set Source = Bind(Objectname_)
+	On Event Exiting From Source Call Exiting
+End Sub
+
+'++LotusScript Development Environment:2:2:Exiting:1:12
+Sub Exiting(Source As Field)
+	Dim w As New notesuiworkspace
+	Set uidoc = w.currentdocument
+	uidoc.refresh
+End Sub<break/>
+    </text>
+  </item>
+  <item name="$$ProfileCategories" summary="false" sign="true">
+    <text>'++LotusScript Development Environment:2:5:(Options):0:66
+
+'++LotusScript Development Environment:2:5:(Forward):0:1
+Declare Sub Exiting(Source As Field)
+
+'++LotusScript Development Environment:2:5:(Declarations):0:2
+
+'++LotusScript Development Environment:2:2:BindEvents:1:129
+Private Sub BindEvents(Byval Objectname_ As String)
+	Static Source As FIELD
+	Set Source = Bind(Objectname_)
+	On Event Exiting From Source Call Exiting
+End Sub
+
+'++LotusScript Development Environment:2:2:Exiting:1:12
+Sub Exiting(Source As Field)
+	Dim w As New notesuiworkspace
+	Set uidoc = w.currentdocument
+	uidoc.refresh
+End Sub<break/>
+    </text>
+  </item>
+  <item name="$$ProfileEvents" summary="false" sign="true">
+    <text>'++LotusScript Development Environment:2:5:(Options):0:66
+
+'++LotusScript Development Environment:2:5:(Forward):0:1
+Declare Sub Exiting(Source As Field)
+
+'++LotusScript Development Environment:2:5:(Declarations):0:2
+
+'++LotusScript Development Environment:2:2:BindEvents:1:129
+Private Sub BindEvents(Byval Objectname_ As String)
+	Static Source As FIELD
+	Set Source = Bind(Objectname_)
+	On Event Exiting From Source Call Exiting
+End Sub
+
+'++LotusScript Development Environment:2:2:Exiting:1:12
+Sub Exiting(Source As Field)
+	Dim w As New notesuiworkspace
+	Set uidoc = w.currentdocument
+	uidoc.refresh
+End Sub<break/>
+    </text>
+  </item>
+  <item name="$$ProfileSubteams" summary="false" sign="true">
+    <text>'++LotusScript Development Environment:2:5:(Options):0:66
+
+'++LotusScript Development Environment:2:5:(Forward):0:1
+Declare Sub Exiting(Source As Field)
+
+'++LotusScript Development Environment:2:5:(Declarations):0:2
+
+'++LotusScript Development Environment:2:2:BindEvents:1:129
+Private Sub BindEvents(Byval Objectname_ As String)
+	Static Source As FIELD
+	Set Source = Bind(Objectname_)
+	On Event Exiting From Source Call Exiting
+End Sub
+
+'++LotusScript Development Environment:2:2:Exiting:1:12
+Sub Exiting(Source As Field)
+	Dim w As New notesuiworkspace
+	Set uidoc = w.currentdocument
+	uidoc.refresh
+End Sub<break/>
+    </text>
+  </item>
+  <item name="$$ProfileThreadSubjects" summary="false" sign="true">
+    <text>'++LotusScript Development Environment:2:5:(Options):0:66
+
+'++LotusScript Development Environment:2:5:(Forward):0:1
+Declare Sub Exiting(Source As Field)
+
+'++LotusScript Development Environment:2:5:(Declarations):0:2
+
+'++LotusScript Development Environment:2:2:BindEvents:1:129
+Private Sub BindEvents(Byval Objectname_ As String)
+	Static Source As FIELD
+	Set Source = Bind(Objectname_)
+	On Event Exiting From Source Call Exiting
+End Sub
+
+'++LotusScript Development Environment:2:2:Exiting:1:12
+Sub Exiting(Source As Field)
+	Dim w As New notesuiworkspace
+	Set uidoc = w.currentdocument
+	uidoc.refresh
+End Sub<break/>
+    </text>
+  </item>
+  <item name="$HLMLastChecked" summary="false" sign="true">
+    <rawitemdata type="400">
+AAAAAAAAAAA=
+</rawitemdata>
+  </item>
+</form>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:xc="http://www.ibm.com/xsp/custom"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+	
+	<xp:this.beforePageLoad><![CDATA[#{javascript:viewScope.subteamName = param.subteam}]]></xp:this.beforePageLoad>
+
+	<xp:link escape="true" id="backLink" value="#{javascript:sessionScope.webFrom}">
+		<xp:this.text><![CDATA[#{javascript:
+			viewStateBean.restoreState = true;
+			return I18n.format(strings.getString("back.to"), sessionScope.webFromName);
+		}]]></xp:this.text>
+	</xp:link>
+
+	<xe:dynamicContent id="subteamProfileDynamicContent"
+		defaultFacet="readOnlyProfile" useHash="false">
+		<xe:this.beforeContentLoad>
+			<![CDATA[#{javascript:
+				if(context.isRunningContext("Notes")){
+					// XPiNC: pop any current modifiedControl from the viewRoot...
+					if(null != view.getModifiedControl()){
+						var form = com.ibm.xsp.util.FacesUtil.getForm(this);
+						view.removeModifiedSaveAction(form);
+						view.setModifiedControl(null);
+					}
+				}
+			}]]>
+		</xe:this.beforeContentLoad>
+		<xe:this.afterContentLoad>
+			<![CDATA[#{javascript:
+				if(context.isRunningContext("Notes")){
+					// XPiNC: push any current modifiedControl unto the viewRoot...
+					if(null != view.getModifiedControl()){
+						var form = com.ibm.xsp.util.FacesUtil.getForm(this);
+						view.addModifiedSaveAction(form);
+					}
+				}
+			}]]>
+		</xe:this.afterContentLoad>
+		<xe:this.facets>
+
+			<!-- editable SubteamProfile -->
+			<xc:editableSubteamProfile id="editableSubteamProfileContainer" xp:key="editableProfile"></xc:editableSubteamProfile>
+			
+			<!-- readOnly SubteamProfile -->
+			<xc:readOnlySubteamProfile id="readOnlySubteamProfileContainer" xp:key="readOnlyProfile"></xc:readOnlySubteamProfile>
+
+		</xe:this.facets>
+	</xe:dynamicContent>
+
+</xp:view>

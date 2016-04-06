@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<outline xmlns="http://www.lotus.com/dxl" name="SubscriptionFormOutline" alias="SubscriptionFormOutline" hide="v3 v4strict" publicaccess="false" language="en">
+  <outlineentry label="Form" alias="Form" type="action">
+    <code event="value">
+      <formula>FIELD $Table1:= "form";
+@Command([RefreshHideFormulas])</formula>
+    </code>
+  </outlineentry>
+  <outlineentry label="Info" alias="Info" type="action">
+    <code event="value">
+      <formula>FIELD $Table1:= "info";
+@Command([RefreshHideFormulas])</formula>
+    </code>
+  </outlineentry>
+</outline>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(WebEditInterestProfile)" hide="v3" runaswebuser="true" publicaccess="false" language="en" comment="This agent opens the correct Interest Profile for a web user.">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+Use "DiscussionRoutines"
+Option Declare
+Option Compare Nocase
+
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>'WebEditInterestProfile: 
+
+
+
+
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize 
+	
+	Dim session As New notessession	
+	Dim DbProfile As NotesDocument
+	Dim authorView As notesview
+	Dim authorDoc As notesdocument
+	Dim key As Variant
+	Dim getunid As Variant
+	
+	Dim dbpath As Variant
+	Set db = session.currentdatabase
+	Set DbProfile = db.GetProfileDocument( "TempVars")
+	key = dbProfile.ProfileKey
+	dbpath = Evaluate("@webdbname")
+	
+	Set authorView = db.getview("LookupInterestProfiles")
+	
+	Call authorView.refresh
+	Set authorDoc = authorView.getdocumentbykey(key(0), True) 
+	
+	If  authorDoc Is Nothing Then
+		Print "[/"+dbpath(0)+"/"+"Interest+Profile?OpenForm]"
+	Else
+		getUNID = authorDoc.universalid
+		Print "[/"+dbpath(0)+"/LookupInterestProfiles/" + Lcase(getUNID)+"?EditDocument]"
+	End If
+	
+	dbProfile.ProfileKey =  ""
+	
+End Sub</lotusscript>
+  </code>
+</agent>

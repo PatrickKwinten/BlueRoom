@@ -1,0 +1,1041 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://www.lotus.com/dxl" name="TeamRoom Outline" alias="TeamRoom Outline" publicaccess="false" language="en" noinitialfocus="true">
+  <code event="jsheader" for="web">
+    <javascript>function mapCat()
+{
+var pathname = window.location.pathname;
+filename = pathname.substring(0,(pathname.lastIndexOf("nsf")+4)) 
+window.open(filename + 'MapCategories?openForm','secondary_window','toolbar=no,location=no,scrollbars=yes,directories=no,resizable=yes,height=550,width=500')
+}</javascript>
+  </code>
+  <code event="jsheader" for="client">
+    <javascript>function mapCat()
+{
+var pathname = window.location.pathname;
+filename = pathname.substring(0,(pathname.lastIndexOf("nsf")+4)) 
+window.open(filename + 'MapCategories?openForm','secondary_window','toolbar=no,location=no,scrollbars=yes,directories=no,resizable=yes,height=550,width=500')
+}</javascript>
+  </code>
+  <background>
+    <imageref name="TROutline.gif"/>
+  </background>
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>&lt;HEAD&gt;<break/>&lt;STYLE TYPE="text/css"&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/> 	BODY {font-family: sans-serif}</run>
+      </par>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>&lt;/STYLE&gt;<break/>&lt;/HEAD&gt;</run>
+      </par>
+      <pardef id="2" align="none" leftmargin="1in" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="2">
+        <run html="true">
+          <font size="8pt"/>
+        </run>
+      </par>
+      <table widthtype="fitwindow" cellbordercolor="#42747b" htmlclass="webTable" leftmargin="0.7500in" refwidth="12.7417in">
+        <tablerowstyle>
+          <font size="0pt" style="underline strikethrough emboss" name="monospace" color="#090000"/>
+        </tablerowstyle>
+        <tablecolumn width="100%"/>
+        <tablerow>
+          <tablecell borderwidth="1px 0px" bgcolor="#a8cfd4">
+            <pardef id="4" leftmargin="0.0208in" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>access := @TextToNumber(@V4UserAccess(@DbName));
+REM {hide when access is less than Editor};
+@Subset(access; 1) &lt; 4</formula>
+              </code>
+            </pardef>
+            <section>
+              <sectiontitle pardef="4" color="#78b4bc">
+                <font size="9pt"/>
+                <text>Leader/Facilitator Options</text>
+              </sectiontitle>
+              <pardef id="5" leftmargin="0.0208in" hide="notes web" keepwithnext="true" keeptogether="true"/>
+              <par def="5"/>
+              <table widthtype="fitmargins" leftmargin="0.0208in" rightmargin="99%" refwidth="12.5938in">
+                <tablerowstyle>
+                  <font size="0pt" style="underline strikethrough emboss" name="monospace" color="#090000"/>
+                </tablerowstyle>
+                <tablecolumn width="100%"/>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="#efefef">
+                    <pardef id="7" leftmargin="0.4417in" firstlineleftmargin="0.3000in" hide="web" keepwithnext="true" keeptogether="true">
+                      <code event="hidewhen">
+                        <formula>access := @TextToNumber(@V4UserAccess(@DbName));
+REM {hide when access is less than Editor};
+@Subset(access; 1) &lt; 4</formula>
+                      </code>
+                    </pardef>
+                    <par def="7">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@SetProfileField("tempvars"; "viewtitle"; "Announcements");
+@Command([ToolsRunMacro]; "(MissionPageNew-Edit)")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Update TeamRoom Setup</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="white">
+                    <par def="7">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none">
+                        <code event="click">
+                          <formula>@SetTargetFrame("NotesView");
+@PostedCommand([OpenView]; "TeamOverview")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Edit Members, Subteams, Events</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="#efefef">
+                    <par def="7">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none">
+                        <code event="click">
+                          <formula>@Command([Compose]; "Status")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Create Team Status</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="white">
+                    <par def="7">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none">
+                        <code event="click">
+                          <formula>@Command([Compose]; "SubteamStatus")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Create Subteam Status</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="#efefef">
+                    <par def="7">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none">
+                        <code event="click">
+                          <formula>filename := @Subset(@DbName; -1);
+@Do(@SetProfileField("TempVars"; "ClientType"; "Notes");
+@Command([ToolsRunMacro]; "SendReminder"))</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Send Reminders Now</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="white">
+                    <par def="7">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none">
+                        <code event="click">
+                          <formula>@Command([ToolsRunMacro]; "(NotesMapAgent)")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Map Categories</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="#efefef">
+                    <par def="7">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none">
+                        <code event="click">
+                          <formula>@DialogBox("(UpdateACLDialog)"; [AutoHorzFit] : [AutoVertFit] : [SizeToTable] : [NoCancel] : [NoOkCancel]; "Update ACL")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Update Access List</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="white">
+                    <pardef id="8" leftmargin="0.5042in" firstlineleftmargin="0.3000in" hide="notes web mobile" keepwithnext="true" keeptogether="true">
+                      <code event="hidewhen">
+                        <formula>access := @TextToNumber(@V4UserAccess(@DbName));
+REM {hide when access is less than Editor};
+@Subset(access; 1) &lt; 4</formula>
+                      </code>
+                    </pardef>
+                    <par def="8">
+                      <run>
+                        <font size="9pt" color="silver"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none">
+                        <code event="click">
+                          <formula>@SetTargetFrame("NotesView");
+@Command([OpenView]; "MailedPasted")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt" color="silver"/>Manage mailed/pasted docs</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt" color="silver"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="white">
+                    <pardef id="9" leftmargin="0.5042in" firstlineleftmargin="0.1000in" hide="notes web" keepwithnext="true" keeptogether="true"/>
+                    <par def="9">
+                      <run>
+                        <font size="9pt" color="blue"/>[web below]</run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="#efefef">
+                    <pardef id="10" leftmargin="0.4417in" firstlineleftmargin="0.3000in" hide="notes" keepwithnext="true" keeptogether="true">
+                      <code event="hidewhen">
+                        <formula>access := @TextToNumber(@V4UserAccess(@DbName));
+REM {hide when access is less than Editor};
+@Subset(access; 1) &lt; 4</formula>
+                      </code>
+                    </pardef>
+                    <par def="10">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>filename := @Subset(@WebDbName; -1);
+@URLOpen("/"+@ReplaceSubstring(filename;" ";"+")+"/Web-EditMission?OpenAgent")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Update TeamRoom Setup</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="white">
+                    <par def="10">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none">
+                        <code event="click">
+                          <formula>@SetTargetFrame("NotesView");
+@PostedCommand([OpenView]; "TeamOverview")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Edit Members, Subteams, Events</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="#efefef">
+                    <par def="10">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@Command([Compose]; "Status")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Create Team Status</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="white">
+                    <par def="10">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@Command([Compose]; "SubteamStatus")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Create Subteam Status</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="#efefef">
+                    <par def="10">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>filename := @Subset(@WebDbName; -1);
+@Do(
+@SetProfileField("TempVars"; "ClientType"; "Web");
+@URLOpen("/"+@ReplaceSubstring(filename;" ";"+")+"/SendReminder?OpenAgent"))</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Send Reminders Now</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="white">
+                    <par def="10">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="onClick" for="web">
+                          <javascript>mapCat()</javascript>
+                        </code>
+                        <code event="onClick" for="client">
+                          <javascript>mapCat()</javascript>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Map Categories</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="#efefef">
+                    <pardef id="11" leftmargin="0.4417in" firstlineleftmargin="0.3167in" hide="notes web" keepwithnext="true" keeptogether="true">
+                      <code event="hidewhen">
+                        <formula>access := @TextToNumber(@V4UserAccess(@DbName));
+REM {hide when access is less than Editor};
+@Subset(access; 1) &lt; 4</formula>
+                      </code>
+                    </pardef>
+                    <par def="11">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none">
+                        <code event="onClick" for="web">
+                          <javascript>var pathname = window.location.pathname;
+filename = pathname.substring(0,(pathname.lastIndexOf("nsf")+4)) 
+window.open(filename + 'wUpdateACLDialog?openForm','secondary_window','toolbar=no,location=no,top=10,left=150,scrollbars=yes,directories=no,resizable=yes,height=620,width=550')
+</javascript>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Update Access List</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="#f7f7f7">
+                    <pardef id="12" leftmargin="0.3000in" hide="notes web mobile" keepwithnext="true" keeptogether="true">
+                      <code event="hidewhen">
+                        <formula>access := @TextToNumber(@V4UserAccess(@DbName));
+REM {hide when access is less than Editor};
+@Subset(access; 1) &lt; 4</formula>
+                      </code>
+                    </pardef>
+                    <par def="12">
+                      <run>
+                        <font size="9pt" color="silver"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none">
+                        <code event="click">
+                          <formula>@SetTargetFrame("NotesView");
+@Command([OpenView]; "MailedPasted")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt" color="silver"/>Manage mailed/pasted docs</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt" color="silver"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+              </table>
+              <par def="5"/>
+            </section>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="13" leftmargin="1in" hide="notes mobile">
+        <code event="hidewhen">
+          <formula>access := @TextToNumber(@V4UserAccess(@DbName));
+REM {hide when access is less than Editor};
+@Subset(access; 1) &lt; 4 | @ClientType = "Notes"</formula>
+        </code>
+      </pardef>
+      <par def="13">
+        <run html="true">&lt;br&gt;</run>
+      </par>
+      <pardef id="14" leftmargin="1in" hide="web">
+        <code event="hidewhen">
+          <formula>access := @TextToNumber(@V4UserAccess(@DbName));
+REM {hide when access is less than Editor};
+@Subset(access; 1) &lt; 4 | @ClientType != "Notes"</formula>
+        </code>
+      </pardef>
+      <par def="14"/>
+      <table widthtype="fitwindow" cellbordercolor="#42747b" leftmargin="0.7500in" refwidth="12.7417in">
+        <tablerowstyle>
+          <font size="0pt" style="underline strikethrough emboss" name="monospace" color="#090000"/>
+        </tablerowstyle>
+        <tablecolumn width="100%"/>
+        <tablerow>
+          <tablecell borderwidth="1px 0px" bgcolor="#a8cfd4">
+            <pardef id="15" leftmargin="0.0104in" keepwithnext="true" keeptogether="true"/>
+            <section>
+              <sectiontitle pardef="15" color="#78b4bc">
+                <font size="9pt"/>
+                <text>Team Documents</text>
+              </sectiontitle>
+              <pardef id="16" leftmargin="0.0104in" hide="notes web" keepwithnext="true" keeptogether="true"/>
+              <par def="16"/>
+              <table widthtype="fitmargins" leftmargin="0.0104in" rightmargin="99%" refwidth="12.6042in">
+                <tablerowstyle>
+                  <font size="0pt" style="underline strikethrough emboss" name="monospace" color="#090000"/>
+                </tablerowstyle>
+                <tablecolumn width="100%"/>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="#efefef">
+                    <pardef id="18" leftmargin="0.4521in" firstlineleftmargin="0.3000in" keepwithnext="true" keeptogether="true"/>
+                    <par def="18">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@If(@ClientType  = "Notes"; ""; @SetProfileField("TempVars"; "viewtitle"; "ActiveDate"));
+@SetTargetFrame("NotesView");
+@PostedCommand([OpenView]; "ActiveDate")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>By Date</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="white">
+                    <par def="18">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@If(@ClientType  = "Notes"; ""; @SetProfileField("TempVars"; "viewtitle"; "ActiveCategory"));
+@SetTargetFrame("NotesView");
+@PostedCommand([OpenView]; "ActiveCategory")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>By Category</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="#efefef">
+                    <par def="18">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@If(@ClientType  = "Notes"; ""; @SetProfileField("TempVars"; "viewtitle"; "ActiveEvent"));
+@SetTargetFrame("NotesView");
+@PostedCommand([OpenView]; "ActiveEvent")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>By Milestone/Event</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="white">
+                    <par def="18">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@If(@ClientType  = "Notes"; ""; @SetProfileField("TempVars"; "viewtitle"; "AIPriority"));
+@SetTargetFrame("NotesView");
+@PostedCommand([OpenView]; "AIPriority")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Action Items by Priority</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="#efefef">
+                    <par def="18">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@If(@ClientType  = "Notes"; ""; @SetProfileField("TempVars"; "viewtitle"; "All Chronological"));
+@SetTargetFrame("NotesView");
+@PostedCommand([OpenView]; "All Chronological")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Chronological</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="white">
+                    <par def="18">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@If(@ClientType  = "Notes"; ""; @SetProfileField("TempVars"; "viewtitle"; "ActiveBySubteam"));
+@SetTargetFrame("NotesView");
+@PostedCommand([OpenView]; "ActiveBySubteam")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>By Subteam</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="#efefef">
+                    <par def="18">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@If(@ClientType  = "Notes"; ""; @SetProfileField("TempVars"; "viewtitle"; "AuthorView"));
+@SetTargetFrame("NotesView");
+@PostedCommand([OpenView]; "AuthorView")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>By Author</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="white">
+                    <par def="18">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@If(@ClientType  = "Notes"; ""; @SetProfileField("TempVars"; "viewtitle"; "By Alternate Name"));
+@SetTargetFrame("NotesView");
+@PostedCommand([OpenView]; "By Alternate Name")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>By Alternate Name</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="#efefef">
+                    <par def="18">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@If(@ClientType  = "Notes"; ""; @SetProfileField("TempVars"; "viewtitle"; "ActiveDueDate"));
+@SetTargetFrame("NotesView");
+@PostedCommand([OpenView]; "ActiveDueDate")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Open By Due Date</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="white">
+                    <par def="18">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@If(@ClientType  = "Notes"; ""; @SetProfileField("TempVars"; "viewtitle"; "OpenAssignnment"));
+@SetTargetFrame("NotesView");
+@PostedCommand([OpenView]; "OpenAssignnment")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Open By Assignment</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+              </table>
+              <par def="16"/>
+            </section>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="19" leftmargin="1in" hide="notes mobile"/>
+      <par def="19">
+        <run html="true">&lt;br&gt;</run>
+      </par>
+      <pardef id="20" leftmargin="1in" hide="web"/>
+      <par def="20"/>
+      <table widthtype="fitwindow" cellbordercolor="#42747b" leftmargin="0.7500in" refwidth="12.7417in">
+        <tablerowstyle>
+          <font size="0pt" style="underline strikethrough emboss" name="monospace" color="#090000"/>
+        </tablerowstyle>
+        <tablecolumn width="100%"/>
+        <tablerow>
+          <tablecell borderwidth="1px 0px" bgcolor="#a8cfd4">
+            <pardef id="21" leftmargin="0.0167in" keepwithnext="true" keeptogether="true"/>
+            <section>
+              <sectiontitle pardef="21" color="#78b4bc">
+                <font size="9pt"/>
+                <text>Personal Documents</text>
+              </sectiontitle>
+              <pardef id="22" leftmargin="0.0167in" hide="notes web" keepwithnext="true" keeptogether="true"/>
+              <par def="22"/>
+              <table widthtype="fitmargins" leftmargin="0.0167in" rightmargin="99%" refwidth="12.5979in">
+                <tablerowstyle>
+                  <font size="0pt" style="underline strikethrough emboss" name="monospace" color="#090000"/>
+                </tablerowstyle>
+                <tablecolumn width="100%"/>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="#efefef">
+                    <pardef id="24" leftmargin="0.4521in" firstlineleftmargin="0.3000in" keepwithnext="true" keeptogether="true"/>
+                    <par def="24">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>abrName := @Name([Abbreviate]; @UserName);
+abrNameReplSpace := @ReplaceSubstring(abrName; " "; "_");
+UName := @ReplaceSubstring(abrNameReplSpace; "/"; "__");
+@SetProfileField("TempVars"; "ProfileKey"; UName);
+@If(@ClientType = "Notes";
+@Command([ToolsRunMacro]; "(EditInterestProfile)");
+
+@Do(
+@SetProfileField("tempvars"; "viewtitle";  "Announcements");
+@URLOpen("/"+@ReplaceSubstring(@Subset(@WebDbName; -1);" ";"+")+"/WebEditInterestProfile?OpenAgent&amp;login")))</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>My Newsletter Profile</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="white">
+                    <par def="24">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@Command([Compose]; "IndStat")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>New Individual Status Report</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="#efefef">
+                    <pardef id="25" leftmargin="0.4521in" firstlineleftmargin="0.3000in" hide="web" keepwithnext="true" keeptogether="true"/>
+                    <par def="25">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none">
+                        <code event="click">
+                          <formula>@If(@ClientType  = "Notes"; ""; @SetProfileField("TempVars"; "viewtitle"; "PersAssignedToMe"));
+@SetTargetFrame("NotesView");
+@PostedCommand([OpenView]; "PersAssignedToMe")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Documents Assigned to Me</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="white">
+                    <par def="25">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@If(@ClientType  = "Notes"; ""; @SetProfileField("TempVars"; "viewtitle"; "PersDocsICreated"));
+@SetTargetFrame("NotesView");
+@PostedCommand([OpenView]; "PersDocsICreated")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Documents I Created</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+              </table>
+              <par def="22"/>
+            </section>
+          </tablecell>
+        </tablerow>
+      </table>
+      <par def="19">
+        <run html="true">&lt;br&gt;</run>
+      </par>
+      <par def="20"/>
+      <table widthtype="fitwindow" cellbordercolor="#42747b" leftmargin="0.7500in" refwidth="12.7417in">
+        <tablerowstyle>
+          <font size="0pt" style="underline strikethrough emboss" name="monospace" color="#090000"/>
+        </tablerowstyle>
+        <tablecolumn width="100%"/>
+        <tablerow>
+          <tablecell borderwidth="1px 0px" bgcolor="#a8cfd4">
+            <section>
+              <sectiontitle pardef="15" color="#78b4bc">
+                <font size="9pt"/>
+                <text>Project Information</text>
+              </sectiontitle>
+              <par def="16"/>
+              <table widthtype="fitmargins" leftmargin="0.0104in" rightmargin="99%" refwidth="12.6042in">
+                <tablerowstyle>
+                  <font size="0pt" style="underline strikethrough emboss" name="monospace" color="#090000"/>
+                </tablerowstyle>
+                <tablecolumn width="100%"/>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="#efefef">
+                    <par def="18">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@SetTargetFrame("NotesView");
+@PostedCommand([OpenView]; "Announcements")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Team Announcements</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="white">
+                    <par def="18">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@SetTargetFrame("NotesView");
+@PostedCommand([OpenView]; "TeamOverview")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>TeamRoom Overview</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="#efefef">
+                    <par def="18">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@SetTargetFrame("NotesView");
+@PostedCommand([OpenView]; "StatusLookup")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Team/Subteam Status Reports</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="white">
+                    <par def="18">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@SetTargetFrame("NotesView");
+@PostedCommand([OpenView]; "IndStat")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Individual Status Reports</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="#efefef">
+                    <par def="18">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@If(@ClientType  = "Notes"; ""; @SetProfileField("TempVars"; "viewtitle"; "Calendar"));
+@SetTargetFrame("NotesView");
+@PostedCommand([OpenView]; "Calendar")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Calendar</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="white">
+                    <par def="18">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@If(@ClientType  = "Notes"; ""; @SetProfileField("TempVars"; "viewtitle"; "($All)"));
+@SetTargetFrame("NotesView");
+@PostedCommand([OpenView]; "($All)")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Index of All Documents</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+                <tablerow>
+                  <tablecell borderwidth="0px" bgcolor="#efefef">
+                    <par def="18">
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                      <actionhotspot hotspotstyle="none" targetframe="NotesView">
+                        <code event="click">
+                          <formula>@If(@ClientType  = "Notes"; ""; @SetProfileField("TempVars"; "viewtitle"; "Filed"));
+@SetTargetFrame("NotesView");
+@PostedCommand([OpenView]; "Filed")</formula>
+                        </code>
+                        <run>
+                          <font size="9pt"/>Inactive Documents</run>
+                      </actionhotspot>
+                      <run>
+                        <font size="9pt"/>
+                      </run>
+                    </par>
+                  </tablecell>
+                </tablerow>
+              </table>
+              <par def="16"/>
+            </section>
+          </tablecell>
+        </tablerow>
+      </table>
+      <par def="19">
+        <run html="true">&lt;br&gt;</run>
+      </par>
+      <par def="20"/>
+      <table widthtype="fitwindow" cellbordercolor="#42747b" leftmargin="0.7500in" refwidth="12.7417in">
+        <tablerowstyle>
+          <font size="0pt" style="underline strikethrough emboss" name="monospace" color="#090000"/>
+        </tablerowstyle>
+        <tablecolumn width="100%"/>
+        <tablerow>
+          <tablecell borderwidth="1px 0px" bgcolor="#a8cfd4">
+            <pardef id="26" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>1</formula>
+              </code>
+            </pardef>
+            <section expanded="true">
+              <sectiontitle pardef="26" color="#78b4bc">
+                <font size="9pt"/>
+                <text>Other views &amp; folders</text>
+              </sectiontitle>
+              <par def="16"/>
+              <par def="26">
+                <embeddedoutline outline="OtherVOutline" showtwistie="true" widthtype="fitwindow" heighttype="fixed" height="1in" expand="none" targetframe="NotesView">
+                  <control>
+                    <eoutlinebackground normalcolor="white"/>
+                  </control>
+                  <title>
+                    <layout labelalign="topleft" labelhoffset="0" labelvoffset="0"/>
+                  </title>
+                  <toplevel>
+                    <font size="9pt"/>
+                    <layout labelalign="topleft" imagealign="topleft" labelhoffset="0" labelvoffset="0"/>
+                  </toplevel>
+                  <sublevel>
+                    <font size="9pt"/>
+                    <layout labelalign="topleft" entryhoffset="0.2000in" imagealign="topleft" labelhoffset="0.2000in" labelvoffset="0"/>
+                  </sublevel>
+                </embeddedoutline>
+              </par>
+              <par def="16"/>
+            </section>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="27" leftmargin="1in"/>
+      <par def="27"/>
+    </richtext>
+  </body>
+  <item name="OriginalModTime" sign="true">
+    <datetime dst="true">20050504T122708,55-04</datetime>
+  </item>
+</page>

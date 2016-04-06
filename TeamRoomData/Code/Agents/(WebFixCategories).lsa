@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(WebFixCategories)" hide="v3" runaswebuser="true" publicaccess="false" language="en" comment="Map categories for the web">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+Use "wStringResource"
+Option Declare
+
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>'WebFixCategories: 
+
+Dim Db As NotesDatabase
+Dim OldCat As Variant
+Dim CurrentCat As Variant
+Dim selected As Integer
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Dim s As New notessession
+	Dim MapDoc As notesdocument
+	Dim MapView As notesview
+	Dim mapunid As Variant
+	Dim dbug As New noteslog("WebFixCategories")
+	Dim dbname As String
+	
+	Set db =  s.currentdatabase	
+	
+	dbname = getdbpath
+	
+'logging is for debug purposes
+	Set dbug = New NotesLog("WebFixCategories")
+'to turn off the debug log, set this to False     
+	dbug.LogActions = True
+	dbug.OpenAgentLog
+	
+	Dim key As String
+	
+	Dim mapdoc2 As String
+	
+	On Error Goto ErrorHere
+	
+	key = "MapCategories"
+	
+	Set MapView= db.getview("($Profiles)")
+	Set MapDoc= MapView.getdocumentbykey(key)
+	
+	OldCat=MapDoc.GetItemValue("OldCat")
+	CurrentCat=MapDoc.GetItemValue("CurrentCat")
+	selected = Ubound(oldcat)
+	
+	MapCategories
+	
+	Call dbug.close 
+	Call MapDoc.Remove(True)
+	
+	If selected = 0 Then
+		Print "&lt;h2&gt;" &amp; getstring(41) &amp; "&lt;/h2&gt;"
+	Else
+		Print "&lt;h2&gt;" &amp; getstring(42) &amp; "&lt;/h2&gt;"
+	End If
+	
+	Print |&lt;hr&gt;&lt;a href="javascript: onClick=window.close(self)"&gt;| &amp; getstring(2)  &amp; "&lt;/a&gt;&amp;nbsp&amp;nbsp&amp;nbsp" &amp;_
+	"&lt;a href=/" + DbName + "/MapCategories?OpenForm&gt;" &amp; getstring(40) &amp; "&lt;/a&gt;"	
+	
+ErrorHere:
+	dbug.logaction(Err &amp; " - " &amp; Error)
+	
+	
+End Sub
+
+
+</lotusscript>
+  </code>
+  <code event="GetDBPath">
+    <lotusscript>Function GetDBPath
+        'check to see if the database is in a directory
+	If Instr(db.filepath,"\") Then
+		getdbpath = Left$(db.filepath, Instr(db.filepath,"\")-1) + "/" + Right$(db.filepath,Len(db.filepath)-Instr(db.filepath,"\"))
+	Else
+		getdbpath = db.filepath
+	End If
+	
+End Function
+</lotusscript>
+  </code>
+  <code event="MapCategories">
+    <lotusscript>Sub MapCategories
+	Dim View As NotesView
+	Dim Item As NotesItem
+	Dim i As Integer
+	Dim cats As Variant
+	Dim Doc As NotesDocument
+	
+	Set View=Db.GetView("($All)")
+	Set Doc= View.GetFirstDocument
+	
+	While Not(Doc Is Nothing)
+		cats=Doc.GetItemValue("Categories")
+		i = 0		
+		
+		Forall x In cats
+			Forall y In OldCat
+				If Lcase(x) = Lcase(y) Then
+					cats(i) = CurrentCat(0)
+					Set item = doc.replaceitemvalue("Categories", cats)
+				End If
+			End Forall
+			i= i+1
+		End Forall
+		Call Doc.Save( True, True)        		
+		Set Doc=View.GetNextdocument(Doc)
+	Wend
+	
+End Sub</lotusscript>
+  </code>
+</agent>

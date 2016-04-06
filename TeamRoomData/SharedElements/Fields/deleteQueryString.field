@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sharedfield xmlns="http://www.lotus.com/dxl" name="deleteQueryString" language="en">
+  <field type="text" kind="editable" name="deleteQueryString">
+    <code event="inputtranslation">
+      <formula>FIELD QUERY_STRING_DECODED := @Unavailable;
+""</formula>
+    </code>
+  </field>
+</sharedfield>

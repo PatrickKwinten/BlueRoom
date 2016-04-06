@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sharedfield xmlns="http://www.lotus.com/dxl" name="DefaultDocType3" language="en">
+  <field type="text" kind="computedwhencomposed" name="DefaultDocType3">
+    <code event="defaultvalue">
+      <formula>REM {Value should be translated};
+"Meeting"</formula>
+    </code>
+  </field>
+</sharedfield>

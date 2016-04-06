@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(webInactiveToActive)" hide="v3" runaswebuser="true" publicaccess="false" language="en">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+Use "wStringResource"
+Use "DiscussionRoutines"
+
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>'SetActiveToInactive: 
+
+
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	
+	InstantiateObjects
+	
+	Dim session As New notessession
+	Dim db As notesdatabase
+	Dim doc As notesdocument
+	Set db  = session.currentdatabase
+	Dim i As Integer
+	Dim item As notesitem	
+	
+	dbpath = getdbpath
+	
+	Set doc = session.documentcontext
+	
+	Set item = doc.getfirstItem("FileByDate")
+	Call item.remove		
+	Set item = doc.getfirstItem("DateFiled")
+	Call item.remove
+	Set item = doc.getfirstItem("ViewDateFiled")
+	Call item.remove
+	Call doc.replaceitemvalue("Status", "1")
+	Call doc.replaceitemvalue("NeverFile", "1")
+	Call doc.computewithform(0,0)
+	Call doc.save(True, True, True)
+	
+	AllView =   "&lt;hr&gt;&lt;font size=2&gt;&lt;a href=/" + dbpath + "/($All)?OpenView&gt;"+ getString(50) +"&lt;/a&gt;&amp;nbsp&amp;nbsp"
+	ActiveView = "&lt;a href=/" + dbpath + "/ActiveDate?OpenView&gt;"+GetString(52)+"&lt;/a&gt;&lt;hr&gt;"
+	
+	Print "&lt;h3&gt;" + getstring(56) +  "&lt;/h3&gt;" + AllView + ActiveView
+	
+End Sub</lotusscript>
+  </code>
+</agent>

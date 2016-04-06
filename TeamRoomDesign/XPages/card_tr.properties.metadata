@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><note class="form" maintenanceversion="1.5" replicaid="C1257F57006DE96D" version="9.0" xmlns="http://www.lotus.com/dxl">
+<noteinfo noteid="3cf6" sequence="5" unid="4A93DBBF031266CCC1257F730050E2B5">
+<created><datetime>20160311T154329,17+01</datetime></created>
+<modified><datetime>20160311T154633,30+01</datetime></modified>
+<revised><datetime>20160311T154633,29+01</datetime></revised>
+<lastaccessed><datetime>20160311T154633,30+01</datetime></lastaccessed>
+<addedtofile><datetime>20160311T154329,87+01</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Patrick Kwinten/O=quintessens</name></updatedby>
+<wassignedby><name>CN=Patrick Kwinten/O=quintessens</name></wassignedby>
+<item name="$Flags"><text>gC~4K2</text></item>
+<item name="$TITLE"><text>card_tr.properties</text></item>
+
+
+<item name="$FileNames" sign="true"><text>card_tr.properties</text></item></note>

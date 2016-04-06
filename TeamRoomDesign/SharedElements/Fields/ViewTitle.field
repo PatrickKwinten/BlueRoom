@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sharedfield xmlns="http://www.lotus.com/dxl" name="ViewTitle" language="en">
+  <field type="text" kind="computedfordisplay" name="ViewTitle">
+    <code event="defaultvalue">
+      <formula>@ViewTitle</formula>
+    </code>
+  </field>
+</sharedfield>

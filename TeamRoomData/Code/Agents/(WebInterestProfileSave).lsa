@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(WebInterestProfileSave)" hide="v3" runaswebuser="true" publicaccess="false" language="en" comment="Web Query Save agent for Interest Profile form">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+Use "DiscussionRoutines"
+
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>Dim webuser As notesname
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	
+	InstantiateObjects
+	IsWebUser = True
+	Set webuser = New notesname(note.personname(0))  
+	
+	If note.isnewnote Then
+		note.Subject = "Newsletter Profile for " &amp; webuser.common
+		note.ProtectFromArchive = 1
+	End If
+	
+End Sub</lotusscript>
+  </code>
+</agent>

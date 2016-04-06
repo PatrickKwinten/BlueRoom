@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="Template Name" alias="Template Name" nocompose="true" noquery="true" publicaccess="true" language="en" bgcolor="#a8cfd4" noinitialfocus="true" nofocusonf6="true">
+  <actionbar bgcolor="#78b4bc" bordercolor="black">
+    <actionbarstyle height="4.7500ex">
+      <font size="9pt" name="multilingual"/>
+    </actionbarstyle>
+    <actionbuttonstyle margintype="fixed" margin="5" bgcolor="none" displayborder="never" widthtype="background"/>
+    <font size="14pt" name="multilingual"/>
+    <border style="solid" width="0px 0px 1px"/>
+    <action title="TeamRoom" showinmenu="false" hide="web"/>
+  </actionbar>
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="notes web" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1"/>
+      <pardef id="2" align="none" leftmargin="1in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <subformref name="WebFont"/>
+      <par def="1"/>
+      <table cellbordercolor="black" leftmargin="0.7396in" widthtype="fixedcenter" refwidth="2in">
+        <tablecolumn width="2in"/>
+        <tablerow>
+          <tablecell borderwidth="0px">
+            <pardef id="4" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="4">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="0px">
+            <pardef id="5" align="center" leftmargin="0.1000in" hide="notes" keepwithnext="true" keeptogether="true"/>
+            <par def="5">
+              <run>
+                <font style="bold"/>TeamRoom</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="0px">
+            <pardef id="6" align="center" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="6">
+              <run>
+                <font style="bold"/>
+              </run>
+              <run>
+                <font size="9pt"/>
+                <computedtext>
+                  <code event="value">
+                    <formula>View := "MissionLookup";
+TeamNameLookup := @DbLookup("" : "NoCache"; ""; View; "Mission"; 2);
+@If(@IsError(TeamNameLookup); ""; TeamNameLookup = ""; ""; TeamNameLookup)</formula>
+                  </code>
+                </computedtext>
+              </run>
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="7" hide="web">
+        <code event="hidewhen">
+          <formula>@Contains(@LowerCase(@Platform([Specific])); "linux")</formula>
+        </code>
+      </pardef>
+      <par def="7">
+        <run>
+          <font size="2pt" name="multilingual" color="#002060"/>
+        </run>
+      </par>
+      <table widthtype="fitwindow" leftmargin="0.7500in" refwidth="7.8958in">
+        <tablecolumn width="100%"/>
+        <tablerow>
+          <tablecell valign="center" borderwidth="0px">
+            <pardef id="9" leftmargin="0.1000in" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="9">
+              <run>
+                <font size="8pt" color="#202052"/>
+              </run>
+              <run>
+                <font size="9pt"/>
+                <computedtext>
+                  <code event="value">
+                    <formula>View := "MissionLookup";
+TeamNameLookup := @DbLookup("" : "NoCache"; ""; View; "Mission"; 2);
+@If(@IsError(TeamNameLookup); ""; TeamNameLookup = ""; ""; TeamNameLookup)</formula>
+                  </code>
+                </computedtext>
+              </run>
+              <run>
+                <font size="8pt" name="multilingual" color="#002060"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="10" hide="read edit copy preview previewedit"/>
+      <par def="10">
+        <run>
+          <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="green"/>// This field prevents the form from saving a document.</run>
+      </par>
+      <par def="10">
+        <run>
+          <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="gray"/>SaveOptions: </run>
+        <run>
+          <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>
+          <field type="text" kind="computed" name="SaveOptions">
+            <code event="defaultvalue">
+              <formula>"0"</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="14pt"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+  <item name="OriginalModTime" sign="true">
+    <datetime>20050118T105713,04-05</datetime>
+  </item>
+  <item name="$SubForm_RepIDs" sign="true">
+    <text>0000000000000000</text>
+  </item>
+</form>

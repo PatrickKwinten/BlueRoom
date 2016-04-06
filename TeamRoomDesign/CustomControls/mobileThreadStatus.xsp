@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" 
+	xmlns:xc="http://www.ibm.com/xsp/custom" 
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+    
+    <xp:this.beforePageLoad>
+        <![CDATA[#{javascript:
+            // redirect back to the home page if no contextual
+            // query string parameters are available on the url...
+            if(!param.containsKey("documentId")){
+                context.redirectToHome();
+            }
+        }]]>
+    </xp:this.beforePageLoad>
+	
+	<xp:panel styleClass="mblThreadPanel">
+		<xp:this.rendered><![CDATA[#{javascript:
+			sessionScope.backURL = "status\u0026action=openDocument\u0026documentId="+currentDocument.getNoteID();
+			return true;
+		}]]></xp:this.rendered>
+		<xp:table styleClass="xlThreadStatusTable">
+			<xp:tr>
+				<xp:td>
+					<xp:div>
+						<xp:text styleClass="mblThreadDivText">
+							<xp:this.value><![CDATA[#{javascript:
+								var status = document1.getForm();
+								var subject = "";
+								
+								if(status === 'IndStat')
+								{
+									subject = I18n.format(strings.getString('mobile.status_report_title_for_person'), peopleBean.getPerson(document1.getItemValueString('From')).displayName);
+								}
+								else if(status === 'SubteamStatus')
+								{
+									subject = strings.getString('mobile.subteam_status_report');
+								}
+								else
+								{
+									subject = strings.getString('mobile.status_report_title_for_team');
+								}
+								return subject;
+							}]]></xp:this.value>
+						</xp:text>
+						<xp:br></xp:br>
+						<xp:label for="Goals2" value="#{javascript:strings.getString('mobile.for_date')}" styleClass="mblThreadRichText" />
+						<xp:text id="Goals2" value="#{document1.ReportDate}" styleClass="mblThreadRichText">
+							<xp:this.converter>
+								<xp:convertDateTime type="date">
+								</xp:convertDateTime>
+							</xp:this.converter>
+						</xp:text>
+									
+						<xp:panel styleClass="mblThreadDiv">
+							<xp:label for="from" value=" by "/>
+							<xp:link styleClass="lotusPerson" id="from"
+								text="#{javascript: peopleBean.getPerson(document1.getItemValueString('From')).displayName }">
+								<xp:eventHandler event="onclick"
+									submit="true" refreshMode="complete">
+									<xp:this.action>
+										<xp:actionGroup>
+											<xe:moveTo
+												direction="Left to Right" transitionType="slide"
+												targetPage="memberProfile&amp;profile=#{javascript:peopleBean.getPerson(currentDocument.getItemValueString('From')).abbreviatedName}"
+												forceFullRefresh="true">
+											</xe:moveTo>
+										</xp:actionGroup>
+									</xp:this.action>
+								</xp:eventHandler>
+							</xp:link>
+							&#160;
+							<xp:label for="createdDateOut" value="#{javascript:strings.getString('mobile.created')}"></xp:label>
+							&#160;
+							<xp:text id="createdDateOut" value="#{javascript:@Created()}">
+								<xp:this.converter>
+									<xp:convertDateTime type="date"></xp:convertDateTime>
+								</xp:this.converter>
+							</xp:text>
+							&#160;
+							<xp:label value="|" for="statusField"></xp:label>
+							&#160;
+							<xp:text disableTheme="true" value="#{javascript:strings.getString('mobile.status.active')}" id="statusField"
+								rendered="#{javascript: document1.getItemValueString('FileThisStatusDoc') == '0'}" />
+							<xp:text disableTheme="true" value="#{javascript:strings.getString('mobile.status.inactive')}"
+								rendered="#{javascript: document1.getItemValueString('FileThisStatusDoc') == '1'}" />
+						</xp:panel>
+						<xp:br></xp:br>
+						
+						<!-- xc:statusCommonSubheading id="subHeadCC" xp:key="subheading"/-->
+						<xp:panel xp:key="meta" styleClass="mblThreadDiv">
+							<xp:this.rendered><![CDATA[#{javascript:
+								var status = document1.getForm();
+								if(status === 'SubteamStatus')
+								{return true;}
+								else
+								{return false;}
+							}]]></xp:this.rendered>
+							<!-- xc:statusCommonMeta id="commonMeta"/-->
+							<xp:label for="linkSubteams" value="Subteams: "/>
+							<xp:label for="linkSubteams" value="#{document1.SubTeamName}"/>
+						</xp:panel>		
+						<hr></hr>
+						
+						
+						<xp:text id="computedField1" value="#{javascript: strings.getString('mobile.status.key.thoughts')}" styleClass="mblThreadKeyThought">
+						</xp:text><xp:br></xp:br>
+						<xp:text id="subjectOut" value="#{document1.Subject}">
+						</xp:text><xp:br></xp:br><xp:br></xp:br>
+						
+						<xp:text id="computedField2" value="#{javascript: strings.getString('mobile.status.acc')}">
+							<xp:this.style><![CDATA[#{javascript:
+								var control = getComponent('inputRichText1').getValue();
+								if(control === null)
+								{
+									getComponent('inputRichText1').setRendered(false);
+									return "display:none";
+								}
+								else
+								{
+									getComponent('inputRichText1').setRendered(true);
+									return "color: black; font-weight:bold;font-size:11pt; line-height:30px;";
+								}
+							}]]></xp:this.style>
+						</xp:text>
+						<xp:inputRichText value="#{document1.ThisWeek}" id="inputRichText1"
+							readonly="true">
+						</xp:inputRichText>
+						<xp:panel styleClass="mblThreadDiv">
+							<xc:mobile_fileDownload field="ThisWeek"></xc:mobile_fileDownload>
+						</xp:panel>
+						
+						<xp:text id="computedField5" value="#{javascript: strings.getString('mobile.Status.summary')}">
+							<xp:this.style><![CDATA[#{javascript:
+								var control = getComponent('inputRichText4').getValue();
+								if(control === null)
+								{
+									getComponent('inputRichText4').setRendered(false);
+									return "display:none";
+								}
+								else
+								{
+									getComponent('inputRichText4').setRendered(true);
+									return "color: black; font-weight:bold;font-size:11pt; line-height:30px;";
+								}
+							}]]></xp:this.style>
+						</xp:text>
+						<xp:inputRichText value="#{document1.Summary}" id="inputRichText4"
+							readonly="true">
+						</xp:inputRichText>
+						<xp:panel styleClass="mblThreadDiv">
+							<xc:mobile_fileDownload field="Summary"></xc:mobile_fileDownload>
+						</xp:panel>
+						
+						<xp:text id="computedField3" value="#{javascript: strings.getString('mobile.status.goals.week')}">
+							<xp:this.style><![CDATA[#{javascript:
+								var control = getComponent('inputRichText2').getValue();
+								if(control === null)
+								{
+									getComponent('inputRichText2').setRendered(false);
+									return "display:none";
+								}
+								else
+								{
+									getComponent('inputRichText2').setRendered(true);
+									return "color: black; font-weight:bold;font-size:11pt; line-height:30px;";
+								}
+							}]]></xp:this.style>
+						</xp:text>
+						<xp:inputRichText value="#{document1.Goals}" id="inputRichText2"
+							readonly="true">
+						</xp:inputRichText>
+						<xp:panel styleClass="mblThreadDiv">
+							<xc:mobile_fileDownload field="Goals"></xc:mobile_fileDownload>
+						</xp:panel>
+						
+						<xp:text id="computedField4" value="#{javascript: strings.getString('mobile.Status.issues')}">
+							<xp:this.style><![CDATA[#{javascript:
+								var control = getComponent('inputRichText3').getValue();
+								if(control === null)
+								{
+									getComponent('inputRichText3').setRendered(false);
+									return "display:none";
+								}
+								else
+								{
+									getComponent('inputRichText3').setRendered(true);
+									return "color: black; font-weight:bold;font-size:11pt; line-height:30px;";
+								}
+							}]]></xp:this.style>
+						</xp:text>
+						<xp:inputRichText value="#{document1.Issues}" id="inputRichText3"
+							readonly="true">
+						</xp:inputRichText>								
+						<xp:panel styleClass="mblThreadDiv">
+							<xc:mobile_fileDownload field="Issues"></xc:mobile_fileDownload>
+						</xp:panel>
+					</xp:div>
+				</xp:td>
+			</xp:tr>
+			<xp:tr styleClass="xlThreadStatusDetail">
+				<xp:td colspan='2'>
+					<xp:text id="computedField6" value="#{javascript: strings.getString('mobile.Status.Details')}">
+						<xp:this.style><![CDATA[#{javascript:
+							var control = getComponent('inputText7').getValue();
+							if(control === null)
+							{
+								getComponent('inputText7').setRendered(false);
+								return "display:none";
+							}
+							else
+							{
+								getComponent('inputText7').setRendered(true);
+								return "color: black; font-weight:bold;font-size:11pt; line-height:30px;";
+							}
+						}]]></xp:this.style>
+					</xp:text>
+					<xp:inputRichText value="#{currentDocument.Body}" id="inputText7" readonly="true">
+					</xp:inputRichText>	
+					<xp:panel styleClass="mblThreadDiv">
+						<xc:mobile_fileDownload field="Body"></xc:mobile_fileDownload>
+					</xp:panel>
+				</xp:td>
+			</xp:tr>
+		</xp:table>
+	</xp:panel>
+</xp:view>

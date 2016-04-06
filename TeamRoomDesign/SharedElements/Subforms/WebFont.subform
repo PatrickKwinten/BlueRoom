@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<subform xmlns="http://www.lotus.com/dxl" name="WebFont" language="en">
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>&lt;HEAD&gt;<break/>&lt;STYLE TYPE="text/css"&gt;</run>
+      </par>
+      <pardef id="2" align="none" leftmargin="1in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in">
+        <code event="hidewhen">
+          <formula>REM {DNT};
+brInf := @BrowserInfo("BrowserType");
+@Contains(@LowerCase(brInf); "microsoft")</formula>
+        </code>
+      </pardef>
+      <par def="2">
+        <run html="true">
+          <font size="8pt"/> 	BODY {font-family: sans-serif}</run>
+      </par>
+      <pardef id="3" leftmargin="1.5000in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in">
+        <code event="hidewhen">
+          <formula>REM {DNT};
+brInf := @BrowserInfo("BrowserType");
+!@Contains(@LowerCase(brInf); "microsoft")</formula>
+        </code>
+      </pardef>
+      <par def="3">
+        <run html="true">
+          <font size="9pt"/>BODY, SELECT {font-family: SimSun-18030,sans-serif}</run>
+      </par>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>&lt;/STYLE&gt;<break/>&lt;/HEAD&gt;</run>
+      </par>
+    </richtext>
+  </body>
+  <item name="OriginalModTime" sign="true">
+    <datetime>20050309T065509,37-05</datetime>
+  </item>
+</subform>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sharedfield xmlns="http://www.lotus.com/dxl" name="FileThisStatusDoc" language="en">
+  <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="FileThisStatusDoc" description="Active or inactive" htmlid="FileThisStatusDoc" htmltitle="Active or inactive">
+    <keywords columns="2" ui="radiobutton">
+      <textlist>
+        <text>Active | 0</text>
+        <text>Inactive | 1</text>
+      </textlist>
+    </keywords>
+    <code event="defaultvalue">
+      <formula>"0"</formula>
+    </code>
+  </field>
+  <item name="$HTMLCode" sign="true">
+    <rawitemdata type="1"/>
+  </item>
+</sharedfield>

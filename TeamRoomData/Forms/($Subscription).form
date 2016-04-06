@@ -1,0 +1,1498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="($Subscription)" nocompose="true" noquery="true" publicaccess="false" language="en">
+  <globals>
+    <code event="options">
+      <lotusscript>Option Public
+Option Declare
+%INCLUDE "lsconst.lss"
+
+</lotusscript>
+    </code>
+    <code event="declarations">
+      <lotusscript>Const COMPILE_SUCCESS_TITLE = "Compiled Successfully"
+Const COMPILE_SUCCESS_BODY = "There are no syntax errors, the formula compiled successfully."
+Const COMPILE_FAILURE_TITLE = "Syntax Error"
+Const COMPILE_FAILURE_BODY = "There is a least one syntax error in the formula.  It did not compile."
+Const COMPILE_FAILURE_SAVE_BODY = "There is a least one syntax error in the formula.  This document could not be saved."</lotusscript>
+    </code>
+  </globals>
+  <code event="windowtitle">
+    <formula>"TeamRoom Subscription"</formula>
+  </code>
+  <code event="querysave">
+    <lotusscript>Sub Querysave(Source As Notesuidocument, Continue As Variant)
+	Dim note As NotesDocument
+	Dim item As NotesItem
+	Source.Refresh
+	Set note = Source.document
+	Set item = note.getFirstItem( "$HLFormula")
+	If note.getItemValue( "$QueryType")(0) = "adv" Then
+		If item.type &lt;&gt; FORMULA Then
+			Messagebox COMPILE_FAILURE_SAVE_BODY,  MB_ICONSTOP, COMPILE_FAILURE_TITLE 
+			Source.goToField "AdvFormula"
+			Continue = False
+		End If
+	End If
+	Set item = note.replaceitemvalue("$MainTable", "basics")
+End Sub</lotusscript>
+  </code>
+  <actionbar linestyle="double" bgcolor="#104160" bordercolor="black">
+    <actionbarstyle height="4.7500ex">
+      <font size="9pt" name="multilingual"/>
+    </actionbarstyle>
+    <actionbuttonstyle margintype="fixed" margin="5" bgcolor="none" displayborder="notesstyle" widthtype="background"/>
+    <font size="9pt" style="bold" name="multilingual" color="white"/>
+    <border width="0px 0px 1px"/>
+    <action title="_Edit Document" hide="preview edit previewedit">
+      <code event="click">
+        <formula>@Command([EditDocument])</formula>
+      </code>
+    </action>
+    <action title="_Forward" showinbar="false"/>
+    <action title="Save &amp; Close" hide="preview read previewedit">
+      <imageref name="ok.gif"/>
+      <code event="click">
+        <formula>@If( @Command([FileSave]); @Command([FileCloseWindow]); "")</formula>
+      </code>
+    </action>
+    <action title="Cancel" hide="preview previewedit">
+      <imageref name="cancel.gif|cancel.gif"/>
+      <code event="click">
+        <formula>FIELD SaveOptions := "0";
+@Command([FileCloseWindow])</formula>
+      </code>
+    </action>
+  </actionbar>
+  <body>
+    <richtext>
+      <pardef id="1" spaceafter="1.5" hide="read edit copy preview previewedit notes web"/>
+      <par def="1">
+        <run>
+          <font color="silver"/>
+        </run>
+        <run>
+          <font size="9pt" color="silver"/>
+          <field type="text" kind="computedwhencomposed" name="$HLMLastServer">
+            <code event="defaultvalue">
+              <formula>""</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font color="silver"/>
+        </run>
+        <run>
+          <font size="9pt" color="silver"/>
+          <field type="datetime" kind="computedwhencomposed" name="$HLMLastChecked">
+            <datetimeformat show="datetime" date="yearmonthday" showtodaywhenappropriate="true" time="hourminutesecond" zone="never"/>
+            <code event="defaultvalue">
+              <formula>""</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" color="silver"/>
+        </run>
+        <run>
+          <font size="9pt" color="silver"/>
+          <field type="text" kind="computedwhencomposed" name="$NoPurge">
+            <code event="defaultvalue">
+              <formula>"1"</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="27" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="silver"/>
+        </run>
+        <run>
+          <font size="9pt" color="silver"/>
+          <field type="text" kind="computedwhencomposed" name="$HLType">
+            <code event="defaultvalue">
+              <formula>"1"</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="36" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="computedwhencomposed" name="CategoryOp">
+            <code event="defaultvalue">
+              <formula>"cont"</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="43" containertype="65418" aftercontainercount="1" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="computedwhencomposed" name="EventOp">
+            <code event="defaultvalue">
+              <formula>"cont"</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="50" containertype="65418" aftercontainercount="1" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" style="underline"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="computedfordisplay" name="AltNameDisplay">
+            <code event="defaultvalue">
+              <formula>REM {"1" means alternate names can be displayed};
+
+fNamePref := @LocationGetInfo([NamePreference]);
+@If(fNamePref != "1"; @Return("0"); @True);
+
+lUserLang := @LanguagePreference([AlternateName]);
+lAllLang := @Trim(@Unique(@DbColumn("" : "nocache"; $HLMonitorDB; "PeopleLookup"; 4)));
+@If(@IsMember(lAllLang; lUserLang); "1"; "0")</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="56" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" style="underline"/>
+        </run>
+      </par>
+      <pardef id="2"/>
+      <par def="2">
+        <run>
+          <font size="9pt" color="red"/>
+        </run>
+      </par>
+      <table widthtype="fitmargins" htmlid="trsub-form" refwidth="12.2708in">
+        <tablecolumn width="1.6250in"/>
+        <tablecolumn width="100%"/>
+        <tablerow>
+          <tablecell borderwidth="0px 3px 0px 0px">
+            <cellbackground repeat="once"/>
+            <pardef id="4" leftmargin="1%" keepwithnext="true" keeptogether="true"/>
+            <par def="4">
+              <run>
+                <font size="12pt" style="bold" color="#104160"/>Subscription</run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+              <embeddedoutline outline="SubscriptionFormOutline" scrollbars="false" widthtype="fitwindow" heighttype="fixed" height="0.5000in">
+                <title>
+                  <layout labelalign="topleft" labelhoffset="0" labelvoffset="0"/>
+                </title>
+                <toplevel normalcolor="#104160" selectedcolor="#71b2cf" mouseovercolor="silver">
+                  <font size="9pt" style="bold"/>
+                  <layout labelalign="topleft" imagealign="topleft" labelhoffset="0.3000in" labelvoffset="0"/>
+                </toplevel>
+                <sublevel>
+                  <layout labelalign="topleft" imagealign="topleft" labelhoffset="0" labelvoffset="0"/>
+                </sublevel>
+              </embeddedoutline>
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="0px 0px 0px 3px">
+            <pardef id="5" leftmargin="1%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="5">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <table widthtype="fitmargins" rowdisplay="compute" htmlid="MainTable" leftmargin="0.1000in" refwidth="10.5444in">
+              <tablecolumn width="100%"/>
+              <tablerow tablabel="form" name="basics">
+                <tablecell borderwidth="0px" htmlid="basics">
+                  <pardef id="7" leftmargin="1%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+                  <par def="7">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <table htmlid="subtbl1" leftmargin="0.1000in" widthtype="fixedleft" refwidth="3in">
+                    <tablecolumn width="3in"/>
+                    <tablerow>
+                      <tablecell borderwidth="0px" htmlid="sub1a">
+                        <pardef id="9" leftmargin="1%" spacebefore="1.5" spaceafter="1.5" keepwithnext="true" keeptogether="true"/>
+                        <par def="9">
+                          <run>
+                            <font size="9pt" color="#104160"/>Basics</run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                  </table>
+                  <pardef id="10" leftmargin="1%" keepwithnext="true" keeptogether="true"/>
+                  <par def="10">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <table widthtype="fitmargins" htmlid="sNametable" leftmargin="0.3000in" refwidth="10.2444in">
+                    <tablecolumn width="1.0729in" sizetofit="true"/>
+                    <tablecolumn width="100%"/>
+                    <tablerow>
+                      <tablecell borderwidth="0px" htmlid="sub1b">
+                        <pardef id="12" leftmargin="0%" keepwithnext="true" keeptogether="true"/>
+                        <par def="12">
+                          <run>
+                            <font size="9pt"/>Subscription name</run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px">
+                        <pardef id="13" leftmargin="0.1000in" keepwithnext="true" keeptogether="true"/>
+                        <par def="13">
+                          <run>
+                            <font size="9pt"/>
+                            <field type="text" kind="editable" name="$HLTitle">
+                              <code event="defaultvalue">
+                                <formula>"Enter a subscription name"</formula>
+                              </code>
+                            </field>
+                          </run>
+                          <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="7" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                  </table>
+                  <par def="10">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <table htmlid="subtbl2" leftmargin="0.1000in" widthtype="fixedleft" refwidth="3in">
+                    <tablecolumn width="3in"/>
+                    <tablerow>
+                      <tablecell borderwidth="0px" htmlid="sub2a">
+                        <par def="9">
+                          <run>
+                            <font size="9pt" color="#104160"/>Retrieval Choices</run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                  </table>
+                  <pardef id="11" leftmargin="0.3000in" keepwithnext="true" keeptogether="true"/>
+                  <par def="11">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <par def="11">
+                    <run>
+                      <font size="9pt"/>Retrieve these new or modified documents   </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="$QueryType">
+                        <keywords recalconchange="true" columns="1" ui="radiobutton">
+                          <textlist>
+                            <text>All | all</text>
+                            <text>Those matching the selected criteria | sel</text>
+                            <text>Those matching the selection formula (advanced) | adv</text>
+                          </textlist>
+                        </keywords>
+                        <code event="defaultvalue">
+                          <formula>"sel"</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <table widthtype="fitmargins" rowdisplay="compute" htmlid="QueryType" leftmargin="0" refwidth="10.5431in">
+                    <tablecolumn width="100%"/>
+                    <tablerow tablabel="sel" name="sel">
+                      <tablecell borderwidth="0px" htmlid="sel">
+                        <pardef id="15" leftmargin="0.3000in" keepwithnext="true" keeptogether="true"/>
+                        <par def="15">
+                          <run>
+                            <font size="9pt"/>Retrieve documents where:</run>
+                        </par>
+                        <pardef id="16" leftmargin="1%" keepwithnext="true" keeptogether="true"/>
+                        <par def="16">
+                          <run>
+                            <font size="9pt"/>
+                          </run>
+                        </par>
+                        <table widthtype="fitmargins" htmlid="subtbl3" leftmargin="0.3000in" refwidth="10.2431in">
+                          <tablecolumn width="1.3750in" sizetofit="true"/>
+                          <tablecolumn width="100%"/>
+                          <tablerow>
+                            <tablecell borderwidth="0px" htmlid="subtbl3a">
+                              <pardef id="17" leftmargin="0" keepwithnext="true" keeptogether="true"/>
+                              <par def="17">
+                                <run>
+                                  <font size="9pt"/>
+                                  <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="AuthorMatch" description="Authors" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Authors">
+                                    <keywords recalconchange="true" columns="1" ui="checkbox">
+                                      <textlist>
+                                        <text>Authors|1</text>
+                                      </textlist>
+                                    </keywords>
+                                  </field>
+                                </run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px" htmlid="sub3b">
+                              <pardef id="18" leftmargin="0.1000in" hide="read preview" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>AuthorMatch != "1" | AltNameDisplay = "0"</formula>
+                                </code>
+                              </pardef>
+                              <par def="18">
+                                <actionhotspot hotspotstyle="none"/>
+                                <actionhotspot hotspotstyle="none">
+                                  <code event="click">
+                                    <formula>FIELD ProfileAuthors := @PickList( [Name]; ProfileAuthors);
+""</formula>
+                                  </code>
+                                  <run>
+                                    <font size="9pt"/>
+                                  </run>
+                                </actionhotspot>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="AltNameSelection" description="Select the Team Members to whom you are directing this information." listinputseparators="comma" listdisplayseparator="comma" htmlid="People1_1">
+                                    <keywords columns="1" ui="dialoglist" allownew="true">
+                                      <formula>PLookup :=  @DbColumn("" : "nocache"; $HLMonitorDb; "PriAlt"; 1);
+
+@If(PLookup = ""; ""; PLookup)</formula>
+                                    </keywords>
+                                    <code event="htmlattributes">
+                                      <formula>"size = 4"</formula>
+                                    </code>
+                                    <code event="inputtranslation">
+                                      <formula>
+@If(
+AltNameSelection = "" &amp; PriNameSelection = ""; ProfileAuthors;
+AltNameDisplay = "1"; AltNameSelection; PriNameSelection)</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <run>
+                                  <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="#806210"/>
+                                </run>
+                              </par>
+                              <pardef id="19" leftmargin="0.1000in" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>AuthorMatch != "1" | AltNameDisplay = "1"</formula>
+                                </code>
+                              </pardef>
+                              <par def="19">
+                                <run>
+                                  <font size="9pt"/>
+                                  <field lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="PriNameSelection" description="Select the Team Members to whom you are directing this information." listinputseparators="comma" listdisplayseparator="comma" htmlid="People1_2">
+                                    <keywords columns="1" ui="dialoglist" allownew="true">
+                                      <formula>PLookup :=  @DbColumn("" : "nocache"; $HLMonitorDB; "PeopleLookup"; 1);
+
+@If(PLookup = ""; ""; PLookup)</formula>
+                                    </keywords>
+                                    <code event="htmlattributes">
+                                      <formula>"size = 4"</formula>
+                                    </code>
+                                    <code event="inputtranslation">
+                                      <formula>@If(AltNameDisplay = "0"; PriNameSelection; AltNameSelection)</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <run>
+                                  <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="#806210"/>
+                                </run>
+                              </par>
+                              <pardef id="20" leftmargin="0.1000in" hide="notes web" keepwithnext="true" keeptogether="true"/>
+                              <par def="20">
+                                <run>
+                                  <font size="9pt" name="user-interface"/>
+                                </run>
+                                <run>
+                                  <font size="9pt" color="gray"/>
+                                  <field type="text" allowmultivalues="true" kind="computed" name="ProfileAuthors" description="Inform me of new documents by these authors" listinputseparators="comma" listdisplayseparator="comma" htmlid="ProfileAuthors" htmltitle="Inform me of new documents by these authors">
+                                    <code event="htmlattributes">
+                                      <formula>"size=5"</formula>
+                                    </code>
+                                    <code event="defaultvalue">
+                                      <formula>@If(PriNameSelection = ""; ProfileAuthors; @Trim(PriNameSelection))</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="2" afterbegincount="5">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                              <pardef id="21" leftmargin="0.1000in" hide="edit previewedit" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>AuthorMatch != "1" | AltNameDisplay = "0"</formula>
+                                </code>
+                              </pardef>
+                              <par def="21">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field type="text" allowmultivalues="true" kind="computedfordisplay" name="dspProfileAuthors" listinputseparators="comma semicolon" listdisplayseparator="semicolon">
+                                    <code event="defaultvalue">
+                                      <formula>@Name([Abbreviate]; ProfileAuthors)</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                              <pardef id="22" leftmargin="0.1000in" spacebefore="1.5" hide="read preview" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>AuthorMatch != "1" | AltNameDisplay = "0"</formula>
+                                </code>
+                              </pardef>
+                              <par def="22">
+                                <run>
+                                  <font size="9pt" color="gray"/>Press ENTER and select one or more names from the list.</run>
+                              </par>
+                            </tablecell>
+                          </tablerow>
+                          <tablerow>
+                            <tablecell borderwidth="0px">
+                              <par def="17">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px">
+                              <pardef id="23" leftmargin="0.1000in" keepwithnext="true" keeptogether="true"/>
+                              <par def="23">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                          </tablerow>
+                          <tablerow>
+                            <tablecell borderwidth="0px" htmlid="sub3d">
+                              <par def="17">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="SubjectMatch" description="subjects" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Subject">
+                                    <keywords recalconchange="true" columns="1" ui="checkbox">
+                                      <textlist>
+                                        <text>Subject|1</text>
+                                      </textlist>
+                                    </keywords>
+                                  </field>
+                                </run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px" htmlid="sub3c">
+                              <pardef id="24" leftmargin="0.1000in" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>SubjectMatch != "1"</formula>
+                                </code>
+                              </pardef>
+                              <par def="24">
+                                <run>
+                                  <font size="9pt"/>
+                                  <field usenotesstyle="false" height="0.2340in" width="3in" multiline="true" borderstyle="inset" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="SubjectOp" description="Choose preference" htmltitle="Choose preference">
+                                    <keywords columns="1" ui="combobox">
+                                      <textlist>
+                                        <text>has any of these words|cont</text>
+                                        <text>has none of these words|!cont</text>
+                                        <text>has all of these words|all</text>
+                                        <text>begins with|beg</text>
+                                      </textlist>
+                                    </keywords>
+                                    <code event="defaultvalue">
+                                      <formula>"cont"</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field usenotesstyle="false" height="0.2000in" width="2.5000in" multiline="true" borderstyle="single" type="text" allowmultivalues="true" kind="editable" name="ProfileStrings" description="Enter words or fragments" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Enter words or fragments"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                              <pardef id="25" leftmargin="0.1000in" spacebefore="1.5" hide="read preview" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>SubjectMatch != "1"</formula>
+                                </code>
+                              </pardef>
+                              <par def="25">
+                                <run>
+                                  <font size="9pt" color="gray"/>Enter words or word fragments.  (ex. "pay' would match both "pay" and "paycheck")</run>
+                              </par>
+                            </tablecell>
+                          </tablerow>
+                          <tablerow>
+                            <tablecell borderwidth="0px">
+                              <pardef id="26" keepwithnext="true" keeptogether="true"/>
+                              <par def="26">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px">
+                              <pardef id="27" keepwithnext="true" keeptogether="true"/>
+                              <par def="27">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                          </tablerow>
+                          <tablerow>
+                            <tablecell borderwidth="0px" htmlid="sub3e">
+                              <par def="17">
+                                <run>
+                                  <font size="9pt"/>
+                                  <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="CategoryMatch" description="Categories" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Categories">
+                                    <keywords recalconchange="true" columns="1" ui="checkbox">
+                                      <textlist>
+                                        <text>Category|1</text>
+                                      </textlist>
+                                    </keywords>
+                                  </field>
+                                </run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px" htmlid="sub3g">
+                              <pardef id="28" leftmargin="0.1000in" hide="read preview" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>CategoryMatch != "1"</formula>
+                                </code>
+                              </pardef>
+                              <par def="28">
+                                <run>
+                                  <font size="9pt"/>
+                                  <field type="keyword" allowmultivalues="true" kind="editable" name="ProfileCategories" description="Category list" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Category list">
+                                    <keywords ui="dialoglist">
+                                      <formula>view := "MissionLookup";
+@Unique(@DbColumn("":"nocache"; $HLMonitorDB; View; 4))</formula>
+                                    </keywords>
+                                    <code event="exiting">
+                                      <lotusscript>Sub Exiting(Source As Field)
+	Dim w As New notesuiworkspace
+	Set uidoc = w.currentdocument
+	uidoc.refresh
+End Sub</lotusscript>
+                                    </code>
+                                  </field>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                              <pardef id="29" leftmargin="0.1000in" hide="edit copy previewedit" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>CategoryMatch != "1"</formula>
+                                </code>
+                              </pardef>
+                              <par def="29">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field type="text" allowmultivalues="true" kind="computedfordisplay" name="dspCat" listinputseparators="comma semicolon newline" listdisplayseparator="newline">
+                                    <code event="defaultvalue">
+                                      <formula>ProfileCategories</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                              <pardef id="30" leftmargin="0.1000in" spacebefore="1.5" hide="read preview" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>CategoryMatch != "1"</formula>
+                                </code>
+                              </pardef>
+                              <par def="30">
+                                <run>
+                                  <font size="9pt" color="gray"/>Press ENTER and select one or more categories from the list.</run>
+                              </par>
+                            </tablecell>
+                          </tablerow>
+                          <tablerow>
+                            <tablecell borderwidth="0px">
+                              <par def="26">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px">
+                              <par def="27">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                          </tablerow>
+                          <tablerow>
+                            <tablecell borderwidth="0px" htmlid="sub3h">
+                              <par def="17">
+                                <run>
+                                  <font size="9pt"/>
+                                  <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="EventMatch" description="Events" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Events">
+                                    <keywords recalconchange="true" columns="1" ui="checkbox">
+                                      <textlist>
+                                        <text>Milestone/Event|1</text>
+                                      </textlist>
+                                    </keywords>
+                                  </field>
+                                </run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px" htmlid="sub3i">
+                              <pardef id="31" leftmargin="0.1000in" hide="read preview" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>EventMatch != "1"</formula>
+                                </code>
+                              </pardef>
+                              <par def="31">
+                                <run>
+                                  <font size="9pt"/>
+                                  <field type="keyword" allowmultivalues="true" kind="editable" name="ProfileEvents" description="Event list" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Event list">
+                                    <keywords ui="dialoglist">
+                                      <formula>db := $HLMonitorDb;
+@DbColumn("" : "nocache"; db; "(Event Lookup)"; 1)</formula>
+                                    </keywords>
+                                    <code event="exiting">
+                                      <lotusscript>Sub Exiting(Source As Field)
+	Dim w As New notesuiworkspace
+	Set uidoc = w.currentdocument
+	uidoc.refresh
+End Sub</lotusscript>
+                                    </code>
+                                  </field>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                              <pardef id="32" leftmargin="0.1000in" hide="edit copy previewedit" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>EventMatch != "1"</formula>
+                                </code>
+                              </pardef>
+                              <par def="32">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field type="text" allowmultivalues="true" kind="computedfordisplay" name="dspEvents" listinputseparators="comma semicolon newline" listdisplayseparator="newline">
+                                    <code event="defaultvalue">
+                                      <formula>ProfileEvents</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                              <pardef id="33" leftmargin="0.1000in" spacebefore="1.5" hide="read preview" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>EventMatch != "1"</formula>
+                                </code>
+                              </pardef>
+                              <par def="33">
+                                <run>
+                                  <font size="9pt" color="gray"/>Press ENTER and select one or more milestones/events from the list.</run>
+                              </par>
+                            </tablecell>
+                          </tablerow>
+                          <tablerow>
+                            <tablecell borderwidth="0px">
+                              <pardef id="34" keepwithnext="true" keeptogether="true"/>
+                              <par def="34">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px">
+                              <par def="27">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                          </tablerow>
+                          <tablerow>
+                            <tablecell borderwidth="0px" htmlid="sub3k">
+                              <par def="34">
+                                <run>
+                                  <font size="9pt"/>
+                                  <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="SubteamMatch" description="Subteams" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Subteams">
+                                    <keywords recalconchange="true" columns="1" ui="checkbox">
+                                      <textlist>
+                                        <text>Subteam|1</text>
+                                      </textlist>
+                                    </keywords>
+                                  </field>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px" htmlid="sub3j">
+                              <pardef id="35" hide="read preview" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>SubteamMatch != "1"</formula>
+                                </code>
+                              </pardef>
+                              <par def="35">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field type="keyword" allowmultivalues="true" kind="editable" name="ProfileSubteams" description="Subteam list" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Subteam list">
+                                    <keywords ui="dialoglist">
+                                      <formula>db := $HLMonitorDb;
+@DbColumn("" : "nocache"; db; "SubteamLookup"; 1)</formula>
+                                    </keywords>
+                                    <code event="exiting">
+                                      <lotusscript>Sub Exiting(Source As Field)
+	Dim w As New notesuiworkspace
+	Set uidoc = w.currentdocument
+	uidoc.refresh
+End Sub</lotusscript>
+                                    </code>
+                                  </field>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                              <pardef id="36" hide="edit copy previewedit" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>SubteamMatch != "1"</formula>
+                                </code>
+                              </pardef>
+                              <par def="36">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field type="text" allowmultivalues="true" kind="computedfordisplay" name="dspSubteams" listinputseparators="comma semicolon newline" listdisplayseparator="newline">
+                                    <code event="defaultvalue">
+                                      <formula>ProfileSubteams</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                              <pardef id="37" spacebefore="1.5" hide="read preview" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>SubteamMatch != "1"</formula>
+                                </code>
+                              </pardef>
+                              <par def="37">
+                                <run>
+                                  <font size="9pt" color="gray"/>Press ENTER and select one or more milestones/events from the list.</run>
+                              </par>
+                            </tablecell>
+                          </tablerow>
+                          <tablerow>
+                            <tablecell borderwidth="0px">
+                              <par def="26">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px">
+                              <par def="27">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                          </tablerow>
+                          <tablerow>
+                            <tablecell borderwidth="0px" htmlid="sub3L">
+                              <par def="26">
+                                <run>
+                                  <font size="9pt"/>
+                                  <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="ThreadMatch" description="Thread activity" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Thread activity">
+                                    <keywords recalconchange="true" columns="1" ui="checkbox">
+                                      <textlist>
+                                        <text>Thread Activity|1</text>
+                                      </textlist>
+                                    </keywords>
+                                  </field>
+                                </run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px" htmlid="sub3m">
+                              <pardef id="38" leftmargin="0.1000in" hide="read preview" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>ThreadMatch != "1"</formula>
+                                </code>
+                              </pardef>
+                              <par def="38">
+                                <run>
+                                  <font size="9pt"/>
+                                  <field type="keyword" allowmultivalues="true" kind="editable" name="ProfileThreadSubjects" description="Thread subjects" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Thread subjects">
+                                    <keywords ui="dialoglist">
+                                      <formula>@DbColumn("":"nocache"; $HLMonitorDB; "ProfileThreads"; 1)</formula>
+                                    </keywords>
+                                    <code event="exiting">
+                                      <lotusscript>Sub Exiting(Source As Field)
+	Dim w As New notesuiworkspace
+	Set uidoc = w.currentdocument
+	uidoc.refresh
+End Sub</lotusscript>
+                                    </code>
+                                  </field>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                              <pardef id="39" leftmargin="0.1000in" hide="edit copy previewedit" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>ThreadMatch != "1"</formula>
+                                </code>
+                              </pardef>
+                              <par def="39">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field type="text" allowmultivalues="true" kind="computedfordisplay" name="dspThreads" listinputseparators="comma semicolon newline" listdisplayseparator="newline">
+                                    <code event="defaultvalue">
+                                      <formula>ProfileThreadSubjects</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                              <pardef id="40" spacebefore="1.5" hide="read preview" keepwithnext="true" keeptogether="true">
+                                <code event="hidewhen">
+                                  <formula>ThreadMatch != "1"</formula>
+                                </code>
+                              </pardef>
+                              <par def="40">
+                                <run>
+                                  <font size="9pt" color="gray"/>Press ENTER and select the thread(s) you would like to follow.</run>
+                              </par>
+                            </tablecell>
+                          </tablerow>
+                        </table>
+                        <pardef id="41" leftmargin="1%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+                        <par def="41">
+                          <run>
+                            <font size="9pt"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                    <tablerow tablabel="all" name="all">
+                      <tablecell borderwidth="0px" htmlid="all">
+                        <par def="41">
+                          <run>
+                            <font size="9pt"/>
+                          </run>
+                        </par>
+                        <pardef id="42" leftmargin="1%" spaceafter="1.5" hide="notes web" keepwithnext="true" keeptogether="true"/>
+                        <par def="42"/>
+                      </tablecell>
+                    </tablerow>
+                    <tablerow tablabel="adv">
+                      <tablecell borderwidth="0px" htmlid="qt1">
+                        <par def="15">
+                          <run>
+                            <font size="9pt"/>Selection formula</run>
+                        </par>
+                        <pardef id="43" leftmargin="0.3000in" spaceafter="1.5" keepwithnext="true" keeptogether="true"/>
+                        <par def="43">
+                          <run>
+                            <font size="9pt"/>
+                            <field usenotesstyle="false" height="1.2500in" width="3.2500in" multiline="true" borderstyle="single" type="text" kind="editable" name="AdvFormula" description="Advanced formula" htmltitle="Advanced formula">
+                              <code event="defaultvalue">
+                                <formula>"SELECT @All"</formula>
+                              </code>
+                              <code event="inputtranslation">
+                                <formula>@If( $QueryType = "all"; @Return( "Select @All"); $QueryType = "adv"; @Return( AdvFormula); Continue);
+
+tAuthStr :="\"" + @Implode( @Name([Canonicalize]; ProfileAuthors); "\":\"") + "\"";
+tAuth := @If( AuthorMatch = "1"; "@contains(@lowercase(from); " + @LowerCase(tAuthStr) + ") | @contains(@lowercase(AltFrom); " + @LowerCase(tAuthStr) + ") "; "");
+
+
+tSubjStr := "\"" + @Implode( @LowerCase(ProfileStrings); "\":\"") + "\"";
+tSubj := @If( SubjectMatch = "1";
+	@If( SubjectOp = "!cont"; "!" ; "") +
+	@If(
+		SubjectOp = "cont" : "!cont" : "beg";
+			@If(
+				SubjectOp = "cont" : "!cont";
+					"@Contains(";
+					"@Begins(")
+			+ "@LowerCase(Subject); " + tSubjStr + ")";
+		"@Contains(@LowerCase(Subject); \"" + @Implode(@LowerCase(ProfileStrings); "\") &amp; @Contains(@LowerCase(Subject); \"" ) + "\")" );
+"");
+
+tCatStr := "\"" + @Implode( @LowerCase(ProfileCategories); "\":\"") + "\"";
+tCat := @If(CategoryMatch = "1";  "@Contains(@LowerCase(Categories); " +tCatStr + ")"; "");
+
+tSubtStr := "\"" + @Implode( @LowerCase(ProfileSubteams); "\":\"") + "\"";
+tSubt := @If(SubteamMatch = "1";  "@Contains(@LowerCase(SubteamInterest); " +tSubtStr + ")"; "");
+
+
+tEvStr := "\"" + @Implode( @LowerCase(ProfileEvents); "\":\"") + "\"";
+tEv := @If(EventMatch = "1";  "@Contains(@LowerCase(Milestones); " +tEvStr + ")"; "");
+
+tThrMStr := "\"" + @Implode( @LowerCase(ProfileThreadSubjects); "\":\"") + "\"";
+tThrM := @If(ThreadMatch = "1";  "@LowerCase(Subject) = " +tThrMStr; "");
+
+tThrRStr := "\"" + @Implode( @LowerCase(ProfileThreadSubjects); "\":\"") + "\"";
+tThrR := @If(ThreadMatch = "1";  "@LowerCase(OriginalSubject) = " +tThrRStr ; "");
+
+tQuery := @Implode( @Trim( tAuth : tSubj : tCat : tSubt : tEv : tThrM : tThrR);
+@If( AndOr = "and" ; " &amp; "; " | "));
+"SELECT " + @If( @Length( tQuery) = 0; "@All"; tQuery)</formula>
+                              </code>
+                            </field>
+                          </run>
+                          <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="#d5ccbb">
+                            <font size="9pt"/>Check Syntax<code event="options">
+                              <lotusscript>Option Declare
+</lotusscript>
+                            </code>
+                            <code event="click">
+                              <lotusscript>Sub Click(Source As Button)
+	Dim ws As New NotesUIWorkspace
+	Dim doc As NotesUIDocument
+	Dim note As NotesDocument
+	Dim item As NotesItem
+	
+	Set doc = ws.currentDocument
+	doc.refresh
+	Set note = doc.document
+	Set item = note.getFirstItem( "$HLFormula")
+	If item.type = FORMULA Then
+		Messagebox COMPILE_SUCCESS_BODY,  MB_ICONINFORMATION, COMPILE_SUCCESS_TITLE 
+	Else
+		Messagebox COMPILE_FAILURE_BODY,  MB_ICONSTOP, COMPILE_FAILURE_TITLE 
+		
+	End If
+End Sub</lotusscript>
+                            </code>
+                          </button>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                  </table>
+                  <par def="10">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <table htmlid="subtbl4" leftmargin="0.1000in" widthtype="fixedleft" refwidth="3in">
+                    <tablecolumn width="3in"/>
+                    <tablerow>
+                      <tablecell borderwidth="0px" htmlid="sub4a">
+                        <par def="9">
+                          <run>
+                            <font size="9pt" color="#104160"/>Status</run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                  </table>
+                  <par def="10">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <table widthtype="fitmargins" htmlid="subtbl5" leftmargin="0.3000in" refwidth="10.2444in">
+                    <tablecolumn width="1.1250in" sizetofit="true"/>
+                    <tablecolumn width="100%"/>
+                    <tablerow>
+                      <tablecell borderwidth="0px" htmlid="sub5a">
+                        <pardef id="44" leftmargin="0" spaceafter="1.5" keepwithnext="true" keeptogether="true"/>
+                        <par def="44">
+                          <run>
+                            <font size="9pt"/>Last checked time</run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px">
+                        <pardef id="45" leftmargin="0.1000in" spaceafter="1.5" keepwithnext="true" keeptogether="true"/>
+                        <par def="45">
+                          <run>
+                            <font size="9pt"/>
+                            <field type="datetime" kind="computedfordisplay" name="Disp$HLMLastChecked">
+                              <datetimeformat show="datetime" date="yearmonthday" showtodaywhenappropriate="true" time="hourminutesecond" zone="never"/>
+                              <code event="defaultvalue">
+                                <formula>@If( $HLMLastChecked = ""; "N/A"; $HLMLastChecked)</formula>
+                              </code>
+                            </field>
+                          </run>
+                          <run>
+                            <font size="9pt"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                    <tablerow>
+                      <tablecell borderwidth="0px" htmlid="sub5b">
+                        <par def="44">
+                          <run>
+                            <font size="9pt"/>Last checked server</run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px">
+                        <par def="45">
+                          <run>
+                            <font size="9pt"/>
+                            <field type="text" kind="computedfordisplay" name="Disp$HLMLastServer">
+                              <code event="defaultvalue">
+                                <formula>@If( $HLMLastChecked = ""; "N/A"; $HLMLastServer = ""; "Local"; @Name([Abbreviate]; $HLMLastServer))</formula>
+                              </code>
+                            </field>
+                          </run>
+                          <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                          <run>
+                            <font size="9pt"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                    <tablerow>
+                      <tablecell borderwidth="0px" htmlid="sub5c">
+                        <pardef id="46" leftmargin="0" spaceafter="1.5" keepwithnext="true" keeptogether="true">
+                          <code event="hidewhen">
+                            <formula>$HLMError = ""</formula>
+                          </code>
+                        </pardef>
+                        <par def="46">
+                          <run>
+                            <font size="9pt"/>Status message</run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px">
+                        <pardef id="47" leftmargin="0.1000in" spaceafter="1.5" keepwithnext="true" keeptogether="true">
+                          <code event="hidewhen">
+                            <formula>$HLMError = ""</formula>
+                          </code>
+                        </pardef>
+                        <par def="47">
+                          <run>
+                            <font size="9pt"/>
+                            <field type="text" kind="computedfordisplay" name="Disp$HLMError">
+                              <code event="defaultvalue">
+                                <formula>$HLMError</formula>
+                              </code>
+                            </field>
+                          </run>
+                          <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                          <run>
+                            <font size="9pt"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                    <tablerow>
+                      <tablecell borderwidth="0px">
+                        <pardef id="48" leftmargin="0" keepwithnext="true" keeptogether="true"/>
+                        <par def="48">
+                          <run>
+                            <font size="9pt"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px">
+                        <pardef id="49" leftmargin="0.1000in" keepwithnext="true" keeptogether="true"/>
+                        <par def="49">
+                          <run>
+                            <font size="9pt"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                    <tablerow>
+                      <tablecell borderwidth="0px" htmlid="sub5d">
+                        <pardef id="50" spaceafter="1.5" keepwithnext="true" keeptogether="true"/>
+                        <par def="50">
+                          <run>
+                            <font size="9pt"/>This subscription is</run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px">
+                        <par def="45">
+                          <run>
+                            <font size="9pt"/>
+                            <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="$HLEnabled">
+                              <keywords columns="2" ui="radiobutton">
+                                <textlist>
+                                  <text>Enabled|1</text>
+                                  <text>Temporarily disabled|0</text>
+                                </textlist>
+                              </keywords>
+                              <code event="defaultvalue">
+                                <formula>"1"</formula>
+                              </code>
+                            </field>
+                          </run>
+                          <run>
+                            <font size="9pt"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                  </table>
+                  <par def="10">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow tablabel="info" name="info">
+                <tablecell borderwidth="0px" htmlid="info">
+                  <par def="10">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <table leftmargin="0.1000in" widthtype="fixedleft" refwidth="3in">
+                    <tablecolumn width="3in"/>
+                    <tablerow>
+                      <tablecell borderwidth="0px">
+                        <par def="9">
+                          <run>
+                            <font size="9pt" color="#104160"/>Additional Information</run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                  </table>
+                  <par def="10">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <table widthtype="fitmargins" leftmargin="0.3000in" refwidth="10.2444in">
+                    <tablecolumn width="0.9243in"/>
+                    <tablecolumn width="100%"/>
+                    <tablerow>
+                      <tablecell borderwidth="0px">
+                        <pardef id="51" leftmargin="1%" keepwithnext="true" keeptogether="true"/>
+                        <par def="51">
+                          <run>
+                            <font size="9pt"/>Monitor type</run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px">
+                        <pardef id="52" leftmargin="1%" spaceafter="1.5" keepwithnext="true" keeptogether="true"/>
+                        <par def="52">
+                          <run>
+                            <font size="9pt"/>
+                            <field lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="computed" name="$HLMonitorType">
+                              <keywords recalconchange="true" columns="1" ui="dialoglist">
+                                <textlist>
+                                  <text>Formula|1</text>
+                                </textlist>
+                              </keywords>
+                              <code event="defaultvalue">
+                                <formula>"1"</formula>
+                              </code>
+                            </field>
+                          </run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                    <tablerow>
+                      <tablecell borderwidth="0px">
+                        <par def="51">
+                          <run>
+                            <font size="9pt"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px">
+                        <pardef id="53" leftmargin="1%" keepwithnext="true" keeptogether="true"/>
+                        <par def="53">
+                          <run>
+                            <font size="9pt"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                    <tablerow>
+                      <tablecell borderwidth="0px">
+                        <par def="51">
+                          <run>
+                            <font size="9pt"/>Replica ID</run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px">
+                        <par def="52">
+                          <run>
+                            <font size="9pt"/>
+                            <field type="text" kind="computedfordisplay" name="$HLMonitorDB_Display">
+                              <code event="defaultvalue">
+                                <formula>@If (@IsAvailable($HLMonitorDB);$HLMonitorDB;"Unavailable")</formula>
+                              </code>
+                            </field>
+                          </run>
+                          <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                          <run>
+                            <font size="9pt"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                    <tablerow>
+                      <tablecell borderwidth="0px">
+                        <par def="51">
+                          <run>
+                            <font size="9pt"/>Formula</run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px">
+                        <par def="52">
+                          <run>
+                            <font size="9pt"/>
+                            <field type="formula" kind="computed" name="$HLFormula" listdisplayseparator="semicolon">
+                              <code event="defaultvalue">
+                                <formula>AdvFormula</formula>
+                              </code>
+                            </field>
+                          </run>
+                          <run>
+                            <font size="9pt"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                    <tablerow>
+                      <tablecell borderwidth="0px">
+                        <pardef id="54" leftmargin="1%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+                        <par def="54">
+                          <run>
+                            <font size="9pt" color="gray"/>Marker</run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px">
+                        <pardef id="55" leftmargin="1%" spaceafter="1.5" hide="notes web" keepwithnext="true" keeptogether="true"/>
+                        <par def="55">
+                          <run>
+                            <font size="9pt" color="gray"/>
+                            <field type="text" kind="editable" name="$HLSubscription">
+                              <code event="defaultvalue">
+                                <formula>REM {DNT};
+REM {hidden field needed for headlines};
+"Subscriptions"</formula>
+                              </code>
+                            </field>
+                          </run>
+                          <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="7" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                  </table>
+                  <par def="10">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <pardef id="56" leftmargin="3%" spaceafter="1.5" keepwithnext="true" keeptogether="true"/>
+            <par def="56">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="57" spaceafter="1.5" hide="notes web"/>
+      <par def="57">
+        <run>
+          <font color="gray"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+</form>

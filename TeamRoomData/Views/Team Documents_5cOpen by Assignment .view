@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view xmlns="http://www.lotus.com/dxl" name="Team Documents\Open by Assignment " alias="OpenAssignnment" showinmenu="true" allowdocselection="true" publicaccess="false" language="en" unreadmarks="none" onopengoto="lastopened" onrefresh="displayindicator" headers="simple" opencollapsed="false" showresponsehierarchy="true" showmargin="true" shrinkrows="false" extendlastcolumn="false" showhierarchies="false" unreadcolor="maroon" rowlinecount="1" headerlinecount="1" rowspacing="1" bgcolor="white" altrowcolor="#efefef" totalscolor="blue" headerbgcolor="#a8cfd4" boldunreadrows="false" evaluateactions="false" allownewdocuments="false" allowcustomizations="true" hidemarginborder="false" marginwidth="0px 0px 1px" marginbgcolor="white" uniquekeys="false" initialbuildrestricted="false" noemptycategories="true">
+  <code event="selection">
+    <formula>LCMtg := @LowerCase(defaultdoctype3);
+LCDocType := @LowerCase(doctype);
+SELECT MtgDate &gt;= @Today | ((form = "MainTopic" &amp; Status != "0" &amp; LCMtg != LCDocType) &amp; People != "" &amp; Current_Status = "0") | @IsResponseDoc</formula>
+  </code>
+  <code event="helprequest">
+    <formula>REM {DNT};
+@Command([OpenHelpDocument]; [ClientHelp]; "(Help)"; "TeamRoomVActiveDocs")</formula>
+  </code>
+  <actionbar useappletinbrowser="true" bgcolor="#78b4bc" bordercolor="black">
+    <actionbarstyle height="4.7500ex">
+      <font size="9pt" name="multilingual"/>
+    </actionbarstyle>
+    <actionbuttonstyle margintype="fixed" margin="5" bgcolor="#c4dee1" displayborder="notesstyle" widthtype="background"/>
+    <font size="9pt" name="multilingual"/>
+    <border width="0px 0px 1px"/>
+    <action title="_Forward" showinbar="false" systemcommand="forward"/>
+    <action title="_Edit Document" showinbar="false" systemcommand="edit"/>
+    <sharedactionref id="35">
+      <action title="New Document" hide="preview previewedit">
+        <code event="click">
+          <formula>@PostedCommand([Compose];"MainTopic")</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="36">
+      <action title="New Response" hide="preview edit previewedit">
+        <code event="click">
+          <formula>@SetProfileField("TempVars"; "viewtitle"; @Subset(@ViewTitle; -1));
+@PostedCommand([Compose];"Response")</formula>
+        </code>
+        <code event="hidewhen">
+          <formula>REM {hide from web if it's in a view};
+@ClientType != "Notes" &amp; !@IsAvailable(form)</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="37">
+      <action title="New Response to Response" hide="preview edit previewedit web">
+        <code event="click">
+          <formula>REM {notes only};
+@PostedCommand([Compose];"ResponseToResponse")</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="55">
+      <action title="Delete\Move to Trash" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>@Command([MoveToTrash])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="56">
+      <action title="Delete\Empty Trash" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>@Command([EmptyTrash])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="44">
+      <action title="Search" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>REM {Web only - used in Views};
+@Command([ViewShowSearchBar])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="60">
+      <action title="Database Help">
+        <code event="click">
+          <formula>@Command([HelpUsingDatabase])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+  </actionbar>
+  <column sort="ascending" resort="ascending" hidedetailrows="false" itemname="$126" width="3.6250" resizable="true" separatemultiplevalues="true" sortnoaccent="true" sortnocase="true" showaslinks="false" categorized="true" twisties="true">
+    <font size="9pt" color="teal" style="bold"/>
+    <columnheader title="For">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <code event="value">
+      <formula>LCDocType := @LowerCase(doctype);
+LCDisc := @LowerCase(DefaultDocType1);
+LCRef := @LowerCase(DefaultDocType4);
+
+NotDone := ReviewedByNotDone;
+
+@If(LCDocType = LCDisc | LCDocType = LCRef; ReviewedByNotDone ; People)</formula>
+    </code>
+  </column>
+  <column sort="ascending" hidedetailrows="false" listseparator="comma" itemname="$121" width="2.5000" resizable="false" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false" showasicons="true" twisties="true">
+    <font size="9pt"/>
+    <columnheader>
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <code event="value">
+      <formula>date := Duedate;
+done := "1";
+LCDocType := @LowerCase(DocType);
+LCMtg := @LowerCase(DefaultDocType3);
+@If(@IsResponseDoc; "";
+
+LCDocType = LCMtg; 158;
+current_status = done; 82; Date = ""; ""; Date &lt; @Today; 150; Date &lt; @Adjust(@Today; 0; 0; 7; 0; 0; 0); 64; "")</formula>
+    </code>
+  </column>
+  <column sort="descending" resort="both" hidedetailrows="false" listseparator="comma" itemname="$106" width="9" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false" twisties="true" formatdatatype="datetime">
+    <font size="9pt"/>
+    <columnheader title="Date">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <datetimeformat legacy="true" show="date" date="yearmonthday" time="hourminutesecond" zone="never"/>
+    <numberformat legacy="true" format="general" varying="true" digits="1" punctuated="false" parens="false" percent="false" bytes="false"/>
+    <code event="value">
+      <formula>@If(@IsResponseDoc; ""; @Created)</formula>
+    </code>
+  </column>
+  <column sort="ascending" hidedetailrows="false" itemname="$121" width="1" resizable="false" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false" hidden="true">
+    <font size="9pt" color="gray"/>
+    <columnheader title="hidden">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <code event="value">
+      <formula>@Created</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" itemname="$1" width="2" resizable="true" separatemultiplevalues="false" sortnoaccent="false" sortnocase="true" showaslinks="false">
+    <font size="9pt"/>
+    <columnheader>
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <code event="value">
+      <formula>@If(@IsResponseDoc;"";  @DocNumber(.) + ".")</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" listseparator="comma" itemname="$122" width="1.6250" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="true" responsesonly="true" twisties="true">
+    <font size="9pt"/>
+    <columnheader>
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <datetimeformat legacy="true" show="date" date="yearmonthday" time="hourminutesecond" zone="never"/>
+    <numberformat legacy="true" format="general" digits="2" punctuated="false" parens="false" percent="false" bytes="false"/>
+    <code event="value">
+      <formula>PrivateTxt := "PRIVATE: ";
+ExpiredTxt := "EXPIRED: ";
+AuthorName := @If(!@IsAvailable(From); "Anonymous"; @Name([Abbreviate]; From));
+@If(readers != ""; PrivateTxt; ExpireDate != ""; ExpiredTxt; "") + @If(Subject != ""; Subject + "  "; "") + "(" + AuthorName + " " + @Text(@Created; "D2S0") + ")"</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" listseparator="comma" itemname="$125" width="26.1250" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="true">
+    <font size="9pt" color="teal"/>
+    <columnheader title="Topic">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <code event="value">
+      <formula>PrivateTxt := "PRIVATE: ";
+ExpiredTxt := "EXPIRED: ";
+Author := @If(form = "Interest Profile"; ""; " (" + @Name([Abbreviate]; From) + ")");
+@If(readers != ""; PrivateTxt; ExpireDate != ""; ExpiredTxt; "") + Subject + Author</formula>
+    </code>
+  </column>
+  <column resort="both" hidedetailrows="false" itemname="$127" width="9" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <font size="9pt"/>
+    <columnheader title="Due">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <datetimeformat legacy="true" show="date" date="yearmonthday" time="hourminutesecond" zone="never"/>
+    <code event="value">
+      <formula>@If(MtgDate != ""; mtgDate; DueDate = ""; ""; @Date(DueDate))</formula>
+    </code>
+  </column>
+  <column resort="ascending" resort2="ascending" resort2column="7" hidedetailrows="false" itemname="DocType" width="10" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <font size="9pt"/>
+    <columnheader title="Type">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+  </column>
+  <item name="$FormulaTV" sign="true">
+    <text/>
+  </item>
+</view>

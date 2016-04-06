@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sharedfield xmlns="http://www.lotus.com/dxl" name="TeamRoomName" language="en">
+  <field type="text" kind="computed" name="TeamRoomName" htmlid="TeamRoomName">
+    <code event="defaultvalue">
+      <formula>REM {Variable to translate};
+Txt :="&lt;The TeamRoom Setup for this TeamRoom has not yet been completed.&gt;";
+NoTeamName := "--No team name specified in the TeamRoom Setup--";
+REM {End variable to translate};
+
+View := "MissionLookup";
+TeamNameLookup := @DbLookup("" : "NoCache"; ""; View; "Mission"; 2);
+@If(@IsError(TeamNameLookup); Txt; TeamNameLookup = ""; NoTeamName; TeamNameLookup)</formula>
+    </code>
+  </field>
+</sharedfield>

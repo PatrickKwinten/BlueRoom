@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sharedfield xmlns="http://www.lotus.com/dxl" name="AltNameDisplay" language="en">
+  <field type="text" kind="computedfordisplay" name="AltNameDisplay">
+    <code event="defaultvalue">
+      <formula>REM {"1" means alternate names can be displayed};
+
+fNamePref := @LocationGetInfo([NamePreference]);
+@If(fNamePref != "1"; @Return("0"); @True);
+
+lUserLang := @LanguagePreference([AlternateName]);
+lAllLang := @Trim(@Unique(@DbColumn("" : "nocache"; ""; "PeopleLookup"; 4)));
+@If(@IsMember(lAllLang; lUserLang); "1"; "0")</formula>
+    </code>
+  </field>
+  <item name="$HTMLCode" sign="true">
+    <rawitemdata type="1"/>
+  </item>
+</sharedfield>

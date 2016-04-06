@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(QuickSort)" hide="v3" publicaccess="false" language="en">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>Dim SortedArray As Variant
+
+</lotusscript>
+  </code>
+  <code event="QuickSort">
+    <lotusscript>Public Function QuickSort(sArray As Variant)
+	Dim sA() As String    
+	Dim j As Long
+	Dim bottom As Long
+	Dim top As Long
+	bottom = Lbound ( sArray )
+	top = Ubound ( sArray )
+	Redim sA( bottom To top ) As String     
+	For j = bottom To top
+		sA ( j ) = sArray ( j )
+	Next
+     ' DoQS does a QuickSort if the Sublist is longer than 10 elements
+     ' Thus, when DoQS finishes, all elements are within 10 spots of their correct location.
+     ' For lists that are close to being in order, an Insertion Sort is much faster than a QuickSort, so we
+     ' run through the whole thing once doing an Insertion Sort to finish tidying up the order.
+	Call DoQS( sA, bottom, top )
+	Call DoInsertSort ( sA, bottom, top )
+	SortedArray = sA
+End Function
+
+
+</lotusscript>
+  </code>
+  <code event="DoQS">
+    <lotusscript>Sub DoQS( sA() As String, bottom As Long, top As Long )
+     ' Called by QuickSort
+     ' Uses Public variable sA  (array of string)
+	Dim length As Long
+	Dim i As Long
+	Dim j As Long
+	Dim Pivot As Long
+	Dim PivotValue As String
+	Dim t As String
+	Dim LastSmall As Long
+	length = top - bottom + 1
+	
+     ' Only do the QuickSort if the sublist is at least 10 items long
+	If length &gt; 10 Then
+          ' Pivot is chosen approx. halfway through sublist.
+          ' This gives us best speed if list is almost sorted already, and is no worse than any
+          ' other choice if the list is in random order.
+		Pivot = bottom + (length \ 2)   
+		
+          ' Move PivotValue out of the way
+		PivotValue = sA( Pivot )
+		sA ( Pivot ) = sA ( bottom )
+		sA ( bottom ) = PivotValue
+		
+          ' LastSmall is the location of the last value smaller than PivotValue
+		LastSmall = bottom
+		For i = bottom + 1 To top 
+			If sA ( i ) &lt; PivotValue Then 
+				LastSmall = LastSmall + 1
+				t = sA ( i )
+				sA ( i ) = sA ( LastSmall )
+				sA ( LastSmall ) = t
+			End If
+		Next
+		
+          ' Move the PivotValue back
+		t = sA ( LastSmall )
+		sA ( LastSmall ) = sA ( bottom )
+		sA ( bottom ) = t
+		Pivot = LastSmall
+		
+          ' Now sort each side
+		Call DoQS ( sA, bottom, Pivot - 1 )
+		Call DoQS ( sA, Pivot + 1, top )
+	End If
+	
+End Sub
+</lotusscript>
+  </code>
+  <code event="DoInsertSort">
+    <lotusscript>Sub DoInsertSort ( sA() As String, Byval bottom As Long, Byval top As Long )	
+	Dim i As Long
+	Dim x As Long
+	Dim v As String
+	Dim Found As Integer
+	For i = bottom+1 To top
+		x = i
+		v = sA (i )
+		Do While (sA(x-1) &gt; v)
+			sA ( x ) = sA ( x-1 )
+			x = x - 1
+			If x=0 Then
+				Exit Do
+			End If
+		Loop
+		sA (x) = v
+	Next
+End Sub
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Dim db As NotesDatabase
+	Dim doc As NotesDocument
+	Dim uidoc As notesuidocument
+	Dim flag As String
+	Dim w As New NotesUIWorkspace 
+	Dim s As New NotesSession
+	Set db = s.CurrentDatabase
+	Set uidoc=w.currentdocument
+	Set doc = uidoc.document
+	
+	On Error Resume Next
+	'Because canonical names are used in combination with flat names
+	'we need to abbreviate the list coming in to do the sort correctly.
+	'otherwise, the sort would be off because canonical names internally all start with CN=
+	'which causes a flat name to sort before a canonical one even if the first letter of the common name
+	'comes before the first letter of the flat name.  To insure correct return values, we canonicalize before
+	'we save the note.  We use Evaluate because it is faster to run the @Name on the list then looping 
+	'through all possible members and abbreviating them in script.
+	Set dbprofile = db.getprofiledocument("tempvars")
+	getSortField = dbprofile.sort
+	
+'	FieldList=Evaluate(|@Name([Abbreviate];Members)|,doc)
+	FieldList = doc.getitemvalue(getSortField(0))
+	Call QuickSort(FieldList)
+	Call doc.ReplaceItemValue(getSortField(0),SortedArray)
+'	Call doc.ReplaceItemValue(getSortField(0), Evaluate(|@Name([Canonicalize];Members)|,doc))
+	Call uidoc.refresh
+	
+End Sub</lotusscript>
+  </code>
+</agent>

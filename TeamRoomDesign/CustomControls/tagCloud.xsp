@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex" style="margin:8px;">
+	<xp:section id="tagCloudSection"
+		style="width:100% !important; word-wrap: break-word;" role="region"
+		accesskey="T">
+		<xp:this.header><![CDATA[#{javascript:var c = getComponent("tagCloud1");
+var i = "0";
+if(null != c){
+	if(null != c.cloudData){
+		i = c.cloudData.getEntryCountAsString();
+	}
+}
+return I18n.format(strings.getString("cloud.section.header"), i);}]]></xp:this.header>
+		<xp:this.attrs>
+			<xp:attr name="aria-label">
+				<xp:this.value>
+					<![CDATA[#{javascript:return strings.getString("setup.homepage.option5");}]]>
+				</xp:this.value>
+			</xp:attr>
+		</xp:this.attrs>
+		<xe:tagCloud alternateText="{0} documents" id="tagCloud1"
+			sliderVisible="true" rendererType="com.ibm.xsp.extlib.OneUITagCloud"
+			ariaLabel="Tag cloud">
+			<xe:this.cloudData>
+				<xe:dominoViewCloudData cacheMode="auto"
+					viewName="xpByCategory" cacheRefreshInterval="120" maxTagLimit="30"
+					linkTargetPage="/allDocumentsByTag.xsp"
+					linkRequestParam="categoryFilter" sortTags="alphabet">
+				</xe:dominoViewCloudData>
+			</xe:this.cloudData>
+		</xe:tagCloud>
+	</xp:section>
+</xp:view>

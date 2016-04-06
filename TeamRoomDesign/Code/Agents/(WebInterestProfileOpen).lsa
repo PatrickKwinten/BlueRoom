@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(WebInterestProfileOpen)" hide="v3" runaswebuser="true" publicaccess="false" language="en" comment="WebQueryOpen agent on the Interest Profile">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+Use "DiscussionRoutines"
+Use "wStringResource"
+
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	
+	InstantiateObjects
+	
+'remove all of these so they can ger resest with default values each time the doc is opened     
+	If note.isnewnote Then Exit Sub
+	note.WebProfileCategories = note.ProfileCategories
+	note.WebProfileStrings = note.ProfileStrings
+	Exit Sub
+	
+End Sub</lotusscript>
+  </code>
+</agent>

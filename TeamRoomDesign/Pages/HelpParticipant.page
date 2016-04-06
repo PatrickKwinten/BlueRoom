@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://www.lotus.com/dxl" name="HelpParticipant" alias="HelpParticipant" publicaccess="false" language="en">
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="print notes embedded" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>&lt;HEAD&gt;<break/>&lt;STYLE TYPE="text/css"&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/> 	BODY {font-family: sans-serif}</run>
+      </par>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>&lt;/STYLE&gt;<break/>&lt;/HEAD&gt;</run>
+      </par>
+      <table widthtype="fixedleft" refwidth="6.7500in">
+        <tablecolumn width="6.7500in"/>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="#78b4bc">
+            <pardef id="3" leftmargin="1%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="3">
+              <run>
+                <font size="12pt" style="bold"/>
+              </run>
+            </par>
+            <table widthtype="fitmargins" leftmargin="0" refwidth="6.7500in">
+              <tablecolumn width="100%"/>
+              <tablerow>
+                <tablecell borderwidth="0px 0px 2px">
+                  <pardef id="5" leftmargin="0.0104in" spacebefore="1.5" keepwithnext="true" keeptogether="true"/>
+                  <par def="5">
+                    <run>
+                      <font size="12pt" style="bold"/>Team Member/Subteam Help</run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <par def="3">
+              <run>
+                <font size="11pt" style="bold"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="0px">
+            <pardef id="6" leftmargin="2%" rightmargin="98%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="6">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="7" leftmargin="2%" rightmargin="98%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="7">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <pardef id="8" leftmargin="0.1000in" rightmargin="98%" keepwithnext="true" keeptogether="true"/>
+            <par def="8">
+              <run>
+                <font size="9pt" style="bold"/>Team leader: </run>
+              <run>
+                <font size="9pt"/>  The team room leader is responsible for setting direction and creating an environment leading to the accomplishment of the team goal.  Only the Team Leader and Team Facilitator should have Editor access (ability to edit documents that others create and changing the TeamRoom Setup information) to the TeamRoom database.</run>
+            </par>
+            <pardef id="9" leftmargin="0.1000in" rightmargin="98%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="10" leftmargin="0.1000in" rightmargin="98%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt" style="bold"/>Team facilitator:</run>
+              <run>
+                <font size="9pt"/>  The TeamRoom facilitator is responsible for managing the use of the TeamRoom database, translating the team's design criteria into the teamroom architecture, creating the TeamRoom Setup, the Category and Communication Type lists, the Team Member Profiles and setting the database's Access Control List.  S/he is also responsible for maintaining the TeamRoom in accordance with team agreements and goals, modifying the system according to team decisions, verifying the accuracy and consistency with which members are using the application, teaching and coaching members in the use of the tool and integrating new team members into the TeamRoom.</run>
+            </par>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt" style="bold"/>Deleting team members or subteams:</run>
+              <run>
+                <font size="9pt"/>
+              </run>
+              <run>
+                <font size="9pt"/> Click the Manage Lists--"Delete team member, subteam or event" button at the top of the TeamRoom Setup (these documents can also be deleted via the TeamRoom Overview view).  Note: if you delete a team member, their name will be removed from all subteam(s) that they belong to.</run>
+            </par>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt" style="bold"/>Updating team member and subteam documents:  </run>
+              <run>
+                <font size="9pt"/>To add or remove existing team members from a subteam, click the action button Manage Lists--Manage Subteam Lists.  You will be presented with a dialog box whereby you can select the team member and add or remove their name from the Subteam Profile document.</run>
+            </par>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt" style="bold"/>Creating a Group Calendar:  </run>
+              <run>
+                <font size="9pt"/>click "Create group calendar" to create a group calendar in your mail file, containing the names of the entire team or a specific subteam.  This option is available on the Notes client only.</run>
+            </par>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt" style="bold"/>When setting up a new Team Room:</run>
+            </par>
+            <pardef id="11" leftmargin="0.3500in" rightmargin="98%" list="bullet" keepwithnext="true" keeptogether="true"/>
+            <par def="11">
+              <run>
+                <font size="9pt"/>Identify the Team Leader</run>
+            </par>
+            <par def="11">
+              <run>
+                <font size="9pt"/>Identify the Team Facilitator</run>
+            </par>
+            <par def="11">
+              <run>
+                <font size="9pt"/>Click Add Team Member to add the new team members for this teamroom.  Answer the question: What skills are needed to get this job done and who are the people with these skills?  Important:  Remember to add the Team Leader and Team Facilitator as team members as well!<break/>
+              </run>
+              <run>
+                <font size="9pt" style="italic"/>Note:</run>
+              <run>
+                <font size="9pt"/>  If you are adding a team member whose user ID contains a hierarchical name, you must enter their hierarchical name into the Name field on the Team Member form.</run>
+            </par>
+            <par def="11">
+              <run>
+                <font size="9pt"/>Click Add Subteam to define subteams within the larger team.  You should Add Team Members first, so the team members appear on the member list when you create the subteam.</run>
+            </par>
+            <par def="11">
+              <run>
+                <font size="9pt"/>Click Subteam Details to see a list of team members who belong to each subteam.</run>
+            </par>
+            <par def="11">
+              <run>
+                <font size="9pt"/>Groups in the Name &amp; Address book are not supported as Team Member names.</run>
+            </par>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+              <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="system">
+                <code event="click">
+                  <formula>@Command([FilePrint])</formula>
+                </code>
+                <font size="9pt"/>Print</button>
+              <run>
+                <font size="9pt"/>
+              </run>
+              <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="system">
+                <code event="click">
+                  <formula>@Command([FileCloseWindow])</formula>
+                </code>
+                <font size="9pt"/>Done</button>
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <pardef id="12" leftmargin="0.1000in" rightmargin="94%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="12">
+              <run>
+                <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+              <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="system">
+                <code event="onClick" for="web">
+                  <javascript>window.close(self)</javascript>
+                </code>
+                <code event="onClick" for="client">
+                  <javascript>window.close(self)</javascript>
+                </code>
+                <font size="9pt"/>Done</button>
+              <run>
+                <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+            <par def="6">
+              <run>
+                <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="13" leftmargin="1in" hide="notes mobile"/>
+      <par def="13">
+        <run>
+          <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+</page>

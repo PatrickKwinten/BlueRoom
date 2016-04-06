@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><note class="form" maintenanceversion="1.5" replicaid="C1257F57006DE96D" version="9.0" xmlns="http://www.lotus.com/dxl">
+<noteinfo noteid="3c42" sequence="77" unid="78944CEC88D03C03C1257F5800626D0C">
+<created><datetime>20160213T185504,44+01</datetime></created>
+<modified><datetime>20160215T202636,70+01</datetime></modified>
+<revised><datetime>20160215T202636,69+01</datetime></revised>
+<lastaccessed><datetime>20160215T202636,70+01</datetime></lastaccessed>
+<addedtofile><datetime>20160213T185504,45+01</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Patrick Kwinten/O=quintessens</name></updatedby>
+<wassignedby><name>CN=Patrick Kwinten/O=quintessens</name></wassignedby>
+<item name="$Flags"><text>34567Cg~[</text></item>
+<item name="$TITLE"><text>org/openntf/teamroom/TeamRoomObject.java</text></item>
+
+<item name="$DesignerVersion"><text>8.5.3</text></item>
+
+
+<item name="$FileNames" sign="true"><text>org/openntf/teamroom/TeamRoomObject.java</text></item>
+
+</note>

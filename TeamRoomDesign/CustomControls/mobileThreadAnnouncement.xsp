@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" 
+	xmlns:xc="http://www.ibm.com/xsp/custom" 
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+    
+    <xp:this.beforePageLoad>
+        <![CDATA[#{javascript:
+            // redirect back to the home page if no contextual
+            // query string parameters are available on the url...
+            if(!param.containsKey("documentId")){
+                context.redirectToHome();
+            }
+        }]]>
+    </xp:this.beforePageLoad>
+	
+	<xp:panel styleClass="mblThreadPanel">
+		<xp:this.rendered><![CDATA[#{javascript:
+			sessionScope.backURL = "announcement\u0026action=openDocument\u0026documentId="+currentDocument.getNoteID();
+			return true;
+		}]]></xp:this.rendered>
+		<xp:table styleClass="xlTableWidth">
+			<xp:tr>
+				<xp:td>
+				</xp:td>
+				<xp:td>
+					<xp:div styleClass="mblThreadDiv">
+						
+						<xp:text value="#{currentDocument.Subject}"
+							styleClass="mblThreadDivText">
+						</xp:text>
+						<xp:br></xp:br>
+						
+						<xp:panel>
+							<xp:link styleClass="lotusPerson" id="from"
+								text="#{javascript:peopleBean.getPerson(currentDocument.getItemValueString('From')).displayName}">
+								<xp:eventHandler event="onclick"
+									submit="true" refreshMode="complete">
+									<xp:this.action>
+										<xp:actionGroup>
+											<xe:moveTo
+												direction="Left to Right" transitionType="slide"
+												targetPage="memberProfile&amp;profile=#{javascript:peopleBean.getPerson(currentDocument.getItemValueString('From')).abbreviatedName}"
+												forceFullRefresh="true">
+											</xe:moveTo>
+										</xp:actionGroup>
+									</xp:this.action>
+								</xp:eventHandler>
+							</xp:link>
+							&#160;
+							<xp:label value="#{javascript:strings.getString('mobile.created')}"></xp:label>
+							&#160;
+							<xp:text id="createdDateOut" value="#{javascript:@Created()}">
+								<xp:this.converter>
+									<xp:convertDateTime type="both" dateStyle="long" timeStyle="medium">
+								</xp:convertDateTime>
+							</xp:this.converter></xp:text>
+						</xp:panel>
+						<xp:br></xp:br>	
+						<xp:span id="announcementStatusOut">
+							<xp:text disableTheme="true" value="#{javascript: strings.getString('mobile.status.active')}"
+								rendered="#{javascript:currentDocument.getItemValueString('FileThisStatusDoc') == '0'}"></xp:text>
+							<xp:text disableTheme="true" value="#{javascript: strings.getString('mobile.status.inactive')}"
+								rendered="#{javascript:currentDocument.getItemValueString('FileThisStatusDoc') == '1'}"></xp:text>
+						</xp:span>
+						&#160;
+						<xp:label value="|"></xp:label>
+						&#160;
+						<xp:span id="announcementTypeOut">
+							<xp:text disableTheme="true" value="#{javascript: strings.getString('mobile.status.must_read')}"
+								rendered="#{javascript:currentDocument.getItemValueString('type') == '1'}"></xp:text>
+							<xp:text disableTheme="true" value="#{javascript: strings.getString('mobile.status.informational')}"
+								rendered="#{javascript:currentDocument.getItemValueString('type') == '2'}"></xp:text>
+						</xp:span>
+						<xp:br></xp:br>				
+						<hr></hr>						
+						
+						<xp:text id="subjectOut" value="#{currentDocument.Abstract}">
+						</xp:text>
+						<xp:br></xp:br>
+					</xp:div>
+					
+					<xp:br></xp:br>
+					
+					<xp:panel>
+						<xc:mobile_fileDownload field="Body"></xc:mobile_fileDownload>
+					</xp:panel>
+				</xp:td>
+			</xp:tr>
+		</xp:table>
+	</xp:panel>
+</xp:view>

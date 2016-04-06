@@ -1,0 +1,1000 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="Subteam Profile" alias="Subteam" nocompose="true" htmlallfields="true" publicaccess="false" language="en">
+  <code event="windowtitle">
+    <formula>@If(@IsNewDoc; "New Subteam Profile"; "Subteam Profile for: " + STName)</formula>
+  </code>
+  <code event="webquerysave">
+    <formula>@Command([ToolsRunMacro]; "wSaveSubteamProfile")</formula>
+  </code>
+  <code event="webqueryopen">
+    <formula>@Command([ToolsRunMacro]; "(WebOpenForm)")</formula>
+  </code>
+  <code event="helprequest">
+    <formula>REM {DNT};
+@Command([OpenHelpDocument];[ClientHelp]; "(Help)"; "TeamRoomFSubteam")</formula>
+  </code>
+  <code event="options">
+    <lotusscript>Option Declare
+
+</lotusscript>
+  </code>
+  <code event="querysave">
+    <lotusscript>Sub Querysave(Source As Notesuidocument, Continue As Variant)
+	Dim s As New notessession
+	Dim db As notesdatabase
+	Dim view As notesview
+	Dim altSelection As Variant
+	Dim note As notesdocument
+	Dim TMNote As notesdocument
+	Dim uBoundSel As Integer
+	Dim getAltName As Variant
+	Dim commonName As String
+	
+	Set db = s.currentdatabase
+	Set view = db.getview("PeopleLookup")
+	Set note = 	source.document
+	AltSelection = note.getitemvalue("AltNameSelection")
+	uBoundSel = Ubound(AltSelection)
+	Dim count As Integer
+	
+	Redim AltMembers(uBoundSel) As Variant
+	
+	count = 0
+	
+'determine alternate names for all members selected	
+	Forall x In AltSelection
+		
+		Set TMNote = view.getdocumentbykey(x)
+		getAltName = TMNote.getitemvalue("GetAlternateName")
+		
+		AltMembers(count) = getAltName(0)
+		count = count + 1
+	End Forall
+	
+	Dim b As Variant
+	b = Fulltrim(AltMembers)
+	
+	Call note.replaceitemvalue("AltNameMembers", b)	
+	
+End Sub</lotusscript>
+  </code>
+  <code event="jsheader" for="web">
+    <javascript>function validate(){
+
+//variables to translate
+stMsg1 = 'Please enter the purpose of this subteam.';
+stMsg2 = 'Please select at least one subteam member.';
+stMsg3 = 'This subteam name already exists.  Please enter a different name.';
+stMsg4 = 'Please enter a subteam name.';
+//end variables to translate
+
+var msg;
+var msgflag;
+
+msgflag = 'false';
+
+if(document.forms[0].Position.value == ''){
+	msg=   stMsg1;
+	msgflag='true';
+                document.forms[0].Position.focus()
+	}
+
+if(document.forms[0].STMembers.value == ''){
+	msg=  stMsg2;
+	msgflag='true';
+	}
+
+//determine if the subteam already exists
+stlist = document.forms[0].wSubtList.value
+LCstlist = stlist.toLowerCase()
+vSTName = document.forms[0].STName.value
+vWebError = document.forms[0].WebError.value
+LCvstname = vSTName.toLowerCase()
+strSlash = LCstlist.lastIndexOf( ";" + LCvstname + ';')
+if(strSlash != -1 &amp; vSTName != '' &amp; vWebError == '1') 
+	{
+	msg= stMsg3;
+	msgflag='true';
+	}
+
+ if(vSTName == ''){
+	msg=  stMsg4;
+	msgflag='true';
+                document.forms[0].STName.focus()
+	}
+
+ if(msgflag == 'true'){
+     alert(msg);
+}
+if(msgflag == 'false'){
+document.forms[0].submit()
+}
+}
+</javascript>
+  </code>
+  <actionbar useappletinbrowser="true" bgcolor="#78b4bc" bordercolor="black">
+    <actionbarstyle height="4.7500ex">
+      <font size="9pt" name="multilingual"/>
+    </actionbarstyle>
+    <actionbuttonstyle margintype="fixed" margin="5" bgcolor="#c4dee1" displayborder="notesstyle" widthtype="background"/>
+    <font size="9pt" name="multilingual"/>
+    <border width="0px 0px 1px"/>
+    <action title="Forward" showinbar="false" hide="preview previewedit web">
+      <code event="click">
+        <formula>@Command([MailForward])</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>@IsNewDoc</formula>
+      </code>
+    </action>
+    <action title="Forward as Bookmark" showinbar="false" hide="preview previewedit web">
+      <code event="click">
+        <formula>@Command([Compose]; @MailDbName; "Bookmark")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>@IsNewDoc</formula>
+      </code>
+    </action>
+    <action title="Edit Document" hide="preview edit previewedit">
+      <code event="click">
+        <formula>REM {For all forms except Main Document form, which needs special casing for assignees to edit};
+@Command([EditDocument])</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>lcabAuthors := @LowerCase(@Name([Abbreviate]; Authors));
+lcabFrom := @LowerCase(@Name([Abbreviate]; From));
+lcabAltFrom := @LowerCase(@Name([Abbreviate]; AltFrom));
+lcabUN := @LowerCase(@Name([Abbreviate]; @UserName));
+Filename := @DbName;
+Level := @V4UserAccess(Filename);
+Getlevel := @TextToNumber(@Subset(Level; 1));
+
+getLevel &lt; 4 &amp;
+(
+!@Contains(lcabAuthors; lcabUN) |
+!@Contains(lcabFrom; lcabUN) |
+!@Contains(lcabAltFrom; lcabUN))</formula>
+      </code>
+    </action>
+    <action title="Save &amp; Close" hide="preview read previewedit">
+      <code event="click">
+        <formula>REM {Can't use @isvalid on the web};
+REM {use for saved docs on the web, and all docs in Notes};
+@If(
+@ClientType != "Notes";
+@Do(@Command([FileSave]); @Command([FileCloseWindow]));
+@IsValid;
+@Do(@Command([FileSave]); @Command([FileCloseWindow])); "")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>@ClientType = "Web" &amp; IsNewDoc = "1"</formula>
+      </code>
+    </action>
+    <action title="Save &amp; Close" showinmenu="false" hide="read notes">
+      <code event="hidewhen">
+        <formula>@ClientType = "Web" &amp; IsNewDoc = "0"</formula>
+      </code>
+      <code event="onClick" for="web">
+        <javascript>//web new docs only;
+validate()</javascript>
+      </code>
+    </action>
+    <action title="Chat with all" hide="preview edit previewedit web">
+      <code event="click">
+        <formula>@Command([ToolsRunMacro]; "(chatWithAll)")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>!@IsAvailable(form) |
+(!@Contains(@LowerCase(form); @LowerCase("SubTeaM")) &amp; People = "") |
+(@Contains(@LowerCase(form); @LowerCase("SubTeaM")) &amp; STMembers = "" ) | @LowerCase(form) = @LowerCase("EveNt")</formula>
+      </code>
+      <code event="label">
+        <formula>xDiscRef := "Chat with Reviewer(s)";
+xAction := "Chat with Assignee(s)";
+xMtg := "Chat with Attendee(s)";
+xST := "Chat with Subteam Member(s)";
+
+@If(
+form = @ProperCase("SubTeaM"); xST;
+DocType = DefaultDocType1; xDiscRef;
+DocType = DefaultDocType2; xAction;
+DocType = DefaultDocType3; xMtg;
+xDiscRef)</formula>
+      </code>
+    </action>
+    <action title="Cancel" showinmenu="false" hide="notes">
+      <code event="hidewhen">
+        <formula>IsNewDoc = "0"</formula>
+      </code>
+      <code event="onClick" for="web">
+        <javascript>//web new docs only;
+window.close(self)</javascript>
+      </code>
+    </action>
+    <action title="Cancel" showinmenu="false" hide="notes">
+      <code event="click">
+        <formula>REM {web only; saved docs};
+@Command([FileCloseWindow])</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>IsNewDoc = "1"</formula>
+      </code>
+    </action>
+    <action title="Cancel" hide="preview previewedit web">
+      <code event="click">
+        <formula>REM {Notes only};
+REM {cannot issue the SaveOptions command below on the web};
+FIELD SaveOptions := 0;
+@Command([FileCloseWindow])</formula>
+      </code>
+    </action>
+  </actionbar>
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" rightmargin="0%" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in">
+        <parstyle name="HTML">
+          <font size="9pt" color="teal" name="face14"/>
+        </parstyle>
+      </pardef>
+      <pardef id="2" leftmargin="1in" rightmargin="0%" spaceafter="1.5">
+        <parstyle name="Body"/>
+      </pardef>
+      <pardef id="3" align="none" leftmargin="1in" hide="notes web" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="3"/>
+      <pardef id="4" align="none" leftmargin="1in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <subformref name="WebFont"/>
+      <par def="3"/>
+      <pardef id="5" leftmargin="2.5000in" firstlineleftmargin="1in" hide="read edit copy preview previewedit notes web" tabs="L2.5000in" keeptogether="true"/>
+      <par def="5">
+        <run>
+          <font size="9pt" color="gray"/>Hidden Fields:</run>
+      </par>
+      <par def="5">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="From"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>	Person creating the profile</run>
+      </par>
+      <par def="5">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="AbbreviateFrom"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt"/>used in the Newsletter profile searches</run>
+      </par>
+      <pardef id="6" leftmargin="1in" hide="read edit copy preview previewedit notes web"/>
+      <par def="6">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="$$Return"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>		used for saving the document on the web</run>
+      </par>
+      <par def="6">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="QUERY_STRING_DECODED"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>used in hide-when formulas in the action buttons on this form</run>
+      </par>
+      <par def="6">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="deleteQueryString"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>	removes the QueryString whenever the doc. is edited and saved</run>
+      </par>
+      <pardef id="7" leftmargin="1in" hide="notes web"/>
+      <par def="7">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="computedfordisplay" name="nSubtList">
+            <code event="defaultvalue">
+              <formula>@DbColumn("" : "nocache"; ""; "SubteamLookup"; 1)</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="computedfordisplay" name="wSubtList">
+            <code event="defaultvalue">
+              <formula>list := @DbColumn("" : "nocache"; ""; "SubteamLookup"; 1);
+";" + @Implode(list; ";") + ";"</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="19" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/> used for determining if a subteam already exists</run>
+      </par>
+      <par def="7">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="AltNameDisplay"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/> "1" means alternate names can be displayed</run>
+      </par>
+      <pardef id="8" leftmargin="1in" hide="web"/>
+      <par def="8">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+      </par>
+      <table widthtype="fixedleft" refwidth="5.9375in">
+        <tablecolumn width="5.9375in"/>
+        <tablerow>
+          <tablecell borderwidth="0px">
+            <pardef id="10" leftmargin="1%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="10"/>
+            <table widthtype="fitmargins" leftmargin="0" refwidth="5.9375in">
+              <tablecolumn width="100%"/>
+              <tablerow>
+                <tablecell borderwidth="0px 0px 2px" bgcolor="#78b4bc">
+                  <pardef id="12" leftmargin="0.1000in" spacebefore="1.5" keepwithnext="true" keeptogether="true"/>
+                  <par def="12">
+                    <run>
+                      <font size="12pt" style="bold" color="white"/>Subteam Profile</run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="white">
+            <pardef id="13" leftmargin="0.0104in" firstlineleftmargin="3%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="13">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="14" leftmargin="0.0104in" firstlineleftmargin="3%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="14">
+              <run>
+                <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="white"/>
+              </run>
+            </par>
+            <table widthtype="fitmargins" leftmargin="1%" refwidth="5.8785in">
+              <tablecolumn width="1.2535in"/>
+              <tablecolumn width="100%"/>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="16" keepwithnext="true" keeptogether="true"/>
+                  <par def="16">
+                    <run>
+                      <font size="9pt" style="bold"/>Subteam Name</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="17" leftmargin="1%" hide="read preview" keepwithnext="true" keeptogether="true"/>
+                  <par def="17">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.2000in" width="2.5000in" multiline="true" borderstyle="single" type="text" kind="editable" name="STName" description="Enter the name of the subteam" htmlid="STName_2">
+                        <code event="htmlattributes">
+                          <formula>"size=30"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>SN1 := @Trim(@ReplaceSubstring(STName;"[";" "));
+@Trim(@ReplaceSubstring(SN1;   ",";   ""))</formula>
+                        </code>
+                        <code event="inputvalidation">
+                          <formula>REM {Variables to translate};
+BLFailureText := "Please enter a Subteam Name.";
+ExStMsg := "This subteam name already exists.  Please enter a different name.";
+InactStMsg := "This subteam name already exists, but the subteam is inactive.  You can re-activate the inactive subteam, delete the inactive subteam (via the Index of All Documents view), or enter a different subteam name here.";
+REM {End variables to translate};
+LCsubteam := @LowerCase(STName);
+getST := @DbLookup("": "nocache"; ""; "SubteamLookup"; LCsubteam; 4);
+getSTin := @DbLookup("": "nocache"; ""; "SubteamInactiveLookup"; LCsubteam; 4);
+@If(@ClientType != "Notes"; @Success;
+STName = "" ; @Failure(BLFailureText);
+!@IsError(getST) &amp; getSTunid != ThisDocunid; @Failure(ExStMsg);
+!@IsError(getSTin) &amp; getSTunid != ThisDocunid; @Failure(InactStMsg);
+@Success)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                  </par>
+                  <pardef id="18" leftmargin="1%" hide="edit copy previewedit" keepwithnext="true" keeptogether="true"/>
+                  <par def="18">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" kind="computedfordisplay" name="dspSTName" description="Enter the name of the subteam" htmlid="STName_1">
+                        <code event="htmlattributes">
+                          <formula>"size=30"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>STName</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="2" afterbegincount="5">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt" color="white"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="19" hide="read preview notes" keepwithnext="true" keeptogether="true"/>
+                  <par def="19">
+                    <run>
+                      <font size="9pt" color="gray"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="20" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+                  <par def="20">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <pardef id="21" hide="web" keepwithnext="true" keeptogether="true"/>
+                  <par def="21">
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="gray"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="22" leftmargin="1%" keepwithnext="true" keeptogether="true"/>
+                  <par def="22">
+                    <run>
+                      <font size="9pt" style="bold"/>Members</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="23" leftmargin="1%" hide="read preview notes" keepwithnext="true" keeptogether="true"/>
+                  <par def="23">
+                    <run>
+                      <font size="9pt" color="gray"/>To select multiple names, hold down the CTRL key</run>
+                  </par>
+                  <pardef id="24" leftmargin="1%" hide="read preview" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltNameDisplay = "0"</formula>
+                    </code>
+                  </pardef>
+                  <par def="24">
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="1.2000in" width="2.5000in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="AltNameSelection" description="Select the Team Members to whom you are directing this information." listinputseparators="comma" listdisplayseparator="comma">
+                        <keywords helperbutton="false" recalconchange="true" columns="1" ui="listbox">
+                          <formula>PLookup :=  @DbColumn("" : "nocache"; ""; "PriAlt"; 1);
+isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 40));
+
+@If(PLookup = ""; sp; PLookup)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size = 4"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>getField := @If(@LowerCase(form) = "maintopic"; people1; @LowerCase(form) = "subteam";STMembers; @LowerCase(form) = "$replication"; AuthorList; @LowerCase(form) = "($subscription)"; ProfileAuthors;
+"");
+@If(
+AltNameSelection = "" &amp; PriNameSelection = ""; @Trim(getField);
+AltNameDisplay = "1"; @Trim(AltNameSelection); @Trim(PriNameSelection))</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="#806210"/>
+                    </run>
+                  </par>
+                  <pardef id="25" leftmargin="1%" hide="read preview" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltNameDisplay = "1"</formula>
+                    </code>
+                  </pardef>
+                  <par def="25">
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="1.2000in" width="2.5000in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="PriNameSelection" description="Select the Team Members to whom you are directing this information." listinputseparators="comma" listdisplayseparator="comma">
+                        <keywords helperbutton="false" recalconchange="true" columns="1" ui="listbox">
+                          <formula>PLookup :=  @DbColumn("" : "nocache"; ""; "PeopleLookup"; 1);
+isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 40));
+
+@If(PLookup = ""; sp; PLookup)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size = 4"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>getField := @If(@LowerCase(form) = "maintopic"; people1; @LowerCase(form) = "subteam";STMembers; @LowerCase(form) = "$replication"; AuthorList; @LowerCase(form) = "($subscription)"; ProfileAuthors;
+"");
+@If(
+AltNameSelection = "" &amp; PriNameSelection = "" &amp; @LowerCase(form) = "maintopic"; @SetField(@Trim(getField); "");
+AltNameSelection = "" &amp; PriNameSelection = ""; @Trim(getField);
+AltNameDisplay = "0"; @Trim(PriNameSelection); @Trim(AltNameSelection))</formula>
+                        </code>
+                      </field>
+                    </run>
+                  </par>
+                  <pardef id="26" leftmargin="1%" hide="notes web mobile" keepwithnext="true" keeptogether="true"/>
+                  <par def="26">
+                    <run>
+                      <font size="9pt" color="gray"/>
+                      <field type="text" allowmultivalues="true" kind="editable" name="STMembers" description="Select the names of the members of this subteam." listinputseparators="comma" listdisplayseparator="comma" htmlid="STMembers_1">
+                        <code event="htmlattributes">
+                          <formula>"size=5"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@If(PriNameSelection = ""; @Trim(STMembers); @Trim(PriNameSelection))</formula>
+                        </code>
+                        <code event="inputvalidation">
+                          <formula>STFailureText := "Please select at least one subteam member.";
+@If(STMembers = "" &amp; @ClientType = "Notes"; @Failure(STFailureText);@Success)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="2" afterbegincount="5">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <par def="26">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" kind="computedfordisplay" name="IsNewDoc">
+                        <code event="defaultvalue">
+                          <formula>@If(@IsNewDoc; "1"; "0")</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt" color="gray"/>
+                    </run>
+                  </par>
+                  <pardef id="27" leftmargin="1%" hide="edit previewedit" keepwithnext="true" keeptogether="true"/>
+                  <par def="27">
+                    <run>
+                      <font size="9pt" color="gray"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field showdelimiters="false" lookupeachchar="false" lookupaddressonrefresh="false" type="names" allowmultivalues="true" kind="computedfordisplay" name="dspSTMembers" listinputseparators="comma semicolon newline" listdisplayseparator="newline" htmlid="dspSTMembers">
+                        <code event="defaultvalue">
+                          <formula>STMembers</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" color="white"/>
+                    </run>
+                  </par>
+                  <pardef id="28" leftmargin="1%" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>!@IsNewDoc</formula>
+                    </code>
+                  </pardef>
+                  <par def="28">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt" color="red"/>
+                      <field type="text" kind="computedfordisplay" name="BlankListMsg" htmlid="BlankListMsg">
+                        <code event="defaultvalue">
+                          <formula>REM {Variables to translate};
+Msg := "You must define the team members before you can define the subteam." + @NewLine + "Click the Cancel button and proceed to add new Team Members.";
+REM {End variables to translate};
+Lookup := @DbColumn("" : "NoCache"; ""; "PeopleLookup"; 1);
+@If(Lookup = ""; Msg; "")</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt" color="red"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="29" hide="read preview" keepwithnext="true" keeptogether="true"/>
+                  <par def="29">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="20">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <par def="21">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="22">
+                    <run>
+                      <font size="9pt" style="bold"/>Purpose</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="30" leftmargin="1%" hide="read preview" keepwithnext="true" keeptogether="true"/>
+                  <par def="30">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.2000in" width="2.5000in" multiline="true" borderstyle="single" type="text" kind="editable" name="Position" description="Enter the role for this subteam" htmlid="Position">
+                        <code event="htmlattributes">
+                          <formula>"size=30"</formula>
+                        </code>
+                        <code event="inputvalidation">
+                          <formula>BLFailureText := "Please enter the purpose of this subteam.";
+@If(Position = "" &amp; @ClientType = "Notes"; @Failure(BLFailureText);@Success)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" color="gray"/>
+                    </run>
+                  </par>
+                  <pardef id="31" leftmargin="1%" hide="edit copy previewedit" keepwithnext="true" keeptogether="true"/>
+                  <par def="31">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" kind="computedfordisplay" name="dspPosition" description="Enter the role for this subteam" htmlid="Position_1">
+                        <code event="htmlattributes">
+                          <formula>"size=30"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>Position</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="2" afterbegincount="5">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt" color="white"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="16">
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="20">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <par def="21">
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="32" keepwithnext="true" keeptogether="true"/>
+                  <par def="32">
+                    <run>
+                      <font size="9pt" style="bold"/> Status</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="33" keepwithnext="true" keeptogether="true"/>
+                  <par def="33">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <sharedfieldref name="FileThisStatusDoc"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <pardef id="34" leftmargin="3%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="34">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="35" leftmargin="3%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="35">
+              <run>
+                <font size="9pt" style="bold" color="white"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <par def="6">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="editable" name="webNewDoc" htmlid="webNewDoc"/>
+        </run>
+        <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>	determines if the web new document.  Used in $$Return.</run>
+      </par>
+      <par def="5">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="computed" name="Subject" htmlid="Subject">
+            <code event="defaultvalue">
+              <formula>Members := @Implode(STMembers; ", ");
+STName + " (" + Members + ")"</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>	Subteam subject</run>
+      </par>
+      <par def="5">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="Status"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>	subteam's status</run>
+      </par>
+      <par def="5">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="DateFiled"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>	date marked "inactive"</run>
+      </par>
+      <pardef id="36" leftmargin="3.1875in" firstlineleftmargin="1in" hide="read edit copy preview previewedit" keeptogether="true"/>
+      <par def="36">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="editable" name="getSTunid">
+            <code event="inputtranslation">
+              <formula>lcSTNAME := @LowerCase(STName);
+getST := @DbLookup("" : "nocache"; ""; "SubteamLookup"; @LowerCase(lcSTNAME); 4);
+@If(@IsDocBeingLoaded; ""; @IsError(getST); ""; getST )</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>	looks for existing participant with this name</run>
+      </par>
+      <par def="36">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="computed" name="thisDocUNID">
+            <code event="defaultvalue">
+              <formula>@Text(@DocumentUniqueID)</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>	this document's unid</run>
+      </par>
+      <par def="36">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="editable" name="TestForExistingST">
+            <code event="inputvalidation">
+              <formula>REM {Variables to translate};
+BLFailureText := "Please enter a Subteam Name.";
+ExStMsg := "This subteam name already exists.  Please enter a different name.";
+InactStMsg := "This subteam name already exists, but the subteam is inactive.  You can re-activate the inactive subteam, delete the inactive subteam (via the Index of All Documents view), or enter a different subteam name here.";
+REM {End variables to translate};
+LCsubteam := @LowerCase(STName);
+getST := @DbLookup("": "nocache"; ""; "SubteamLookup"; LCsubteam; 4);
+getSTin := @DbLookup("": "nocache"; ""; "SubteamInactiveLookup"; LCsubteam; 4);
+@If(@ClientType != "Notes'"; @Success; @IsDocBeingSaved &amp; STName = "" &amp; @ClientType = "Notes"; @Failure(BLFailureText);
+!@IsError(getST) &amp; getSTunid != ThisDocunid; @Failure(ExStMsg);
+!@IsError(getSTin) &amp; getSTunid != ThisDocunid; @Failure(InactStMsg);
+@Success)</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>	tests to see if this participant exists</run>
+      </par>
+      <par def="36">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="computed" name="WebError">
+            <code event="defaultvalue">
+              <formula>@If(getSTunid != ThisDocunid; "1"; "")</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>	used in JSheader</run>
+      </par>
+      <pardef id="37" leftmargin="3.1875in" firstlineleftmargin="1in" hide="notes web" keeptogether="true"/>
+      <par def="37">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" allowmultivalues="true" kind="computed" name="AltNameMembers" listinputseparators="comma" listdisplayseparator="comma">
+            <code event="defaultvalue">
+              <formula>@Trim(AltNameMembers)</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+  <item name="EDITX" summary="false" sign="true">
+    <number>0</number>
+  </item>
+  <item name="WhenRequestDone" summary="false" sign="true">
+    <rawitemdata type="400">
+AAAAAAAAAAA=
+</rawitemdata>
+  </item>
+  <item name="WhenCommitDone" summary="false" sign="true">
+    <rawitemdata type="400">
+AAAAAAAAAAA=
+</rawitemdata>
+  </item>
+  <item name="WhenDone" summary="false" sign="true">
+    <rawitemdata type="400">
+AAAAAAAAAAA=
+</rawitemdata>
+  </item>
+  <item name="$CIAOTime" sign="true">
+    <datetime>19970218T101329,04-05</datetime>
+  </item>
+  <item name="sortorder" summary="false" sign="true">
+    <number>0</number>
+  </item>
+  <item name="$HTMLDocumentStyles" summary="true" sign="true">
+    <rawitemdata type="1">
+0ggBAAAA/wDSCAEA/wAAANIIAQCAAIAA
+</rawitemdata>
+  </item>
+  <item name="OriginalModTime" sign="true">
+    <datetime>20050119T075045,47-05</datetime>
+  </item>
+  <item name="$SubForm_RepIDs" sign="true">
+    <text>0000000000000000</text>
+  </item>
+  <item name="$XPageAlt" sign="true">
+    <text>members.xsp</text>
+  </item>
+  <item name="DateFiled" summary="false" sign="true">
+    <rawitemdata type="400">
+AAAAAAAAAAA=
+</rawitemdata>
+  </item>
+</form>

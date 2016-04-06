@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><note class="form" maintenanceversion="1.5" replicaid="C1257F57006DE96D" version="9.0" xmlns="http://www.lotus.com/dxl">
+<noteinfo noteid="354a" sequence="5" unid="D5F89111B287C16F80257BB10038B9A6">
+<created><datetime dst="true">20130723T111935,42+01</datetime></created>
+<modified><datetime>20160212T210138,20+01</datetime></modified>
+<revised><datetime dst="true">20131002T111159,19-04</datetime></revised>
+<lastaccessed><datetime>20160212T210138,20+01</datetime></lastaccessed>
+<addedtofile><datetime>20160212T210138,20+01</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Lotus Notes Template Development/O=Lotus Notes</name></updatedby>
+<wassignedby><name>CN=Lotus Notes Template Development/O=Lotus Notes</name></wassignedby>
+<item name="$Flags"><text>gC~4;2</text></item>
+<item name="$TITLE"><text>allDocumentsFilter.properties</text></item>
+
+
+<item name="$FileNames" sign="true"><text>allDocumentsFilter.properties</text></item></note>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:xc="http://www.ibm.com/xsp/custom"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+
+	<xe:formRow label="Report date:">
+		<xp:inputText value="#{document1.ReportDate}" id="reportDateIn"
+			defaultValue="#{javascript:@Today()}"
+			title="select report date">
+			<!--
+				Note the Report Date is not required in the Notes Client, so not
+				required here
+			-->
+			<xp:this.converter>
+				<xp:convertDateTime type="date"></xp:convertDateTime>
+			</xp:this.converter>
+			<xp:this.style><![CDATA[#{javascript://SPR #CCNI9AE43M - This value causes issues in IE bidi
+				if(!(context.isDirectionRTL() && context.getUserAgent().isIE(7, 10))) {
+					return "width:160px;"
+				}}]]>
+			</xp:this.style>
+			<xp:dateTimeHelper></xp:dateTimeHelper>
+		</xp:inputText>
+	</xe:formRow>
+
+	<xe:formRow label="Created:" for="createdPersonLink">
+		<!-- TODO localization of segmented fragments -->
+		<xp:label value="On " id="label3"></xp:label>
+		<xp:text value="#{javascript:@Created()}" id="computedField1"></xp:text>
+		<xp:label value=" by " id="label4"></xp:label>
+		<xp:link styleClass="lotusPerson" id="createdPersonLink"
+			value="/members.xsp" role="button"
+			title="link to person who created">
+			<xp:this.parameters>
+				<xp:parameter name="profile">
+					<xp:this.value><![CDATA[${javascript://
+					var nameStr;
+					if(document1.isNewNote()){ 
+						nameStr = @UserName();
+					}else{
+						nameStr = document1.getItemValueString('From');
+					}
+					return peopleBean.getPerson(nameStr).abbreviatedName;}]]></xp:this.value>
+				</xp:parameter>
+			</xp:this.parameters>
+			<xp:this.text><![CDATA[${javascript://
+					var nameStr;
+					if(document1.isNewNote()){ 
+						nameStr = @UserName();
+					}else{
+						nameStr = document1.getItemValueString('From');
+						if( ! nameStr ){
+							return '';
+						}
+					}
+					return peopleBean.getPerson(nameStr).displayName;
+				}]]></xp:this.text>
+		</xp:link>
+	</xe:formRow>
+
+	<xe:formRow for="reportStatusIn">
+		<!-- TODO fix layout styling for radio group in a form table -->
+		<style>
+			.lotusForm tr.lotusFormFieldRow .xspRadioButton td{
+				padding-bottom:1px;
+			}
+		</style>
+		<xp:this.facets>
+			<xp:label xp:key="label" value="Report status:" />
+		</xp:this.facets>
+		<xp:radioGroup id="reportStatusIn"
+			value="#{document1.FileThisStatusDoc}" style="margin:0px;padding:0px"
+			defaultValue="0" legend="Status" role="radiogroup"
+			title="select the status of the report">
+			<!-- Note, FileThisStatusDoc are Strings, not integers -->
+			<xp:this.attrs>
+				<xp:attr name="aria-label">
+					<xp:this.value>
+						<![CDATA[#{javascript:return strings.getString("document.display.statusReport.status");}]]>
+					</xp:this.value>
+				</xp:attr>
+			</xp:this.attrs>
+			<xp:selectItem itemLabel="Active" itemValue="0" />
+			<xp:selectItem itemLabel="Inactive" itemValue="1" />
+		</xp:radioGroup>
+	</xe:formRow>
+</xp:view>

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(AddParticipantToSubteam2)" hide="v3" runaswebuser="true" publicaccess="false" language="en">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>'AddParticipantToSubteam: 
+Dim ParticSelection As Variant
+Dim SubteamDoc As notesdocument
+Dim item As notesitem
+Dim STcurrentPriMembers As Variant
+Dim STcurrentAltMembers As Variant
+Dim STCurrentMembers As Variant
+Dim dbprofile As notesdocument
+Dim AltNameDisplay As Variant
+
+Const blank = "You must select an item from both the team member and the subteam lists."
+Const alreadyThere = "The selected team member is already a member of that subteam."
+Const notThere = "The selected team member is not a member of that subteam."
+Const added  = "The team member has been added to the subteam."
+Const removed = "The team member has been removed from the subteam."
+Const titleAdd = "Add team member to subteam"
+Const titleRemove = "Remove team member from subteam"
+Const NoParticOrSubteam = "There are no team members or subteams defined in the TeamRoom Setup."
+Const NoSubteams = "There are no subteams defined in the TeamRoom Setup."	
+Const NoPartic = "There are no team members defined in the TeamRoom Setup."
+Const errorMsg = "Unable to proceed"
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Dim s As New notessession
+	Dim db As notesdatabase
+	Dim note As notesdocument
+	Dim STselection As Variant
+'	Dim AddList As Variant
+	Dim STview As notesview
+	Dim UboundPartic As Integer
+'	Dim STdoc As notesdocument
+	Dim SubTeamList As notesitem
+	Dim STfunc As Variant
+	
+	
+	Set note = s.documentcontext
+	Set db = s.currentdatabase
+	Set STview = db.getview("SubteamLookup")
+	Set dbprofile = db.getprofiledocument("TempVars")
+	ParticSelection = note.getitemvalue("ParticipantList")
+	STselection = note.getitemvalue("SubteamList")
+	STfunc = note.getitemvalue("STFunction")
+	AltNameDisplay = note.getitemvalue("AltNameDisplay")
+	
+	Dim getPList As Variant
+	Dim getSList As Variant
+	getPList = note.getitemvalue("PList")
+	getSList = note.getitemvalue("SList")	
+	If getPlist(0) = "" And getSlist(0) = "" Then
+		Msgbox NoParticOrSubteam,16,errorMsg
+		Exit Sub
+	End If
+	
+	
+	Dim getSub As Integer	
+	getSub = Instr(STSelection(0), "     ")
+	Dim getPart As Integer
+	getPart = Instr( ParticSelection(0), "     ")	
+	If  getPart &gt; 0 And getSub &gt; 0 Then
+		Msgbox NoParticOrSubteam,16,errorMsg
+		Exit Sub
+	Elseif getPart &gt; 0 Then
+		Msgbox NoPartic,16,errorMsg
+		Exit Sub
+	Elseif getSub &gt; 0 Then
+		Msgbox NoSubteams,16,ErrorMsg
+		Exit Sub
+	End If	
+	
+	If particSelection(0) = "" Or STSelection(0) = "" Then
+		dbprofile.notify = blank
+		If STFunc(0) = "1" Then
+			Msgbox blank,64,titleAdd
+		Else
+			Msgbox blank,64,titleRemove			
+		End If		
+		Exit Sub
+	End If	
+	
+	
+	
+'get the list of members in the selected subteam
+	Set SubteamDoc = STview.getdocumentbykey(STSelection(0))
+	STcurrentAltMembers = SubteamDoc.getitemvalue("AltNameSelection")
+	STcurrentPriMembers = SubteamDoc.getitemvalue("PriNameSelection")
+	STCurrentMembers = SubteamDoc.getitemvalue("STMembers")
+	
+	
+	If	AltNameDisplay(0) = "1" Then
+		Set item = SubteamDoc.getFirstItem("AltNameSelection")
+	Else
+		Set item = SubteamDoc.getFirstItem("PriNameSelection")
+	End If
+	
+	
+	
+'Add/Remove
+	
+	If STfunc(0) = "1" Then
+		Call AddToSubteam
+	Else
+		Call RemoveFromSubteam
+	End If
+	
+End Sub
+</lotusscript>
+  </code>
+  <code event="AddToSubteam">
+    <lotusscript>Function AddToSubteam
+	Dim count As Integer 
+	Dim x As String
+	
+'check to see if the participant is already listed in the selected subteam
+	x = ParticSelection(0)
+	Forall y In STcurrentMembers
+		count = 0
+		If Lcase(x) = Lcase(y) Then
+			dbprofile.notify = alreadythere
+			Msgbox alreadyThere,64,titleAdd
+			Exit Function
+		End If
+	End Forall
+	
+'add the participant to the list
+	Call item.AppendToTextList(x)
+'	dbprofile.notify = added
+	Call subteamDoc.computewithform(0,0)
+	Call SaveAltName
+	Call SubteamDoc.save(True, False)
+	dbprofile.notify = Added
+	Msgbox added,64,titleAdd
+End Function
+</lotusscript>
+  </code>
+  <code event="RemoveFromSubteam">
+    <lotusscript>Function RemoveFromSubteam
+	Dim count As Integer 
+	Dim x As String
+	
+	Dim dbug As New noteslog("AddPart")	
+'logging is for debug purposes
+	Set dbug = New NotesLog("AddPart")
+'to turn off the debug log, set this to False     
+	dbug.LogActions = True
+	dbug.OpenAgentLog	
+	
+'check to see if the participant a member of the subteam &amp; remove from pri and alt lists
+	x = ParticSelection(0)
+	count = 0
+	
+	Forall y In STcurrentPriMembers		
+		If Lcase(x) = Lcase(y) Then
+			STCurrentPriMembers(count) = ""
+			Set item = subteamDoc.replaceitemvalue("PriNameSelection", Fulltrim(STCurrentPriMembers))
+		End If
+		count = count + 1
+	End Forall
+	
+	x = ParticSelection(0)
+	count = 0
+	dbug.logaction("here1")
+	
+	Forall y In STcurrentAltMembers		
+		If Lcase(x) = Lcase(y) Then
+			STCurrentAltMembers(count) = ""
+			Set item = subteamDoc.replaceitemvalue("AltNameSelection", Fulltrim(STCurrentAltMembers))
+		End If
+		count = count + 1
+	End Forall
+	
+	dbug.logaction("here2")
+	
+	x = ParticSelection(0)
+	dbug.logaction("here3")
+	count = 0
+	dbug.logaction("here4")
+	
+	Forall y In STcurrentMembers		
+		If Lcase(x) = Lcase(y) Then
+			STCurrentMembers(count) = ""
+			Set item = subteamDoc.replaceitemvalue("STMembers", Fulltrim(STCurrentMembers))
+			dbug.logaction("here5")
+			Goto finish
+		End If
+		count = count + 1
+	End Forall
+	
+	
+	
+	dbprofile.notify = notthere
+	Msgbox notthere, 64, titleRemove
+	Exit Function
+	
+finish:	
+'remove the participant from the list
+'	Call item.AppendToTextList(x)
+'	Call subteamDoc.computewithform(0,0)
+	Call SaveAltName
+	Call SubteamDoc.save(True, False)
+	dbprofile.notify = removed
+	Msgbox removed,64, titleRemove
+End Function
+</lotusscript>
+  </code>
+  <code event="saveAltName">
+    <lotusscript>Sub saveAltName
+	Dim s As New notessession
+	Set db = s.currentdatabase
+	Set view = db.getview("PeopleLookup")
+	AltSelection = subTeamDoc.getitemvalue("AltNameSelection")
+	uBoundSel = Ubound(AltSelection)
+	Dim count As Integer
+	
+	Redim AltMembers(uBoundSel) As Variant
+	count = 0
+	
+	STcurrentPriMembers = SubteamDoc.getitemvalue("PriNameSelection")
+	
+'determine alternate names for all members selected	
+	Forall x In STCurrentPriMembers	
+		Set TMNote = view.getdocumentbykey(x)
+		If x = "" Then
+			Goto sContinue
+		End If
+		getAltName = TMNote.getitemvalue("GetAlternateName")
+		
+		AltMembers(count) = getAltName(0)
+		count = count + 1
+sContinue:
+	End Forall
+	
+	Dim b As Variant
+	b = Fulltrim(AltMembers)
+	
+	Call subTeamDoc.replaceitemvalue("AltNameMembers", b)	
+End Sub</lotusscript>
+  </code>
+  <item name="$POID">
+    <datetime>20011207T130404,02-05</datetime>
+  </item>
+</agent>

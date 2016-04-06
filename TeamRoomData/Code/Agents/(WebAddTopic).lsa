@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(WebAddTopic)" hide="v3" runaswebuser="true" publicaccess="false" language="en" comment="This agent adds the current main topic to the users Interest Profile.">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+Use "wStringResource"
+Use "DiscussionRoutines"
+
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>Dim view As NotesView
+Dim profile As NotesDocument
+Dim item As NotesItem
+Dim Position As Integer
+Dim originalnote As notesdocument
+Dim CurrentDocumentURL As String
+Dim webuser As NotesName
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize   
+	InstantiateObjects     
+	Dim nab As New notesdatabase("","names.nsf")
+	Dim userview As notesview
+	dbpath = getdbpath
+	Dim LinkTRReturn As String
+	
+	AllView =   "&lt;hr&gt;&lt;font size=2&gt;&lt;a href=/" + dbpath + "/($All)?OpenView&gt;"+ getString(50) +"&lt;/a&gt;&amp;nbsp&amp;nbsp&amp;nbsp"
+	MissionView = "&lt;a href=/" + dbpath + "/TeamOverview?OpenView&gt;"+GetString(51)+"&lt;/a&gt;&amp;nbsp&amp;nbsp&amp;nbsp"
+	ActiveView = "&lt;a href=/" + dbpath + "/ActiveDate?OpenView&gt;"+GetString(52)+"&lt;/a&gt;&lt;hr&gt;"
+	
+     'Get the original Note that we are trying to add to the users interest profile
+	OriginalUNID = Mid(note.Query_String(0), Instr(note.Query_String(0), "&amp;")+1, 32)
+	Set OriginalNote = db.getdocumentbyunid(originalunid)
+      'Obtain the correct authenticated web user name of the person
+     'find the remote user's full name 
+	
+	If nab.isopen Then
+		Set userview = nab.getview("($Users)")
+		Dim userdoc As notesdocument
+		Set userdoc = userview.getdocumentbykey(note.remote_user(0))
+		If Not(userdoc Is Nothing) Then
+			Set webuser =  New notesname(userdoc.fullname(0))  
+		End If
+	End If
+	
+'Get the subject field and remove any commas 
+	Subject = OriginalNote.Subject
+	ThreadSubject = Subject(0)    
+	Do    
+		Position = Instr(1, ThreadSubject, ",")
+		If Position &gt; 0 Then Mid(ThreadSubject, Position, 1) = "."
+	Loop Until Position = 0    
+	
+	
+	ThreadId = OriginalNote.ThreadId
+	
+	If ThreadId(0) = "" Then
+		Print "&lt;b&gt;" + GetString(6) + "&lt;/b&gt;" + AllView + MissionView + ActiveView
+		Exit Sub
+	End If
+	Set view = db.GetView("($Profiles)")
+     'Compile the correct key to find the unique interest profile for this user
+	key = "Interest Profile" &amp; webuser.common
+	Set profile = view.GetDocumentByKey(key,False)
+	
+	If profile Is Nothing Then
+     'If there is no Interest profile, create one and add the topic to it
+		Set profile = New NotesDocument(db)
+		profile.Form = "Interest Profile"
+		Set item = New NotesItem(profile, "PersonName", webuser.common, AUTHORS)
+		profile.Subject = "Interest Profile for " &amp; webuser.common
+		profile.ProtectFromArchive = 1
+		profile.ProfileThreads = ThreadId(0)
+		If ThreadSubject = "" Then
+			profile.profilethreadsubjects = GetString(25)+Cstr(threadid(0))
+		Else
+			profile.ProfileThreadSubjects = ThreadSubject
+		End If
+		
+		Set item = New NotesItem(profile, "Readers", webuser.canonical, READERS)
+		item.IsSummary = True
+	Else
+		If profile.hasitem("ProfileThreads") Then  
+			
+			Set item = profile.GetFirstItem("ProfileThreads")          
+			If item.Contains(ThreadId(0)) Then
+				Print "&lt;b&gt;" + GetString(7) + "&lt;/b&gt;" + AllView + MissionView + ActiveView
+				Exit Sub
+			Else
+				item.AppendToTextList(ThreadId(0))
+				Set item = profile.GetFirstItem("ProfileThreadSubjects")
+				
+				If ThreadSubject = "" Then
+					item.AppendToTextList(GetString(25)+Cstr(threadid(0)))
+				Elseif profile.ProfileThreadSubjects(0) = "" Then
+					Call profile.replaceitemvalue("ProfileThreadSubjects", Subject)
+				Else
+					item.AppendToTextList(ThreadSubject)
+				End If
+				
+				
+			End If
+		Else
+			profile.profilethreads = threadid(0)
+			If ThreadSubject = "" Then
+				profile.profilethreadsubjects = GetString(25)+Cstr(threadid(0))
+			Else
+				profile.profilethreadsubjects = threadsubject
+			End If
+			
+		End If
+	End If   
+	profile.Save True, True
+	If ThreadSubject = "" Then
+		Print "&lt;b&gt;"+GetString(26)+GetString(8)+ "&lt;/b&gt;" + AllView + MissionView + ActiveView
+	Else
+		Print "&lt;b&gt;"+threadsubject+" "+GetString(8)+ "&lt;/b&gt;" + AllView + MissionView + ActiveView
+	End If
+	
+End Sub</lotusscript>
+  </code>
+</agent>

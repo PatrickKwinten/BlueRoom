@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<note xmlns="http://www.lotus.com/dxl" class="filter">
+  <item name="$TITLE" sign="true">
+    <text>lsClassException</text>
+  </item>
+  <item name="$Flags">
+    <text>s34Q</text>
+  </item>
+  <item name="$PublicAccess" sign="true">
+    <text>1</text>
+  </item>
+  <item name="$POID">
+    <datetime dst="true">20100715T101627,84-04</datetime>
+  </item>
+</note>

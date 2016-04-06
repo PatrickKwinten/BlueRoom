@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://www.lotus.com/dxl" name="HelpMission" alias="HelpMission" publicaccess="false" language="en">
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="print notes embedded" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>&lt;HEAD&gt;<break/>&lt;STYLE TYPE="text/css"&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/> 	BODY {font-family: sans-serif}</run>
+      </par>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>&lt;/STYLE&gt;<break/>&lt;/HEAD&gt;</run>
+      </par>
+      <table widthtype="fixedleft" refwidth="5in">
+        <tablecolumn width="5in"/>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="#78b4bc">
+            <pardef id="3" leftmargin="1%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="3"/>
+            <table widthtype="fitmargins" leftmargin="1%" refwidth="4.9500in">
+              <tablecolumn width="100%"/>
+              <tablerow>
+                <tablecell borderwidth="0px 0px 2px">
+                  <pardef id="5" leftmargin="0.1000in" spacebefore="1.5" keepwithnext="true" keeptogether="true"/>
+                  <par def="5">
+                    <run>
+                      <font size="12pt" style="bold"/>Team Name &amp; Purpose Help</run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <par def="3">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="0px">
+            <pardef id="6" leftmargin="2%" rightmargin="98%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="6">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="7" leftmargin="2%" rightmargin="98%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="7">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <pardef id="8" leftmargin="0.1000in" rightmargin="98%" keepwithnext="true" keeptogether="true"/>
+            <par def="8">
+              <run>
+                <font size="9pt"/>Fill in a Team Name and a Team Purpose to define the use of this TeamRoom application.</run>
+            </par>
+            <pardef id="9" leftmargin="0.1000in" rightmargin="98%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="10" leftmargin="0.1000in" rightmargin="98%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt"/>The Team Purpose might provide details about why the team exists, and what the team should accomplish.  Specific goals and detailed work objectives can also be delineated here.</run>
+            </par>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+              <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="system">
+                <code event="click">
+                  <formula>@Command([FilePrint])</formula>
+                </code>
+                <font size="9pt"/>Print</button>
+              <run>
+                <font size="9pt"/>
+              </run>
+              <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="system">
+                <code event="click">
+                  <formula>@Command([FileCloseWindow])</formula>
+                </code>
+                <font size="9pt"/>Done</button>
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="9">
+              <run>
+                <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+              <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="system">
+                <code event="onClick" for="web">
+                  <javascript>window.close(self)</javascript>
+                </code>
+                <code event="onClick" for="client">
+                  <javascript>window.close(self)</javascript>
+                </code>
+                <font size="9pt"/>Done</button>
+              <run>
+                <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+            <par def="6">
+              <run>
+                <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="11" leftmargin="1in" hide="notes mobile"/>
+      <par def="11">
+        <run>
+          <font size="9pt"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+</page>

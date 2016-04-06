@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:xc="http://www.ibm.com/xsp/custom"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+    <xp:this.beforePageLoad><![CDATA[#{javascript:// redirect back to the home page if no contextual
+// query string parameters are available on the url...
+if(!param.containsKey("subteam")){
+    context.redirectToHome();
+}
+
+viewScope.subteamName = param.subteam}]]></xp:this.beforePageLoad>
+	
+	<xe:djxmHeading id="djxmHeading1" back="Back" label="Subteam">
+		<xp:this.moveTo><![CDATA[#{javascript:
+			var from = sessionScope.from;
+			sessionScope.backProfile = from;
+			if(from) {
+				return from;
+			}
+			return "subteams";
+		}]]></xp:this.moveTo>
+	</xe:djxmHeading>
+	
+	<xp:panel id="readOnlyProfile">
+		<xp:this.rendered><![CDATA[#{javascript:
+			sessionScope.from = "subteam\u0026subteam=" + param.subteam;
+			return true;
+		}]]></xp:this.rendered>
+		
+		<xp:this.data>
+			<xp:dominoDocument formName="Subteam" action="openDocument"
+				var="subteam" ignoreRequestParams="true" computeWithForm="onsave">
+				<xp:this.documentId><![CDATA[#{javascript://
+					var db:NotesDatabase	= database;
+					var vw:NotesView		= db.getView("xwvAllSubteamsLookup");
+					var ve:NotesViewEntry	= vw.getEntryByKey(param.subteam, true);
+					var unid				= null;
+					if (null != ve) {
+						unid = ve.getUniversalID();
+					}
+					return(unid);
+				}]]></xp:this.documentId>
+			</xp:dominoDocument>
+		</xp:this.data>
+		
+		<xe:formTable id="formTable1">
+			<xe:this.formTitle><![CDATA[#{javascript:I18n.format(strings.getString("mobile.subteam.profile.header"), subteam.getItemValueString('STName'))}]]></xe:this.formTitle>
+			<xe:formRow id="formRow2" label="Created">
+				<xp:text id="createdDateOut" value="#{javascript:@Created()}"></xp:text>
+			</xe:formRow>
+			<xe:formRow id="formRow3" label="Subteam Status: ">
+				<xp:span id="eventStatusOut">
+					<xp:text disableTheme="true" value="#{javascript: strings.getString('mobile.status.active');}"
+						rendered="#{javascript:subteam.getItemValueString('FileThisStatusDoc') == '0'}"></xp:text>
+					<xp:text disableTheme="true" value="#{javascript: strings.getString('mobile.status.inactive');}"
+						rendered="#{javascript:subteam.getItemValueString('FileThisStatusDoc') == '1'}"></xp:text>
+				</xp:span>
+			</xe:formRow>
+		</xe:formTable>
+		
+		<xe:djxmRoundRectList id="djxmRoundRectList1">
+			<xp:repeat id="repeatList" value="#{subteam.PriNameSelection}"
+				var="rowData" indexVar="membersIndex" rows="300" first="0">
+					<xe:djxmLineItem id="djxmLineItem1" label="#{javascript:rowData}"
+						moveTo="#profile&amp;profile=#{javascript:rowData}">
+					</xe:djxmLineItem>
+			</xp:repeat>
+		</xe:djxmRoundRectList>
+	</xp:panel>
+</xp:view>

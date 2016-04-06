@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sharedfield xmlns="http://www.lotus.com/dxl" name="tmpFrom" language="en">
+  <field showdelimiters="false" lookupeachchar="false" lookupaddressonrefresh="false" type="names" kind="computedfordisplay" name="tmpFrom">
+    <code event="defaultvalue">
+      <formula>ver := @TextToNumber(@Version);
+ABFrom := @Name([Abbreviate]; From);
+@If(ver &lt; 160; @Return(ABfrom); "");
+
+LangPref := @LanguagePreference([AlternateName]);
+LocPref := @If(@ClientType = "Notes"; @LocationGetInfo([NamePreference]); "1");
+ABAltFrom := @Name([Abbreviate]; AltFrom);
+@If(LocPref = "" | LocPref = "0"; ABFrom;
+LangPref = "" | AltLang = ""; ABFrom;
+@IsMember(AltLang; LangPref) &amp; AltFrom != ""; ABAltFrom; ABFrom)</formula>
+    </code>
+  </field>
+  <item name="$HTMLCode" sign="true">
+    <rawitemdata type="1"/>
+  </item>
+</sharedfield>

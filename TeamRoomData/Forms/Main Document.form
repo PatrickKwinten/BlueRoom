@@ -1,0 +1,3681 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="Main Document" alias="Main Topic|Document|MainTopic" htmlallfields="true" publicaccess="false" language="en" default="true">
+  <globals>
+    <code event="options">
+      <lotusscript>Option Public
+Use "DiscussionRoutines"
+
+</lotusscript>
+    </code>
+    <code event="declarations">
+      <lotusscript>Const R5msg = "You are not allowed to edit this Meeting document using a pre-Notes 6 client because the time zone fields use functions that are not supported prior to Notes 6."
+Const R5title = "Compatibility Error"
+
+</lotusscript>
+    </code>
+    <code event="terminate">
+      <lotusscript>Sub Terminate
+	
+End Sub
+</lotusscript>
+    </code>
+    <code event="SendLinkSub">
+      <lotusscript>Sub SendLinkSub
+		'NOTES CLIENT only
+	Dim session As New notessession
+	Dim uiwork As New notesuiworkspace
+	Dim uidoc As notesuidocument
+	Dim note As notesdocument
+	Dim TRname As Variant
+	Dim TeamRoomName As String
+	Dim Subj As Variant
+	Dim peopleList As Variant
+	Dim errMsg As String
+	Dim lcDocType As Variant
+	Dim lcMtg As Variant
+	Dim peopleView As notesview
+	Dim partdoc As notesdocument
+	Dim partAddress As Variant
+	Dim DDrtitem As notesrichtextitem
+	Dim mailnote As notesdocument
+	Dim Sname As String
+	Dim errCount As Integer
+	errCount = 0
+	
+	InstantiateObjects
+'	Set db = session.currentdatabase
+	Set uidoc = uiwork.currentdocument
+	uidoc.refresh
+	Dim webAddress As String
+	
+	WebAddress = GetURL
+	
+	Set note = uidoc.document
+	
+	Dim dbpath As String
+	Dim wMail As String	
+	dbpath = getdbpath
+	
+	If WebAddress = "" Then
+		wMail = getString(15)
+	Else
+		wMail = "  http://"+ WebAddress +"/"+ dbpath+"/$All/"+note.universalid
+	End If
+	
+	TRname = note.getitemvalue("TeamRoomName")
+	If trName(0) = "" Then
+		TeamRoomName = getString(2)
+	Else
+		TeamRoomName = trName(0)
+	End If
+	
+	subj  = note.getitemvalue("Subject")
+	peopleList = note.getitemvalue("People")
+	lcDocType = note.getitemvalue("DocType")
+	lcMtg = note.getitemvalue("DefaultDocType3")
+	
+	
+	If subj(0) = "" Then
+		subj(0) = getString(1)
+	End If
+	
+	If peopleList(0) = "" And Lcase(lcDocType(0)) = Lcase(lcMtg(0)) Then	
+		errMsg = getSTring(5)
+		Msgbox errMsg,16
+		Exit Sub
+	Elseif peopleList(0) = "" Then
+		errMsg = getString(6)
+		Msgbox errMsg,16
+		Exit Sub
+	End If
+	
+	Set mailnote = New notesdocument(db)
+	
+	Forall x In peopleList
+		Set DDrtitem = New NotesRichTextItem(mailnote, "Body")
+		Set peopleView = db.getview("PeopleLookup")		
+		Set partdoc = peopleview.getdocumentbykey(x)
+		partAddress = partdoc.getitemvalue("email")
+		If partAddress(0) &lt;&gt; "" Then
+			x = partAddress(0)
+		End If
+		
+		Sname = x
+		mailnote.SendTo = x
+		mailnote.subject = subj(0)
+		
+		Call DDrtitem.appendtext(getString(8))
+		Call DDrtitem.addnewline(2)
+		Call DDrtitem.appendtext(getString(9) + TeamRoomName )
+		Call DDrtitem.addnewline(1)
+		Call DDrtitem.appendtext(getString(10)	)
+		Call DDrtitem.appenddoclink(note,"")
+		Call DDrtitem.appendtext(wMail)
+		On Error Goto ErrorMessage
+		Call mailnote.send(False)
+	End Forall
+	Goto Finish	
+	
+errorMessage:	
+	errCount = errCount + 1
+	Msgbox Error(),, getString(12) + Sname
+	Resume Next
+	Exit Sub
+finish:
+	If errCount &gt; 0 Then
+		Msgbox getString(13),  64				
+	Else
+		Msgbox getString(11),  64				
+	End If
+End Sub
+
+</lotusscript>
+    </code>
+    <code event="GetString">
+      <lotusscript>Function GetString ( StringType As Integer) As String
+	Select Case StringType
+	Case 1  
+		GetString = "[Untitled]"
+	Case 2
+		getString = "[No team name defined]"
+	Case 3
+		getString = "Mail has been sent successfully."
+	Case 4
+		getString = "There was an error sending the email to: "
+	Case 5
+		getString = "There are no assignees specified."
+	Case 6
+		getString = "There are no assignees specified"
+	Case 7
+		getString = "Please review: "
+	Case 8
+		getSTring = "An item requiring your attention has been posted to a TeamRoom database." + Chr(13) 
+	Case 9
+		getString = "TeamRoom Name: "
+	Case 10
+		getString = "Item:  "
+	Case 11
+		getString =  "Mail notifications have been sent successfully."
+	Case 12
+		getString = "Error on name: "
+	Case 13
+		getString = "At least one error was detected while sending mail."
+	Case 14
+		getString = " [Note: The URL was not created because the web server address is not specified in TeamRoom setup.]"
+	Case 15
+		getString = " [Note:  A URL link to this document was not supplied because the web server address is not specified in TeamRoom setup.]"
+	End Select
+	
+End Function</lotusscript>
+    </code>
+  </globals>
+  <code event="windowtitle">
+    <formula>StandardTitle := Subject + @DocDescendants(" (No Responses)"; " (1 Response)"; " (% Responses)");
+@If(@IsNewDoc; "New Topic"; @ViewTitle = "AuthorView";Subject; @ClientType="Notes"; StandardTitle;Subject)</formula>
+  </code>
+  <code event="helprequest">
+    <formula>REM {DNT};
+@Command([OpenHelpDocument]; [ClientHelp]; "(Help)"; "TeamRoomFMainTopic")</formula>
+  </code>
+  <code event="htmlhead">
+    <formula>"&lt;script src='/" + @WebDbName + "/WebDateValidation?OpenJavaScriptLibrary'&gt;&lt;/script&gt;"</formula>
+  </code>
+  <code event="postopen">
+    <formula>REM {disable time zone calculations if pre-Notes 6 client};
+@If(@Version &lt; @Text(172) ; @Return(""); "");
+
+tmpStartDateTime:=@TimeMerge(@Date(@Year(MtgDate); @Month(MtgDate); @Day(MtgDate));
+@Time(@Hour(MtgTime); @Minute(MtgTime); @Second(MtgTime)); StartTimeZone);
+
+@If(@IsNewDoc; @Return(""); @LowerCase(DocType) != @LowerCase(DefaultDocType3); @Return(""); @SetProfileField("tempvars"; "localtime"; tmpStartDateTime));
+
+@SetProfileField("tempvars"; "endtime"; @Adjust(@GetProfileField("tempvars"; "localtime") ; 0; 0; 0; 0; Duration; 0))</formula>
+  </code>
+  <code event="queryopen">
+    <lotusscript>Sub Queryopen(Source As Notesuidocument, Mode As Integer, Isnewdoc As Variant, Continue As Variant)
+	
+	If source.isnewdoc Then
+		Exit Sub
+	End If
+	
+	ver = Evaluate("@version")	
+	doctype = source.document.getitemvalue("DocType")
+	defaultDocType = source.document.getitemvalue("DefaultDocType3")
+	
+	If source.editmode = True And Cint(ver(0)) &lt; 172 And doctype(0) = defaultDocType(0) Then
+		Messagebox R5msg, 16, R5title
+		continue = False
+		Exit Sub
+	End If
+	
+	
+End Sub
+</lotusscript>
+  </code>
+  <code event="querymodechange">
+    <lotusscript>Sub Querymodechange(Source As Notesuidocument, Continue As Variant)
+	
+	ver = Evaluate("@version")	
+	
+	doctype = source.document.getitemvalue("DocType")
+	defaultDocType = source.document.getitemvalue("DefaultDocType3")
+	
+	If Cint(ver(0)) &lt; 172 And doctype(0) = defaultDocType(0) Then
+		Messagebox R5msg, 16, R5title
+		continue = False
+		Exit Sub
+	End If
+End Sub</lotusscript>
+  </code>
+  <code event="jsheader" for="web">
+    <javascript>function validate(){
+
+//VARIABLES TO TRANSLATE
+msg1 = 'Since you have entered a due date you must specify at least one reviewer/assignee.'
+msg2 = 'Please enter the date and time for this meeting.'
+//END VARIABLES TO TRANSLATE
+
+var msg;
+var msgflag;
+var vName;
+
+msgflag = 'false';
+mtg = document.forms[0].DefaultDocType3.value;
+docType = document.forms[0].DocType.selectedIndex;
+lcMtg = mtg.toLowerCase();
+docTypeS = document.forms[0].DocType.options[docType].text
+lcDocTypeS = docTypeS.toLowerCase();
+
+if(document.forms[0].People1.selectedIndex == -1 &amp; document.forms[0].Subteam1.selectedIndex == -1 &amp; document.forms[0].DueDate.value !='')
+	{
+	msg = msg1
+	msgflag= 'true';
+	  		document.forms[0].People1.focus()
+	  }
+	  
+//if (dateVal(DueDate) == false)
+//{
+//return false
+//}
+	  
+
+
+if(lcMtg == lcDocTypeS &amp; (document.forms[0].MtgTime.value == ''  | document.forms[0].MtgDate.value=='')  ) 
+	{
+	msg=msg2;
+	msgflag='true';
+                document.forms[0].MtgTime.focus()
+	}
+
+ if(msgflag == 'true'){
+     alert(msg);
+}
+if(msgflag == 'false'){
+if( navigator.appVersion.indexOf("Mac") == 0 )
+{
+  document.forms[0].Body.value = document.applets.lnaBody.getText("text/html")
+}
+
+if (document.forms[0].onsubmit &amp;&amp; (false == document.forms[0].onsubmit())) {
+			return;
+			}
+			
+document.forms[0].submit()
+}
+}
+</javascript>
+  </code>
+  <code event="onLoad" for="web">
+    <javascript>var MSfield = document.forms[0].MailSent.value
+
+if (MSfield != ''){
+	 alert(document.forms[0].MailSent.value)
+	}
+</javascript>
+  </code>
+  <actionbar useappletinbrowser="true" bgcolor="#78b4bc" bordercolor="black">
+    <actionbarstyle height="4.7500ex">
+      <font size="9pt" name="multilingual"/>
+    </actionbarstyle>
+    <actionbuttonstyle margintype="fixed" margin="5" bgcolor="#c4dee1" displayborder="notesstyle" widthtype="background"/>
+    <font size="9pt" name="multilingual"/>
+    <border width="0px 0px 1px"/>
+    <action title="Forward" showinbar="false" hide="preview previewedit web">
+      <code event="click">
+        <formula>@Command([MailForward])</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>@IsNewDoc</formula>
+      </code>
+    </action>
+    <sharedactionref id="11">
+      <action title="Edit Document" hide="preview edit previewedit">
+        <code event="click">
+          <formula>REM {For all forms except Main Document form, which needs special casing for assignees to edit};
+@Command([EditDocument])</formula>
+        </code>
+        <code event="hidewhen">
+          <formula>lcabAuthors := @LowerCase(@Name([Abbreviate]; Authors));
+lcabFrom := @LowerCase(@Name([Abbreviate]; From));
+lcabAltFrom := @LowerCase(@Name([Abbreviate]; AltFrom));
+lcabUN := @LowerCase(@Name([Abbreviate]; @UserName));
+Filename := @DbName;
+Level := @V4UserAccess(Filename);
+Getlevel := @TextToNumber(@Subset(Level; 1));
+
+getLevel &lt; 4 &amp;
+(
+!@Contains(lcabAuthors; lcabUN) |
+!@Contains(lcabFrom; lcabUN) |
+!@Contains(lcabAltFrom; lcabUN))</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <action title="Forward as Bookmark" showinbar="false" hide="preview previewedit web">
+      <code event="click">
+        <formula>@Command([Compose]; @MailDbName; "Bookmark")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>@IsNewDoc</formula>
+      </code>
+    </action>
+    <sharedactionref id="31">
+      <action title="Update Mailed/Pasted Doc" showinmenu="false" hide="preview read previewedit notes web mobile">
+        <code event="click">
+          <formula>FIELD MP := @Unavailable;
+@Do(@Command([FileSave]);
+@Command([RefreshHideFormulas]))</formula>
+        </code>
+        <code event="hidewhen">
+          <formula>REM {Hide if user has less than editor access};
+Filename := @DbName;
+Level := @V4UserAccess(Filename);
+Getlevel := @TextToNumber(@Subset(Level; 1));
+
+GetLevel &lt; 4 | mp != "1"</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <action title="Save &amp; Close" hide="preview read previewedit">
+      <code event="click">
+        <formula>REM {Can't use @isvalid on the web};
+@If(
+@ClientType != "Notes";
+@Do(@Command([FileSave]); @Command([FileCloseWindow]));
+@IsValid;
+@Do(@Command([FileSave]); @Command([FileCloseWindow])); "")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>REM {Hide if 'New doc' button was clicked};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w = "1" |  (@ClientType != "Notes" &amp; form = "MainTopic") | (@ClientType != "Notes" &amp; form = "Mission") | (@ClientType != "Notes" &amp; form = "IndStat")</formula>
+      </code>
+    </action>
+    <action title="Save &amp; Close" showinmenu="false" hide="read notes">
+      <code event="onClick" for="web">
+        <javascript>validate()</javascript>
+      </code>
+    </action>
+    <action title="Update Mailed/Pasted Doc" showinmenu="false" hide="preview read previewedit notes web mobile">
+      <code event="click">
+        <formula>FIELD MP := @Unavailable;
+@Do(@Command([FileSave]);
+@Command([RefreshHideFormulas]))</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>REM {Hide if user has less than editor access};
+Filename := @DbName;
+Level := @V4UserAccess(Filename);
+Getlevel := @TextToNumber(@Subset(Level; 1));
+
+GetLevel &lt; 4 | mp != "1"</formula>
+      </code>
+    </action>
+    <action title="New Response" hide="preview edit previewedit">
+      <code event="click">
+        <formula>@SetProfileField("TempVars"; "viewtitle"; @Subset(@ViewTitle; -1));
+@PostedCommand([Compose];"Response")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>REM {hide from web if it's in a view};
+@ClientType != "Notes" &amp; !@IsAvailable(form)</formula>
+      </code>
+    </action>
+    <action title="Mark Private" hide="preview read previewedit">
+      <code event="click">
+        <formula>FIELD readers:=@Trim(@Unique(From : @UserName));
+@PostedCommand([RefreshHideFormulas]);@Command([ViewRefreshFields])</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>@Elements(readers)&gt;0</formula>
+      </code>
+    </action>
+    <action title="Mark Public" hide="preview read previewedit">
+      <code event="click">
+        <formula>FIELD readers:=@DeleteField;
+@PostedCommand([RefreshHideFormulas]);@Command([ViewRefreshFields])</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>@Elements(readers)&lt;1</formula>
+      </code>
+    </action>
+    <action title="Add Reminder to My Calendar" hide="preview previewedit web">
+      <code event="declarations">
+        <lotusscript>Const msg = "You must first set the date, time, and duration of the meeting."
+Const bookedmsg = "This reminder conflicts with an existing entry or your free time schedule. Create anyway?"
+Const NotAddedMsg = "This document has NOT been added to your calendar. "
+Const Title1 = "Canceled"
+Const Title2 = "Add Complete" 
+Const DocAddedMsg = "This document has been added to your calendar. "
+
+</lotusscript>
+      </code>
+      <code event="click">
+        <lotusscript>Sub Click(Source As Button)
+	Dim db As Notesdatabase 
+	Dim session As New NotesSession
+	Dim workspace As New notesuiworkspace
+	Dim uidoc As notesuidocument
+	Dim note As notesdocument
+	Dim item As NotesItem
+	Dim tdrange As NotesItem
+	Dim startdttm As NotesDateTime
+	Dim enddttm As NotesDateTime
+	Dim window As NotesDateRange
+	Dim names As String
+	Dim dur As Integer
+	Dim username As String
+	Dim mtgLoc As Variant
+	Dim entryType As String
+	Dim Invitees As Variant
+	Dim origFrom As Variant
+	
+	Set uidoc =  workspace.currentdocument
+	If uidoc.editmode Then
+		uidoc.refresh		
+	End If
+	
+	Set note = uidoc.Document
+	Set currentdb = session.currentdatabase
+	Set pnote = currentdb.getprofiledocument("tempvars")
+	getlocalTime = pnote.localtime
+	getendtime = pnote.endtime
+	
+	mtgDt = note.getitemvalue("MtgDate")
+	
+	mtgT = uidoc.fieldgettext("MtgTime")
+	mtgU = uidoc.fieldgettext("Duration")
+	
+	Dim localDateTime As New notesdatetime(getLocalTime(0))	
+	Dim localEndTime As New notesdatetime(getendtime(0))
+	
+	
+	If mtgDt(0)  = "" Or mtgT = "" Or mtgU = "" Then
+		Msgbox Msg
+		Exit Sub
+	End If
+	
+	
+	Set db = New notesdatabase("", "")
+	db.openmail
+	
+	Dim cnote As New NotesDocument(db)
+	Dim rtitem As NotesRichTextItem
+	
+	mtgLoc = note.getitemvalue("MtgLocation")
+	invitees = note.getitemvalue("People")
+	origFrom = note.getitemvalue("From")
+	TRName = note.getitemvalue("TeamRoomName")
+	subj = note.getitemvalue("Subject")
+	
+	username = session.UserName
+	cnote.From = note.From(0)
+	
+	If TRName(0) = "" Then
+		MakeName = "TeamRoom"
+	Else
+		MakeName = TRName(0)
+	End If
+	cnote.Subject = MakeName + ": " + subj(0)
+	
+	Set rtitem = note.GetFirstItem("Body")
+	Call rtitem.CopyItemToDocument(cnote, "Body")
+	cnote.Form = "Appointment"  'dnt
+	cnote.Principal = username
+	cnote.Chair = username
+	cnote.DocAuthors = username
+	cnote.AppointmentType = "4"
+	cnote.tmpWasMailed = "1"
+	cnote.ExcludeFromView = "D"
+	cnote.OrgTable = "C0"
+	cnote.Alarms = "1"	
+	cnote.Duration = note.Duration
+	
+	cnoteUNID = cnote.universalid
+	Call cnote.ReplaceItemValue("APPTUNID", cnoteUNID)
+	
+	Call cnote.ReplaceItemValue("$BusyName", username)
+	Call cnote.replaceitemvalue("Location", mtgLoc)
+	Call cnote.replaceitemvalue("RequiredAttendees", Invitees)
+	Call cnote.replaceitemvalue("tmpOwnerHW", origFrom)
+	Call cnote.ReplaceItemValue("StartDateTime", localDateTime)	
+	Call cnote.ReplaceItemValue("EndDateTime", localEndTime)	
+	Call cnote.ReplaceItemValue("ReminderTime", localDateTime)
+	Call cnote.ReplaceItemValue("CalendarDateTime", localDateTime)
+	
+	Set tdrange = note.GetFirstItem("TimeRange")
+	Call cnote.ReplaceItemValue("TimeRange", tdrange)
+	Call cnote.ReplaceItemValue("_ViewIcon", 10)
+	Call cnote.ReplaceItemValue("$Alarm", 1)
+	Call cnote.ReplaceItemValue("$AlarmOffset", -5)
+	
+	Call cnote.computewithform(0,0)	
+	cnote.save True, True
+	
+	Messagebox DocAddedMsg, 0, Title2    
+	
+End Sub</lotusscript>
+      </code>
+      <code event="hidewhen">
+        <formula>LCDocType := @LowerCase(DocType);
+LCMtg := @LowerCase(DefaultDocType3);
+@IsNewDoc | (LCDocType != LCMtg &amp; @IsNewDoc) | LCDocType != LCMtg</formula>
+      </code>
+    </action>
+    <action title="Add Topic to Newsletter Profile" showinmenu="false" hide="edit notes">
+      <code event="click">
+        <formula>UNID:=@Text(@DocumentUniqueID );
+@URLOpen("/"+@ReplaceSubstring(@Subset(@WebDbName; -1);" ";"+")+"/WebAddTopic?OpenAgent&amp;"+UNID)</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>REM {This is used on the web only.  The corresponding Notes action is a shared action, and is used in the views.}; @IsNewDoc</formula>
+      </code>
+    </action>
+    <action title="Mark/Unmark Document as Expired" showinmenu="false" hide="read notes">
+      <code event="click">
+        <formula>REM {Web documents only};
+@Command([FileSave]);
+UNID:=@Text(@DocumentUniqueID );
+@URLOpen("/"+@ReplaceSubstring(@Subset(@WebDbName; -1);" ";"+")+"/WebExpire?OpenAgent&amp;"+UNID)</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>@IsNewDoc</formula>
+      </code>
+    </action>
+    <action title="Mark Active" hide="preview read previewedit notes">
+      <code event="click">
+        <formula>@Command([ToolsRunMacro]; "(webInactiveToActive)")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>DateFiled = ""</formula>
+      </code>
+    </action>
+    <action title="Chat\Chat with Author" hide="preview edit previewedit web">
+      <code event="click">
+        <formula>@Command([SendInstantMessage]; From)</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>!@IsAvailable(form)  | @LowerCase(form) = @LowerCase("EveNt")</formula>
+      </code>
+    </action>
+    <action title="Chat\Chat with all" hide="preview edit previewedit web">
+      <code event="click">
+        <formula>@Command([ToolsRunMacro]; "(chatWithAll)")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>!@IsAvailable(form) |
+(!@Contains(@LowerCase(form); @LowerCase("SubTeaM")) &amp; People = "") |
+(@Contains(@LowerCase(form); @LowerCase("SubTeaM")) &amp; STMembers = "" ) | @LowerCase(form) = @LowerCase("EveNt")</formula>
+      </code>
+      <code event="label">
+        <formula>xDiscRef := "Chat with Reviewer(s)";
+xAction := "Chat with Assignee(s)";
+xMtg := "Chat with Attendee(s)";
+xST := "Chat with Subteam Member(s)";
+
+@If(
+form = @ProperCase("SubTeaM"); xST;
+DocType = DefaultDocType1; xDiscRef;
+DocType = DefaultDocType2; xAction;
+DocType = DefaultDocType3; xMtg;
+xDiscRef)</formula>
+      </code>
+    </action>
+    <action title="Cancel" hide="preview previewedit web">
+      <code event="click">
+        <formula>REM {Notes only};
+REM {cannot issue the SaveOptions command below on the web};
+FIELD SaveOptions := 0;
+@Command([FileCloseWindow])</formula>
+      </code>
+    </action>
+    <action title="Cancel" showinmenu="false" hide="notes">
+      <code event="click">
+        <formula>REM {web only};
+CurrentView := @GetProfileField("tempvars"; "viewtitle");
+@Command([OpenView]; @If(CurrentView = ""; "ActiveDate"; CurrentView))</formula>
+      </code>
+    </action>
+  </actionbar>
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="notes web" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1"/>
+      <pardef id="2" align="none" leftmargin="1in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <subformref name="WebFont"/>
+      <par def="1"/>
+      <pardef id="3" leftmargin="1in" hide="read edit copy preview previewedit"/>
+      <par def="3">
+        <run>
+          <font size="9pt" color="gray"/>Hidden Fields </run>
+        <run>
+          <font color="gray"/>-----------------------------</run>
+      </par>
+      <table widthtype="fitmargins" refwidth="9.0729in">
+        <tablecolumn width="36.9792%"/>
+        <tablecolumn width="63.0208%"/>
+        <tablerow>
+          <tablecell>
+            <pardef id="4" leftmargin="1%" rightmargin="100%" hide="read edit copy preview previewedit" keepwithnext="true" keeptogether="true"/>
+            <par def="4">
+              <run>
+                <font size="9pt" color="gray"/>The user's name</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <pardef id="5" leftmargin="1%" rightmargin="100%" hide="read edit copy preview previewedit" keepwithnext="true" keeptogether="true"/>
+            <par def="5">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="authors" kind="computedwhencomposed" name="From" description="Author of this document" htmlid="From">
+                  <code event="defaultvalue">
+                    <formula>@UserName</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <pardef id="6" leftmargin="0.0104in" hide="read edit copy preview previewedit" keepwithnext="true" keeptogether="true"/>
+            <par def="6">
+              <run>
+                <font size="9pt" color="gray"/>name of this form</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <pardef id="7" leftmargin="0.0104in" hide="read edit copy preview previewedit" keepwithnext="true" keeptogether="true"/>
+            <par def="7">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="computed" name="form">
+                  <code event="defaultvalue">
+                    <formula>REM {DNT};
+"MainTopic"</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="6">
+              <run>
+                <font size="9pt" color="gray"/>Used in Mark complete and Mark closed hotspots</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="7">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="computed" name="CTxt">
+                  <code event="defaultvalue">
+                    <formula>CTxt</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <pardef id="8" leftmargin="1%" hide="read edit copy preview previewedit" keepwithnext="true" keeptogether="true"/>
+            <par def="8">
+              <run>
+                <font size="9pt" color="gray"/>used in the Newsletter profile searches</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <pardef id="9" leftmargin="1%" hide="read edit copy preview previewedit" keepwithnext="true" keeptogether="true"/>
+            <par def="9">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <sharedfieldref name="AbbreviateFrom"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="6">
+              <run>
+                <font size="9pt" color="gray"/>the author's alternate name</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="7">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <sharedfieldref name="AltFrom"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="6">
+              <run>
+                <font size="9pt" color="gray"/>the author's alternate language</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="7">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="8pt" color="gray"/>
+                <sharedfieldref name="AltLang"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="4">
+              <run>
+                <font size="9pt" color="gray"/>List of readers used for private pages</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="5">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="readers" allowmultivalues="true" kind="computed" name="readers" listinputseparators="comma" listdisplayseparator="comma" htmlid="readers">
+                  <code event="defaultvalue">
+                    <formula>readers</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="4">
+              <run>
+                <font size="9pt" color="gray"/>Used in threading agent</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="5">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="computedwhencomposed" name="ThreadId" htmlid="ThreadId">
+                  <code event="defaultvalue">
+                    <formula>@Unique</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="4">
+              <run>
+                <font size="9pt" color="gray"/>Subject for newsletter</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="5">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="computed" name="NewsLetterSubject" htmlid="NewsLetterSubject">
+                  <code event="defaultvalue">
+                    <formula>Subject</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="4">
+              <run>
+                <font size="9pt" color="gray"/>Path Information for web URL's</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="5">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="computed" name="Path_Info" htmlid="Path_Info">
+                  <code event="defaultvalue">
+                    <formula>Path_Info</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="4">
+              <run>
+                <font size="9pt" color="gray"/>Used for saving a document on the web</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="5">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <sharedfieldref name="$$Return"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <pardef id="10" leftmargin="1%" rightmargin="100%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="10">
+              <run>
+                <font size="9pt" color="gray"/>Used for adding topics to the interest profile</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <pardef id="11" leftmargin="1%" rightmargin="100%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="11">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="editable" name="Remote_User" description="[&lt;TYPE=hidden &gt;]" htmlid="Remote_User">
+                  <code event="defaultvalue">
+                    <formula>Remote_User</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="11" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="8">
+              <run>
+                <font size="9pt" color="gray"/>People who are on the "For" list, who have reviewed the document</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="9">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" allowmultivalues="true" kind="computed" name="ReviewedBy" listinputseparators="comma semicolon" listdisplayseparator="semicolon" htmlid="ReviewedBy">
+                  <code event="defaultvalue">
+                    <formula>@ProperCase(ReviewedBy)</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="10">
+              <run>
+                <font size="9pt" color="gray"/>Used for Action Items.  "0" is Open; "1" is Complete.</run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt" color="gray"/>Can be marked "Complete" using action button.</run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt" color="gray"/>This field also marked complete it's a Disc or Ref. and it has been reviewed by everyone.</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="11">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="computed" name="ReviewStatus" htmlid="ReviewStatus">
+                  <code event="defaultvalue">
+                    <formula>@If(ReviewedByNotDone = "" &amp; ReviewedBy != ""; "1";"")</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+            <par def="11">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="editable" name="DueDateStatus" htmlid="DueDateStatus">
+                  <code event="defaultvalue">
+                    <formula>REM {The value of this field is set by the Mark Open and Mark Complete actions};
+"0"</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+            <par def="11">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="computed" name="Current_Status" htmlid="Current_Status">
+                  <code event="defaultvalue">
+                    <formula>REM {0 = open, 1 = complete};
+REM {Meeting documents are open until they are filed (automatically 2 days after the meeting).};
+REM {If there's no review set up, then it is assumed that the documents are complete.};
+@If(
+@LowerCase(DocType) = @LowerCase(DefaultDocType3); "0";
+@IsNewDoc; "0"; People = ""; "1"; ReviewStatus != ""; ReviewStatus; DueDateStatus)</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="8">
+              <run>
+                <font size="9pt" color="gray"/>Used for Active and Filed status.  "0" is Filed; "1" is Active.</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="9">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="editable" name="Status" htmlid="Status">
+                  <code event="defaultvalue">
+                    <formula>REM {Status of 1 is Active, Status of 0 is Filed};
+"1"</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="8">
+              <run>
+                <font size="9pt" color="gray"/>"Discussion" - value to be used in the hide-when formulas for Due Date, Review, Event, Category fields</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="9">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <sharedfieldref name="DefaultDocType1"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="8">
+              <run>
+                <font size="9pt" color="gray"/>"Action Item" - value to be used in the hide-when formulas for Due Date, Review, Event, Category fields</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="9">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <sharedfieldref name="DefaultDocType2"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="8">
+              <run>
+                <font size="9pt" color="gray"/>"Meeting" - value to be used in the hide-when formulas for Due Date, Review, Event, Category fields</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="9">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <sharedfieldref name="DefaultDocType3"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="8">
+              <run>
+                <font size="9pt" color="gray"/>"Reference" - value to be used in the hide-when formulas for Due Date, Review, Event, Category fields</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="9">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <sharedfieldref name="DefaultDocType4"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="6">
+              <run>
+                <font size="9pt" color="gray"/>used in send reminders agent</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="7">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="computed" name="TeamRoomName" htmlid="TeamRoomName">
+                  <code event="defaultvalue">
+                    <formula>View := "MissionLookup";
+TeamNameLookup := @DbLookup("" : "NoCache"; ""; View; "Mission"; 2);
+@If(@IsError(TeamNameLookup); ""; TeamNameLookup = ""; NoTeamName; TeamNameLookup)</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="6">
+              <run>
+                <font size="9pt" color="gray"/>"1" means alternate names can be displayed</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <pardef id="12" leftmargin="0.0104in" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="12">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <sharedfieldref name="AltNameDisplay"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <pardef id="13" hide="notes web mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="13">
+              <run>
+                <font size="9pt" color="gray"/>Used to store an abstract of the BODY for XPage views</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <pardef id="14" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="14">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <sharedfieldref name="Abstract"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="15" align="none" leftmargin="1in" tabs="L3.9375in L5in"/>
+      <par def="15">
+        <run>
+          <font size="8pt" color="gray"/>
+        </run>
+      </par>
+      <table widthtype="fitmargins" cellbordercolor="#78b4bc" htmlid="maintbl" rightmargin="98%" refwidth="8.8611in">
+        <tablecolumn width="1.7500in"/>
+        <tablecolumn width="100%"/>
+        <tablerow>
+          <tablecell rowspan="3" borderwidth="2px 1px 2px 2px" bgcolor="#e1eff1" htmlid="mt1">
+            <cellbackground repeat="once">
+              <imageref name="TRMainDocHeader.gif|TRMainDocHeader.gif"/>
+            </cellbackground>
+            <pardef id="20" align="center" leftmargin="1%" keepwithnext="true" keeptogether="true"/>
+            <par def="20">
+              <run>
+                <font size="9pt" style="bold" color="#7f604f"/>
+              </run>
+            </par>
+            <par def="20">
+              <run>
+                <font size="14pt" style="bold"/>Main Document</run>
+            </par>
+            <par def="20">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="20">
+              <run>
+                <font size="9pt" style="bold"/>
+              </run>
+              <run>
+                <font size="9pt"/>
+                <sharedfieldref name="tmpFrom"/>
+              </run>
+            </par>
+            <par def="20">
+              <run>
+                <font size="9pt"/>
+              </run>
+              <run>
+                <font size="9pt"/>
+                <field type="datetime" kind="computedfordisplay" name="DateComposed" description="Date this document was composed" htmlid="DateComposed">
+                  <datetimeformat date="monthday" time="hourminute" zone="never"/>
+                  <code event="defaultvalue">
+                    <formula>@Created</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt"/>
+              </run>
+              <run>
+                <font size="9pt"/>
+                <field type="datetime" kind="computedfordisplay" name="timeComposed" htmlid="timeComposed">
+                  <datetimeformat show="time" date="yearmonthday" showtodaywhenappropriate="true" time="hourminute" zone="sometimes" dateformat="weekdaymonthdayyear" dayformat="twodigitday" monthformat="twodigitmonth" yearformat="fourdigityear" weekdayformat="shortname" dateseparator1=" " dateseparator2="/" dateseparator3="/" timeseparator=":" preference="usersetting"/>
+                  <code event="defaultvalue">
+                    <formula>@Created</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" style="bold"/>
+              </run>
+            </par>
+            <par def="20">
+              <run>
+                <font size="9pt" style="bold"/>
+              </run>
+            </par>
+            <pardef id="21" align="center" leftmargin="1%" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>readers = ""</formula>
+              </code>
+            </pardef>
+            <par def="21">
+              <run>
+                <font size="9pt"/>
+              </run>
+              <run>
+                <font size="9pt" style="bold"/>
+                <field type="text" kind="computedfordisplay" name="Private" htmlid="Private">
+                  <code event="defaultvalue">
+                    <formula>@If(readers!="";"Private"; "")</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" style="bold" color="gray"/>
+              </run>
+            </par>
+            <pardef id="22" align="center" leftmargin="1%" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>ExpireDate = ""</formula>
+              </code>
+            </pardef>
+            <par def="22">
+              <run>
+                <font size="9pt" style="bold"/>
+              </run>
+              <run>
+                <font size="9pt" style="bold"/>
+                <field type="text" kind="computedfordisplay" name="Expire" htmlid="Expire">
+                  <code event="defaultvalue">
+                    <formula>@If(expiredate="";"" ;"Expired on "+@Text(@Date(expiredate)))</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+            </par>
+            <pardef id="23" align="center" leftmargin="1%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="23"/>
+            <par def="23"/>
+            <par def="23"/>
+            <par def="23"/>
+            <pardef id="24" align="center" leftmargin="0.1000in" hide="read preview" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>Status = "0" | neverfile = "1"</formula>
+              </code>
+            </pardef>
+            <par def="24">
+              <run>
+                <font size="9pt"/>Date this document will become inactive</run>
+            </par>
+            <par def="24">
+              <run>
+                <font size="9pt"/>
+              </run>
+              <run>
+                <font size="9pt"/>
+                <field usenotesstyle="false" height="0.2250in" width="1.5000in" multiline="true" type="datetime" kind="editable" name="FileByDate" description="Select the timeframe in which this document should be filed OR enter a date to file it on." htmlid="FileByDate" htmltitle="Select the timeframe in which this document should be filed OR enter a date to file it on.">
+                  <keywords columns="1" ui="dialoglist" allownew="true"/>
+                  <datetimeformat date="yearmonthday" time="hourminutesecond" zone="never"/>
+                  <code event="htmlattributes">
+                    <formula>"size = 9"</formula>
+                  </code>
+                  <code event="defaultvalue">
+                    <formula>REM {Get default filing interval choice from Advanced Options page};
+view := "MissionLookup";
+Key := "Mission";
+defaultfiledate := @DbLookup("" : "NoCache"; ""; View; Key; 6);
+REM {Convert default to appropriate date};
+REM {DNT};
+days := @If(defaultfiledate = "1 week"; 7; defaultfiledate = "2 weeks"; 14; defaultfiledate = "3 weeks"; 21; defaultfiledate = "1 month"; 30; defaultfiledate = "2 months"; 60; defaultfiledate = "3 months"; 90; "");
+tempfiledate := @If(days = ""; ""; @Date(@Adjust(@Today; 0; 0; days; 0; 0; 0)));
+tempadjust := @If(@IsError(tempfiledate); ""; tempfiledate);
+
+@If(form != "MainTopic"; ""; tempadjust)</formula>
+                  </code>
+                  <code event="inputtranslation">
+                    <formula>@If(NeverFile = "1"; ""; FilebyDate)</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <pardef id="25" align="center" leftmargin="0.1000in" hide="edit copy previewedit" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>Status = "0" | neverfile = "1"</formula>
+              </code>
+            </pardef>
+            <par def="25">
+              <run>
+                <font size="9pt"/>Date this document will be marked inactive</run>
+            </par>
+            <pardef id="26" align="center" leftmargin="0.1000in" hide="edit copy previewedit" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>Status = "0" | Neverfile = "1"</formula>
+              </code>
+            </pardef>
+            <par def="26">
+              <run>
+                <font size="9pt"/>
+              </run>
+              <run>
+                <font size="9pt"/>
+                <field type="datetime" kind="computedfordisplay" name="dspFileByDate" description="Select the timeframe in which this document should be filed OR enter a date to file it on." htmlid="dspFileByDate">
+                  <keywords ui="dialoglist" allownew="true"/>
+                  <datetimeformat date="yearmonthday" time="hourminutesecond" zone="never"/>
+                  <code event="defaultvalue">
+                    <formula>FileByDate</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <pardef id="27" align="center" leftmargin="0.1000in" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>Status != "0" | NeverFile = "1"</formula>
+              </code>
+            </pardef>
+            <par def="27">
+              <run>
+                <font size="9pt"/>Date this document was marked inactive</run>
+            </par>
+            <pardef id="28" align="center" leftmargin="0.1000in" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>Status != "0" | Neverfile = "1"</formula>
+              </code>
+            </pardef>
+            <par def="28">
+              <run>
+                <font size="9pt"/>
+              </run>
+              <run>
+                <font size="9pt" style="bold"/>
+                <field computeaftervalidation="true" type="datetime" kind="computedfordisplay" name="dsp_DateFiled" htmlid="dsp_DateFiled">
+                  <datetimeformat date="yearmonthday" time="hourminutesecond" zone="never"/>
+                  <code event="defaultvalue">
+                    <formula>Date := @If(DateFiled != ""; DateFiled; "");
+@If(Date = "" | @IsError(Date) | DateFiled = [1899-12-30]; ""; Date)</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <pardef id="29" align="center" leftmargin="0.1000in" keepwithnext="true" keeptogether="true"/>
+            <par def="29">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <pardef id="30" align="center" leftmargin="0.1000in" hide="read preview" keepwithnext="true" keeptogether="true"/>
+            <par def="30">
+              <run>
+                <font size="9pt"/>
+              </run>
+              <run>
+                <font size="9pt"/>
+                <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="NeverFile" description="Keep active" listinputseparators="comma" listdisplayseparator="comma" htmlid="NeverFile" htmltitle="Keep active">
+                  <keywords recalconchange="true" columns="1" ui="checkbox">
+                    <textlist>
+                      <text>Keep active | 1</text>
+                    </textlist>
+                  </keywords>
+                  <code event="defaultvalue">
+                    <formula>View := "MissionLookup";
+Key := "Mission";
+LookupDefault := @DbLookup("" : "NoCache"; ""; View; Key; 6);
+REM {DNT};
+@If(@IsError(LookupDefault); ""; LookupDefault = "Never"; "1"; "");
+REM {DNT};</formula>
+                  </code>
+                  <code event="inputtranslation">
+                    <formula>LCDocType := @LowerCase(DocType);
+LCMtg := @LowerCase(DefaultDocType3);
+@If((@IsDocBeingSaved &amp; FileByDate = "" | !@IsAvailable(FileByDate) &amp; LCDocType != LCMtg); "1"; NeverFile)</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <pardef id="31" align="center" leftmargin="0.1000in" hide="edit copy previewedit" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>neverfile != "1"</formula>
+              </code>
+            </pardef>
+            <par def="31">
+              <run>
+                <font size="9pt"/>
+              </run>
+              <run>
+                <font size="9pt" style="bold"/>
+                <field type="text" kind="computedfordisplay" name="dspneverFile" htmlid="dspneverFile">
+                  <code event="defaultvalue">
+                    <formula>NeverFiletxt := "Keep this document active";
+@If(NeverFile = "1"; NeverFileTxt; "")</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+            </par>
+          </tablecell>
+          <tablecell rowspan="3" borderwidth="2px 2px 2px 1px" bgcolor="#e1eff1" htmlid="mt2">
+            <pardef id="32" leftmargin="1%" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>View := "MissionLookup";
+Lookup := @DbColumn("" : "NoCache"; ""; View;  1);
+Lookup = "Mission"</formula>
+              </code>
+            </pardef>
+            <par def="32">
+              <run>
+                <font size="9pt" style="bold"/>The TeamRoom Setup has not yet been completed.  Some field data will be missing.</run>
+            </par>
+            <pardef id="33" leftmargin="1%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="33">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="34" leftmargin="1%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="34">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <table cellbordercolor="#7f604f" htmlid="basicstbl" leftmargin="0.1000in" widthtype="fixedleft" refwidth="5.5000in">
+              <tablecolumn width="5.5000in"/>
+              <tablerow>
+                <tablecell borderwidth="0px" bgcolor="#abd2d8" htmlid="b1">
+                  <cellbackground repeat="once"/>
+                  <pardef id="36" leftmargin="1%" keepwithnext="true" keeptogether="true"/>
+                  <par def="36">
+                    <run>
+                      <font size="9pt"/>Basics</run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <par def="33">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="34">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <table widthtype="fitmargins" htmlid="MainDocTbl" leftmargin="0.1000in" refwidth="7.0111in">
+              <tablecolumn width="1.3125in" sizetofit="true"/>
+              <tablecolumn width="100%"/>
+              <tablerow>
+                <tablecell borderwidth="0px" htmlid="T1">
+                  <pardef id="37" leftmargin="0" rightmargin="100%" keepwithnext="true" keeptogether="true"/>
+                  <par def="37">
+                    <run>
+                      <font size="9pt"/>Document Type</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px" htmlid="t8">
+                  <pardef id="38" leftmargin="1%" hide="read preview" keepwithnext="true" keeptogether="true"/>
+                  <par def="38">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                      <field defaultfocus="true" usenotesstyle="false" height="0.2340in" width="1.2000in" multiline="true" borderstyle="inset" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="DocType" description="Select the form of communication you wish to use to convey this information." htmlid="DocType">
+                        <keywords recalconchange="true" columns="1" ui="combobox">
+                          <formula>View := "MissionLookup";
+Lookup := @DbColumn("" : "NoCache"; ""; View;  5);
+@If(Lookup = ""; DefaultDocType1; Lookup)</formula>
+                        </keywords>
+                        <code event="defaultvalue">
+                          <formula>View := "MissionLookup";
+Lookup := @DbColumn("" : "NoCache"; ""; View;  5);
+@If(Lookup = ""; DefaultDocType1; @Subset(Lookup; 1))</formula>
+                        </code>
+                        <code event="inputvalidation">
+                          <formula>R5msg := "You are not allowed to create Meeting documents using a pre-Notes client because the time zone fields use functions that are not supported prior to Notes 6.";
+
+@If(@Version &lt; @Text(172) &amp; DocType = DefaultDocType3; @Failure(R5msg); @Success)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <pardef id="39" leftmargin="1%" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>@Version &gt; @Text(172) | !@IsNewDoc | (@Version &lt; @Text(172) &amp; docType != DefaultDocType3)</formula>
+                    </code>
+                  </pardef>
+                  <par def="39">
+                    <run>
+                      <font size="9pt" color="red"/>Warning: You are not allowed to create Meeting documents using a pre-Notes 6 client because the time zone fields use functions that are not supported prior to Notes 6.</run>
+                  </par>
+                  <pardef id="40" leftmargin="1%" hide="edit previewedit" keepwithnext="true" keeptogether="true"/>
+                  <par def="40">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                      <field type="text" kind="computedfordisplay" name="dspDocType" htmlid="dspDocType">
+                        <code event="defaultvalue">
+                          <formula>DocType</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px" htmlid="T2">
+                  <pardef id="41" leftmargin="0" keepwithnext="true" keeptogether="true"/>
+                  <par def="41">
+                    <run>
+                      <font size="9pt"/>Subject</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="38">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                      <field defaultfocus="true" usenotesstyle="false" height="0.2000in" width="4in" heighttype="dynamic" multiline="true" borderstyle="single" type="text" kind="editable" name="Subject" description="Enter a short description of this main topic." htmlid="Subject">
+                        <code event="htmlattributes">
+                          <formula>"size=50"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>""</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>NoTitleTxt := "Untitled";
+@If(@IsDocBeingLoaded; @Unavailable; @IsDocBeingRecalculated; Subject; Subject = ""; NoTitleTxt; @Trim(@ReplaceSubstring(subject;"[";" ")))</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <par def="40">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                      <field type="text" kind="computedfordisplay" name="dspSubject">
+                        <code event="defaultvalue">
+                          <formula>Subject</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px" htmlid="T3">
+                  <pardef id="42" leftmargin="0" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if not Action Item DocType};
+@LowerCase(DocType) != @LowerCase(DefaultDocType2)</formula>
+                    </code>
+                  </pardef>
+                  <par def="42">
+                    <run>
+                      <font size="9pt"/>Priority</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px" htmlid="t9">
+                  <pardef id="43" leftmargin="1%" hide="read preview" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if not Action Item DocType};
+@LowerCase(DocType) != @LowerCase(DefaultDocType2)</formula>
+                    </code>
+                  </pardef>
+                  <par def="43">
+                    <run>
+                      <font size="9pt" style="bold"/>
+                      <field defaultfocus="true" usenotesstyle="false" height="0.2028in" width="1.2000in" multiline="true" borderstyle="inset" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="AIPriority" description="Select the form of communication you wish to use to convey this information." htmlid="DocType_1">
+                        <keywords recalconchange="true" columns="1" ui="combobox">
+                          <textlist>
+                            <text>1 (highest) |1</text>
+                            <text>2</text>
+                            <text>3</text>
+                            <text>4</text>
+                            <text>5 (lowest) |5</text>
+                          </textlist>
+                        </keywords>
+                        <code event="defaultvalue">
+                          <formula>"3"</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <pardef id="44" leftmargin="1%" hide="edit previewedit" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if not Action Item DocType};
+@LowerCase(DocType) != @LowerCase(DefaultDocType2)</formula>
+                    </code>
+                  </pardef>
+                  <par def="44">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                      <field type="text" kind="computedfordisplay" name="dspAIPriority" htmlid="dspDocType_1">
+                        <code event="defaultvalue">
+                          <formula>AIPriority</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font color="#806210"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px" htmlid="T4">
+                  <par def="41">
+                    <run>
+                      <font size="9pt"/>Category</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px" htmlid="t10">
+                  <pardef id="45" leftmargin="1%" keepwithnext="true" keeptogether="true"/>
+                  <par def="45">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="Categories" description="Press ENTER for list of keywords or to add a new keyword." listinputseparators="comma" listdisplayseparator="comma" htmlid="Categories">
+                        <keywords columns="1" ui="dialoglist">
+                          <formula>View := "MissionLookup";
+list := @DbColumn("":"nocache"; ""; View; 4);
+
+isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 40));
+
+@If( list = ""; sp; list)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size = 3"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@Trim(categories)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" color="#806210"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px" htmlid="T5">
+                  <par def="41">
+                    <run>
+                      <font size="9pt"/>Associated Event</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px" htmlid="t11">
+                  <pardef id="46" leftmargin="1%" hide="read preview" keepwithnext="true" keeptogether="true"/>
+                  <par def="46">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="Milestones" description="Select the event or milestone with which this work is affiliated." htmlid="Milestones">
+                        <keywords columns="1" ui="dialoglist">
+                          <formula>EvTitle := @DbColumn("" : "NoCache"; ""; "EventLookup"; 1);
+EvDate := @Text(@DbColumn("" : "NoCache"; ""; "EventLookup"; 2));
+isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 40));
+
+@If(EvTitle = ""; sp; EvTitle + " (" + EvDate + ")")</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size = 3"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@Trim(milestones)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" color="#806210"/>
+                    </run>
+                  </par>
+                  <pardef id="47" leftmargin="1%" hide="edit previewedit" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>Milestones = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="47">
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" kind="computed" name="EventTitle">
+                        <code event="defaultvalue">
+                          <formula>@Left(Milestones; " (")</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>(</run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="datetime" kind="computed" name="getDate">
+                        <datetimeformat show="date" date="yearmonthday" fourdigityearfor21stcentury="true" zone="never" dateformat="weekdaymonthdayyear" dayformat="twodigitday" monthformat="twodigitmonth" yearformat="fourdigityear" weekdayformat="shortname" dateseparator1=" " dateseparator2="/" dateseparator3="/" timeseparator=":" preference="usersetting"/>
+                        <code event="defaultvalue">
+                          <formula>REM {DNT};
+EventTitle := @Left(Milestones; " (");
+getDate1 := @Right(Milestones; EventTitle);
+getDate2 := @Left(getDate1; ")");
+@TextToTime(getDate2)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>)</run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px" htmlid="T6">
+                  <par def="41">
+                    <run>
+                      <font size="9pt"/>Associated Subteam(s)</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px" htmlid="t12">
+                  <par def="45">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="SubteamInterest" description="Select the event or milestone with which this work is affiliated." listinputseparators="comma" listdisplayseparator="comma" htmlid="SubteamInterest">
+                        <keywords columns="1" ui="dialoglist">
+                          <formula>list := @DbColumn("":"NoCache"; ""; "SubteamLookup"; 1);
+isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 40));
+
+@If(list = ""; sp; list)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size = 3"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>""</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@Trim(SubteamInterest)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" color="#806210"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px" htmlid="T7">
+                  <pardef id="48" hide="read notes" keepwithnext="true" keeptogether="true"/>
+                  <par def="48">
+                    <run>
+                      <font size="9pt"/>Attach a file</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px" htmlid="t13">
+                  <pardef id="49" hide="read notes" keepwithnext="true" keeptogether="true"/>
+                  <par def="49">
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                    <embeddedfileuploadcontrol/>
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <par def="33">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="34">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <table htmlid="assign-tbl" leftmargin="0.1000in" widthtype="fixedleft" refwidth="5.5000in">
+              <tablecolumn width="5.5000in"/>
+              <tablerow name="a1">
+                <tablecell borderwidth="0px" bgcolor="#abd2d8">
+                  <cellbackground repeat="once"/>
+                  <pardef id="50" leftmargin="1%" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if not Action Item DocType};
+@LowerCase(DocType) != @LowerCase(DefaultDocType2)</formula>
+                    </code>
+                  </pardef>
+                  <par def="50">
+                    <run>
+                      <font size="9pt"/>Assignments</run>
+                  </par>
+                  <pardef id="51" leftmargin="1%" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if not Meeting  DocTypes};
+@LowerCase(DocType) != @LowerCase(DefaultDocType3)</formula>
+                    </code>
+                  </pardef>
+                  <par def="51">
+                    <run>
+                      <font size="9pt"/>Meeting Details</run>
+                  </par>
+                  <pardef id="52" leftmargin="1%" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if  Meeting or Action Item};
+@LowerCase(DocType) = @LowerCase(DefaultDocType3) | @LowerCase(DocType) = @LowerCase(DefaultDocType2)</formula>
+                    </code>
+                  </pardef>
+                  <par def="52">
+                    <run>
+                      <font size="9pt"/>Reviewers (optional)</run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <pardef id="53" leftmargin="1%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="53">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="54" leftmargin="1%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="54">
+              <run>
+                <font size="9pt" style="bold" color="white"/>
+              </run>
+            </par>
+            <table htmlid="MainDocTbl2" leftmargin="1%" widthtype="fixedleft" refwidth="6.4986in">
+              <tablecolumn width="1.3507in"/>
+              <tablecolumn width="1.6903in"/>
+              <tablecolumn width="0.6875in"/>
+              <tablecolumn width="2.7701in"/>
+              <tablerow>
+                <tablecell borderwidth="0px" htmlid="T2_1">
+                  <pardef id="56" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if not Action item};
+LCDocType := @LowerCase(DocType);
+LCDocType != @LowerCase(DefaultDocType2)</formula>
+                    </code>
+                  </pardef>
+                  <par def="56">
+                    <run>
+                      <font size="9pt"/>Due Date</run>
+                  </par>
+                  <pardef id="57" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if action item,or meeting (we want this to be available when using additional comm types)};
+@LowerCase(DocType) = @LowerCase(DefaultDocType2) |
+@LowerCase(DocType) = @LowerCase(DefaultDocType3)</formula>
+                    </code>
+                  </pardef>
+                  <par def="57">
+                    <run>
+                      <font size="9pt"/>Review By Date</run>
+                  </par>
+                  <pardef id="58" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if not Meeting};
+@LowerCase(DocType) != @LowerCase(DefaultDocType3)</formula>
+                    </code>
+                  </pardef>
+                  <par def="58">
+                    <run>
+                      <font size="9pt"/>Date</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="59" leftmargin="0.0104in" hide="read preview" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if Meeting};
+@LowerCase(DocType) = @LowerCase(DefaultDocType3)</formula>
+                    </code>
+                  </pardef>
+                  <par def="59">
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.2250in" width="1.2000in" multiline="true" borderstyle="single" type="datetime" kind="editable" name="DueDate" description="Enter date due if applicable." htmlid="DueDate">
+                        <datetimeformat date="yearmonthday" time="hourminutesecond" zone="never"/>
+                        <code event="htmlattributes">
+                          <formula>"size = 12"</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <pardef id="60" leftmargin="0.0104in" hide="edit previewedit" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if Meeting};
+@LowerCase(DocType) = @LowerCase(DefaultDocType3)</formula>
+                    </code>
+                  </pardef>
+                  <par def="60">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" kind="computedfordisplay" name="dspDueDate" htmlid="dspDueDate">
+                        <code event="defaultvalue">
+                          <formula>NoDate := "&lt;No due date&gt;";
+
+@If(DueDate = ""; NoDate; DueDate)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <pardef id="61" leftmargin="0.0104in" hide="read preview" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if not Meeting Doc Type};
+LCDocType := @LowerCase(DocType);
+LCDocType != @LowerCase(DefaultDocType3)</formula>
+                    </code>
+                  </pardef>
+                  <par def="61">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.2250in" width="1.2000in" multiline="true" borderstyle="single" type="datetime" kind="editable" name="MtgDate" description="Enter the date of the meeting" htmlid="MtgDate" htmltitle="Enter the date of the meeting">
+                        <datetimeformat date="yearmonthday" time="hourminutesecond" zone="never"/>
+                        <code event="htmlattributes">
+                          <formula>"size = 9"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>@Date(@Today)</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@If(@LowerCase(DocType) != @LowerCase(DefaultDocType3); ""; Mtgdate)</formula>
+                        </code>
+                        <code event="inputvalidation">
+                          <formula>FailureTxt := "Please enter a meeting date.";
+
+LCDocType := @LowerCase(DocType);
+LCMtg := @LowerCase(DefaultDocType3);
+
+@If(LCDocType = LCMtg &amp; MtgDate = ""; @Failure(FailureTxt); @Success)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <pardef id="62" leftmargin="0.0104in" hide="edit previewedit" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if not Meeting Doc Type};
+LCDocType := @LowerCase(DocType);
+LCDocType != @LowerCase(DefaultDocType3)</formula>
+                    </code>
+                  </pardef>
+                  <par def="62">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="datetime" kind="computedfordisplay" name="dspMtgDate" htmlid="dspMtgDate">
+                        <datetimeformat date="yearmonthday" time="hourminutesecond" zone="never"/>
+                        <code event="defaultvalue">
+                          <formula>@If(MtgDate = ""; ""; MtgDate)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font color="white"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px" htmlid="t2-5">
+                  <pardef id="63" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if Meeting };
+@LowerCase(DocType) = @LowerCase(DefaultDocType3)</formula>
+                    </code>
+                  </pardef>
+                  <par def="63">
+                    <run>
+                      <font size="9pt"/>Status</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px" htmlid="t2-6">
+                  <pardef id="64" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if Meeting};
+@LowerCase(DocType) = @LowerCase(DefaultDocType3)</formula>
+                    </code>
+                  </pardef>
+                  <par def="64">
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" kind="computedfordisplay" name="dspStatus" htmlid="dspStatus">
+                        <code event="defaultvalue">
+                          <formula>REM {variables to translate};
+OpenTxt := "Open";
+CompleteTxt:= "Completed";
+CompClo := "Closed/Completed";
+REM {END variables to translate};
+
+LCDocType := @LowerCase(DocType);
+Stat := @If(DueDateStatus = "0"; OpenTxt; CompClo);
+RevStat := @If(ReviewStatus = "1"; CompleteTxt; OpenTxt);
+
+REM {if meeting then blank; if actionitem it depends on the DueDateStatus field; all others depend on the ReviewStatus field};
+@If(LCDocType = @LowerCase(DefaultDocType3); ""; @IsNewDoc; OpenTxt;
+LCDocType = @LowerCase(DefaultDocType2) ; Stat; RevStat )</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <pardef id="65" leftmargin="0.0104in" hide="edit preview previewedit" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if user has less than editor access and is not the author of the document};
+Filename := @DbName;
+Level := @V4UserAccess(Filename);
+Getlevel := @TextToNumber(@Subset(Level; 1));
+abAuthor := @Name([Abbreviate]; From);
+abUser := @Name([Abbreviate]; @UserName);
+LCName := @LowerCase(@Name([CN]; @UserName));
+LCpeople := @LowerCase(people);
+LCReviewedByNotDone := @LowerCase(ReviewedByNotDone);
+
+ GetLevel &lt; 4 &amp; abUser != abAuthor &amp; (!@Contains(LCReviewedByNotDone ; LCName) &amp;
+!@Contains(LCpeople; LCName)) | DueDateStatus != "0" | @LowerCase(DocType) = @LowerCase(DefaultDocType3)</formula>
+                    </code>
+                  </pardef>
+                  <par def="65">
+                    <run>
+                      <font size="9pt" color="gray"/>To change the status, click the Edit Document button</run>
+                  </par>
+                  <pardef id="66" leftmargin="0.0104in" hide="read copy preview previewedit" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if Discussion, Meeting or Reference doc types};
+REM {Make available if there are no reviewers, however};
+LCdoctype := @LowerCase(DocType);
+@IsNewDoc | DueDateStatus = "1" |
+@LowerCase(DocType) != @LowerCase(DefaultDocType2)</formula>
+                    </code>
+                  </pardef>
+                  <par def="66">
+                    <run>
+                      <font size="9pt" style="underline" color="blue"/>
+                    </run>
+                    <actionhotspot hotspotstyle="none">
+                      <code event="click">
+                        <formula>REM {variable to translate};
+CompleteTxt := "Marked complete by: ";
+FIELD CTxt := "Completed";
+REM {END variable to translate};
+
+REM {Open is 0, Complete is 1};
+FIELD DueDateStatus := "1";
+FIELD LastModDate := @Now;
+FIELD CompletedBy := @Name([CN]; @UserName) + " (" + @Text(@Date(@Now))+ ")";
+LogInfo := CompleteTxt + CompletedBy;
+NL := @If(ReviewerLog = ""; ""; @NewLine);
+FIELD ReviewerLog := ReviewerLog + NL +  LogInfo;
+@PostedCommand([ViewRefreshFields])</formula>
+                      </code>
+                      <run>
+                        <font size="9pt" style="underline" color="blue"/>Mark complete</run>
+                    </actionhotspot>
+                    <run>
+                      <font size="9pt"/> ~Task was completed</run>
+                  </par>
+                  <pardef id="67" leftmargin="0.0104in" hide="read copy preview previewedit" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>LCName := @LowerCase(@Name([CN]; @UserName));
+LCpeople := @LowerCase(people);
+LCReviewedByNotDone := @LowerCase(ReviewedByNotDone);
+LCdoctype := @LowerCase(doctype);
+
+@IsNewDoc |
+!@Contains(LCReviewedByNotDone ; LCName) |
+!@Contains(LCpeople; LCName) |
+LCdoctype = @LowerCase(DefaultDocType2)  | LCdoctype = @LowerCase(DefaultDocType3)</formula>
+                    </code>
+                  </pardef>
+                  <par def="67">
+                    <run>
+                      <font size="9pt" style="underline" color="blue"/>
+                    </run>
+                    <actionhotspot hotspotstyle="none">
+                      <code event="click">
+                        <formula>REM {variable to translate};
+RevTxt := "Reviewed by: ";
+REM {END variable to translate};
+
+CurrentReviewer := @Name([Abbreviate]; @UserName);
+revDate := " (" + @Text(@Date(@Now))+ ")";
+
+FIELD ReviewedBy := ReviewedBy : CurrentReviewer;
+NL := @If(ReviewerLog = ""; ""; @NewLine);
+FIELD ReviewerLog := ReviewerLog + NL + RevTxt + @Name([CN]; @UserName) + revDate;
+@Command([ViewRefreshFields])</formula>
+                      </code>
+                      <run>
+                        <font size="9pt" style="underline" color="blue"/>Mark reviewed by me</run>
+                    </actionhotspot>
+                    <run>
+                      <font color="white"/>
+                    </run>
+                  </par>
+                  <par def="66">
+                    <run>
+                      <font size="9pt" style="underline" color="blue"/>
+                    </run>
+                    <actionhotspot hotspotstyle="none">
+                      <code event="click">
+                        <formula>REM {variable to translate};
+CompleteTxt := "Marked closed by: ";
+FIELD CTxt := "Closed";
+REM {END variable to translate};
+
+REM {Open is 0, Complete is 1};
+FIELD DueDateStatus := "1";
+FIELD LastModDate := @Now;
+FIELD CompletedBy := @Name([CN]; @UserName) + " (" + @Text(@Date(@Now))+ ")";
+LogInfo := CompleteTxt + CompletedBy;
+NL := @If(ReviewerLog = ""; ""; @NewLine);
+FIELD ReviewerLog := ReviewerLog + NL +  LogInfo;
+@PostedCommand([ViewRefreshFields])</formula>
+                      </code>
+                      <run>
+                        <font size="9pt" style="underline" color="blue"/>Mark closed</run>
+                    </actionhotspot>
+                    <run>
+                      <font size="9pt"/> ~Closing uncompleted task</run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px" htmlid="T2_2">
+                  <pardef id="68" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if not Meeting Doc Type};
+LCDocType := @LowerCase(DocType);
+LCDocType != @LowerCase(DefaultDocType3)</formula>
+                    </code>
+                  </pardef>
+                  <par def="68">
+                    <run>
+                      <font size="9pt"/>Time</run>
+                  </par>
+                </tablecell>
+                <tablecell columnspan="2" borderwidth="0px">
+                  <pardef id="69" leftmargin="0.0104in" hide="read preview notes web mobile" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if not Meeting Doc Type};
+LCDocType := @LowerCase(DocType);
+LCDocType != @LowerCase(DefaultDocType3)</formula>
+                    </code>
+                  </pardef>
+                  <par def="69">
+                    <run>
+                      <font size="3pt" name="multilingual" color="silver"/>h</run>
+                    <run>
+                      <font size="5pt" name="multilingual" color="gray"/>idden</run>
+                  </par>
+                  <table widthtype="fitmargins" leftmargin="0" refwidth="2.3778in">
+                    <tablecolumn width="52.5694%"/>
+                    <tablecolumn width="47.4306%"/>
+                    <tablerow>
+                      <tablecell borderwidth="0px">
+                        <pardef id="71" hide="read preview" keepwithnext="true" keeptogether="true">
+                          <code event="hidewhen">
+                            <formula>REM {Hide if not Meeting Doc Type};
+LCDocType := @LowerCase(DocType);
+LCDocType != @LowerCase(DefaultDocType3)</formula>
+                          </code>
+                        </pardef>
+                        <par def="71">
+                          <run>
+                            <font size="9pt"/>
+                            <field usenotesstyle="false" height="0.2250in" width="1.2000in" multiline="true" borderstyle="single" type="datetime" kind="editable" name="MtgTime" description="Enter the time that the meeting begins" htmlid="MtgTime">
+                              <datetimeformat show="time" date="yearmonthday" showtodaywhenappropriate="true" time="hourminute" zone="always" dateformat="weekdaymonthdayyear" dayformat="twodigitday" monthformat="twodigitmonth" yearformat="fourdigityear" weekdayformat="shortname" dateseparator1="$" dateseparator2="$" dateseparator3="$" timeseparator="$" preference="usersetting"/>
+                              <code event="htmlattributes">
+                                <formula>"size = 9"</formula>
+                              </code>
+                              <code event="defaultvalue">
+                                <formula>REM {adjust current time to quarter-hour interval};
+currMin := @Minute(@Now);
+adjMin := @If(currMin &lt; 15; 15-currmin;
+currmin &gt; 15 &amp; currmin &lt; 30; 30-currmin;
+currmin &gt; 30 &amp; currmin &lt; 45; 45-currmin;
+currmin &gt; 45 &amp; currmin &lt; 60; 60-currmin; 0);
+
+newMin := @Adjust(@Now; 0;0;0;0;adjmin;0);
+@Time(newmin)</formula>
+                              </code>
+                              <code event="inputtranslation">
+                                <formula>mt := @If(mtgTime = ""; @Time(@Now); mtgTime);
+@If(@LowerCase(DocType) != @LowerCase(DefaultDocType3); ""; @Time(mt))</formula>
+                              </code>
+                              <code event="inputvalidation">
+                                <formula>FailureTxt := "Please enter a meeting time.";
+
+LCDocType := @LowerCase(DocType);
+LCMtg := @LowerCase(DefaultDocType3);
+
+@If(LCDocType = LCMtg &amp; MtgTime = ""; @Failure(FailureTxt); @Success)</formula>
+                              </code>
+                            </field>
+                          </run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px">
+                        <pardef id="72" hide="read preview" keepwithnext="true" keeptogether="true">
+                          <code event="hidewhen">
+                            <formula>REM {Hide if not Meeting Doc Type};
+LCDocType := @LowerCase(DocType);
+@Version &lt; @Text(172) | LCDocType != @LowerCase(DefaultDocType3)</formula>
+                          </code>
+                        </pardef>
+                        <par def="72">
+                          <run>
+                            <font size="9pt"/>
+                          </run>
+                          <run>
+                            <font size="9pt"/>
+                            <field type="timezone" usenotesstyle="false" height="0.2250in" width="1in" multiline="true" borderstyle="single" kind="editable" name="StartTImeZone" htmltitle="Time zone where this meeting starts">
+                              <code event="defaultvalue">
+                                <formula>REM {disable time zone calculations if pre-Notes 6 client};
+@If(@Version &lt; @Text(172); @Return(""); @GetCurrentTimeZone)</formula>
+                              </code>
+                            </field>
+                          </run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                  </table>
+                  <pardef id="73" leftmargin="0.0104in" hide="edit previewedit" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if not Meeting Doc Type};
+LCDocType := @LowerCase(DocType);
+LCDocType != @LowerCase(DefaultDocType3)</formula>
+                    </code>
+                  </pardef>
+                  <par def="73">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="datetime" kind="computedfordisplay" name="dspMtgTime" htmlid="dspMtgTime">
+                        <datetimeformat show="time" date="yearmonthday" showtodaywhenappropriate="true" time="hourminute" zone="always" dateformat="weekdaymonthdayyear" dayformat="twodigitday" monthformat="twodigitmonth" yearformat="fourdigityear" weekdayformat="shortname" dateseparator1=" " dateseparator2="/" dateseparator3="/" timeseparator=":" preference="usersetting"/>
+                        <code event="defaultvalue">
+                          <formula>@If(MtgTime = ""; ""; MtgTime)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font color="white"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" kind="computedfordisplay" name="dspTZ">
+                        <code event="defaultvalue">
+                          <formula>REM {disable time zone calculations if pre-Notes 6 client};
+@If(@Version &lt; @Text(172); @Return(""); @TimeZoneToText(StartTimeZone; "A"))</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="17" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <pardef id="74" leftmargin="0.0104in" spaceafter="1.5" hide="edit previewedit" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if not Meeting Doc Type};
+LCDocType := @LowerCase(DocType);
+STZ := @If(@Version &lt; @Text(172); @Return("xx"); StartTimeZone);
+CTZ := @If(@Version &lt; @Text(172); @Return("xx"); @GetCurrentTimeZone);
+@Version &lt; @Text(172) | LCDocType != @LowerCase(DefaultDocType3) | STZ = CTZ</formula>
+                    </code>
+                  </pardef>
+                  <par def="74">
+                    <run>
+                      <font size="9pt"/>&lt; Local time: </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" kind="computedfordisplay" name="localTime">
+                        <code event="defaultvalue">
+                          <formula>REM {disable time zone calculations if pre-Notes 6 client};
+@If(@Version &lt; @Text(172) | @IsDocBeingEdited; @Return(""); "");
+
+tmpStartDateTime:=@TimeMerge(@Date(@Year(MtgDate); @Month(MtgDate); @Day(MtgDate));
+@Time(@Hour(MtgTime); @Minute(MtgTime); @Second(MtgTime)); StartTimeZone);
+@If(@LowerCase(DocType) != @LowerCase(DefaultDocType3); ""; tmpStartDateTime)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt"/>&gt;</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="75" leftmargin="0.0104in" hide="notes web" keepwithnext="true" keeptogether="true"/>
+                  <par def="75">
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="white"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px" htmlid="T2_3">
+                  <par def="68">
+                    <run>
+                      <font size="9pt"/>Duration</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="76" leftmargin="0.0104in" hide="read preview" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if not Meeting Doc Type};
+LCDocType := @LowerCase(DocType);
+LCDocType != @LowerCase(DefaultDocType3)</formula>
+                    </code>
+                  </pardef>
+                  <par def="76">
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.2000in" width="0.4000in" multiline="true" borderstyle="single" type="number" kind="editable" name="Duration" description="Enter the duration of the meeting" htmlid="Duration">
+                        <numberformat format="fixed" punctuated="false" parens="false" percent="false" bytes="false"/>
+                        <code event="htmlattributes">
+                          <formula>"size = 4"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>60</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>LCDocType := @LowerCase(DocType);
+LCMtg := @LowerCase(DefaultDocType3);
+
+@If(
+LCDocType = LCMtg; Duration; LCDocType = LCMtg &amp; Duration = ""; 60; "")</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/> min.</run>
+                  </par>
+                  <par def="62">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" kind="computedfordisplay" name="dspDuration" htmlid="dspDuration">
+                        <code event="defaultvalue">
+                          <formula>Duration</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt"/> min.</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="77" leftmargin="0.0104in" hide="notes web" keepwithnext="true" keeptogether="true"/>
+                  <par def="77">
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="white"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="75">
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="white"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px" htmlid="T2_4">
+                  <par def="68">
+                    <run>
+                      <font size="9pt"/>Location</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="61">
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.2000in" width="1in" multiline="true" borderstyle="single" type="text" kind="editable" name="MtgLocation" description="Enter the location of the meeting" htmlid="MtgLocation">
+                        <code event="htmlattributes">
+                          <formula>"size = 9"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@If(@LowerCase(DocType) != @LowerCase(DefaultDocType3); ""; MtgLocation)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <par def="62">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" kind="computedfordisplay" name="dspLocation" htmlid="dspLocation">
+                        <code event="defaultvalue">
+                          <formula>MtgLocation</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font color="white"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="77">
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="white"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="75">
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="white"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <par def="33">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="34">
+              <run>
+                <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+            <table htmlid="MainDocTbl3" leftmargin="1%" widthtype="fixedleft" refwidth="6.6097in">
+              <tablecolumn width="2.6007in"/>
+              <tablecolumn width="0.6160in"/>
+              <tablecolumn width="3.3931in"/>
+              <tablerow>
+                <tablecell borderwidth="0px" htmlid="t3a">
+                  <pardef id="78" leftmargin="0.0104in" hide="read preview" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if  Meeting or Action Item};
+@LowerCase(DocType) = @LowerCase(DefaultDocType3) | @LowerCase(DocType) = @LowerCase(DefaultDocType2)</formula>
+                    </code>
+                  </pardef>
+                  <par def="78">
+                    <run>
+                      <font size="9pt"/>Select reviewers from list below</run>
+                  </par>
+                  <pardef id="79" leftmargin="0.0104in" hide="edit previewedit" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if  Meeting or Action Item};
+@LowerCase(DocType) = @LowerCase(DefaultDocType3) | @LowerCase(DocType) = @LowerCase(DefaultDocType2)</formula>
+                    </code>
+                  </pardef>
+                  <par def="79">
+                    <run>
+                      <font size="9pt"/>Reviewers</run>
+                  </par>
+                  <pardef id="80" leftmargin="0.0104in" hide="read preview" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if not Action Item DocType};
+@LowerCase(DocType) != @LowerCase(DefaultDocType2)</formula>
+                    </code>
+                  </pardef>
+                  <par def="80">
+                    <run>
+                      <font size="9pt"/>Select assignees from list below</run>
+                  </par>
+                  <pardef id="81" leftmargin="0.0104in" hide="edit previewedit" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if not Action Item DocType};
+@LowerCase(DocType) != @LowerCase(DefaultDocType2)</formula>
+                    </code>
+                  </pardef>
+                  <par def="81">
+                    <run>
+                      <font size="9pt"/>Assignees</run>
+                  </par>
+                  <pardef id="82" leftmargin="0.0104in" hide="read preview" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if not Meeting  DocTypes};
+@LowerCase(DocType) != @LowerCase(DefaultDocType3)</formula>
+                    </code>
+                  </pardef>
+                  <par def="82">
+                    <run>
+                      <font size="9pt"/>Select attendees from list below</run>
+                  </par>
+                  <pardef id="83" leftmargin="0.0104in" hide="edit previewedit" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if not Meeting  DocTypes};
+@LowerCase(DocType) != @LowerCase(DefaultDocType3)</formula>
+                    </code>
+                  </pardef>
+                  <par def="83">
+                    <run>
+                      <font size="9pt"/>Attendees</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="84" leftmargin="0.0104in" keepwithnext="true" keeptogether="true"/>
+                  <par def="84">
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="white"/> </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px" htmlid="t3b">
+                  <pardef id="85" leftmargin="0.0104in" hide="read preview" keepwithnext="true" keeptogether="true"/>
+                  <par def="85">
+                    <run>
+                      <font size="9pt"/>or, select one or more subteams</run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell columnspan="3" borderwidth="0px" htmlid="t3-a1">
+                  <pardef id="88" hide="read copy preview previewedit web" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>PLookup :=  @If(AltNameDisplay = "1"; @DbColumn("" : "nocache"; ""; "PeopleLookup"; 3); @DbColumn("" : "nocache"; ""; "PeopleLookup"; 1));
+PLookup = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="88">
+                    <run>
+                      <font size="9pt" style="underline" color="blue"/>
+                    </run>
+                    <actionhotspot hotspotstyle="none">
+                      <run>
+                        <font size="9pt" style="underline" color="blue"/>Select all names</run>
+                      <code event="declarations">
+                        <lotusscript>Dim whovalue As Variant
+
+</lotusscript>
+                      </code>
+                      <code event="click">
+                        <lotusscript>Sub Click(Source As Button)
+	'NOTES CLIENT only
+	Dim session As New notessession
+	Dim uiwork As New notesuiworkspace
+	Dim db As notesdatabase
+	Dim view As notesview
+	Dim note As notesdocument
+	Dim doc As notesdocument
+	Dim uidoc As notesuidocument
+	
+	Set db =  session.currentdatabase
+	Set view = db.getview("PeopleLookup")
+	Set dbprofile = db.getprofiledocument("tempvars")
+	Set doc = view.getfirstdocument
+	Set coll = view.allentries
+	Set uidoc = uiwork.currentdocument
+	Set note = uidoc.document
+	
+	count = coll.count
+	
+	altnamedisplay = note.getitemvalue("AltNameDisplay")
+	
+	Redim Partic(count-1) As Variant
+	count = 0
+	
+'get names of all active participants in the TeamRoom	
+	While Not doc Is Nothing
+		Call getNameValue(doc, altnamedisplay)
+		Dim whoname As New notesname(whovalue(0))
+		CNwho = whoname.abbreviated
+		partic(count) = CNwho
+		Set doc = view.getnextdocument(doc)
+		count= count+1
+	Wend
+	
+	If altnamedisplay(0) = "1" Then
+		Call note.replaceitemvalue("AltNameSelection", partic)
+	Else		
+		Call note.replaceitemvalue("PriNameSelection", partic)
+	End If
+	
+	Call uidoc.refresh
+	
+End Sub
+</lotusscript>
+                      </code>
+                      <code event="getNameValue">
+                        <lotusscript>Function getNameValue(doc As notesdocument, altnamedisplay As Variant)
+	
+'alternate name support	
+	If altnamedisplay(0) = "1" Then
+		whovalue = doc.getitemvalue("who")
+	Else
+		whovalue = doc.getitemvalue("who")
+		
+		'next if-section is for backwards compatibility with 5.0 teamroom, which does not have this field in the participant docs
+		If whovalue(0) = "" Then
+			whovalue = doc.getitemvalue("who")
+		End If
+	End If
+	
+	
+End Function</lotusscript>
+                      </code>
+                    </actionhotspot>
+                    <run>
+                      <font size="9pt" style="underline" color="blue"/>
+                    </run>
+                  </par>
+                  <pardef id="89" hide="edit previewedit" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>people = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="89">
+                    <run>
+                      <font size="9pt"/>
+                      <field lookupeachchar="false" lookupaddressonrefresh="false" type="names" allowmultivalues="true" kind="computedfordisplay" name="dspPeople" listinputseparators="comma semicolon newline" listdisplayseparator="semicolon" htmlid="dspPeople">
+                        <code event="defaultvalue">
+                          <formula>People</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="#806210"/>
+                    </run>
+                  </par>
+                  <pardef id="90" hide="edit previewedit" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>people!= ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="90">
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="#806210"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" kind="computedfordisplay" name="dspNoPeople">
+                        <code event="defaultvalue">
+                          <formula>none := @If(DocType = defaultDocType2; "&lt;no assignees&gt;"; DocType = defaultDocType3; "&lt;no attendees&gt;"; "&lt;no reviewers&gt;");
+none</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="11" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="#806210"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="91" leftmargin="0.0104in" hide="read preview" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltNameDisplay = "0"</formula>
+                    </code>
+                  </pardef>
+                  <par def="91">
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="#806210"/>
+                    </run>
+                    <sharedfieldref name="AltNameSelection"/>
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="#806210"/>
+                    </run>
+                  </par>
+                  <pardef id="92" leftmargin="0.0104in" hide="read preview" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltNameDisplay = "1"</formula>
+                    </code>
+                  </pardef>
+                  <par def="92">
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="#806210"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <sharedfieldref name="PriNameSelection"/>
+                    </run>
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="#806210"/>
+                    </run>
+                  </par>
+                  <pardef id="93" leftmargin="0.0104in" hide="read preview notes web" keepwithnext="true" keeptogether="true"/>
+                  <par def="93">
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="#806210"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" allowmultivalues="true" kind="computed" name="People1" description="Select the Team Members to whom you are directing this information." listinputseparators="comma" listdisplayseparator="comma" htmlid="People1">
+                        <code event="htmlattributes">
+                          <formula>"size = 4"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>@If(PriNameSelection = ""; ""; @Trim(PriNameSelection))</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="12" containertype="65418" aftercontainercount="2" afterbegincount="5">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="11pt" color="blue"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="84">
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="white"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="85">
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.8000in" width="2in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="Subteam1" description="Select the Subteams to which you are directing this information." listinputseparators="comma" listdisplayseparator="comma" htmlid="Subteam1" htmltitle="Select the Subteams to which you are directing this information.">
+                        <keywords recalconchange="true" columns="1" ui="listbox">
+                          <formula>SLookup := @DbColumn("" : "nocache"; ""; "SubteamLookup"; 1);
+isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 40));
+
+@If(SLookup = ""; sp; SLookup)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size =4"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@Trim(Subteam1)</formula>
+                        </code>
+                        <code event="inputvalidation">
+                          <formula>REM {variables to translate};
+DiscAssignError := "Since you have specified a Review Date, you must specify at least one reviewer.";
+ActAssignError := "Since you have specified a Due Date, you must specify at least one assignee.";
+REM {END variables ot translate};
+
+lcDocType := @LowerCase(DocType);
+@If(
+People1 = "" &amp; Subteam1 = "" &amp; DueDate != "" &amp; lcDocType = @LowerCase(DefaultDocType2); @Failure(ActAssignError);
+People1 = "" &amp; Subteam1 = "" &amp; DueDate != "" ;  @Failure(DiscAssignError);
+@Success)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font color="white"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <pardef id="94" leftmargin="1%" hide="read preview" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>REM {Hide if Mtg or Action ItemDocTypes};
+(@LowerCase(DocType) = @LowerCase(DefaultDocType2) | @LowerCase(DocType) = @LowerCase(DefaultDocType3))</formula>
+              </code>
+            </pardef>
+            <par def="94">
+              <run>
+                <font size="9pt" style="italic"/>Combined list</run>
+              <run>
+                <font size="9pt" style="italic"/> of Reviewer names from People &amp; Subteam lists</run>
+            </par>
+            <pardef id="95" leftmargin="1%" hide="read preview" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>REM {Hide if not Action Item DocType};
+@LowerCase(DocType) != @LowerCase(DefaultDocType2)</formula>
+              </code>
+            </pardef>
+            <par def="95">
+              <run>
+                <font size="9pt" style="italic"/>Combined list</run>
+              <run>
+                <font size="9pt" style="italic"/> of Assignment names from People &amp; Subteam lists</run>
+            </par>
+            <pardef id="96" leftmargin="1%" hide="read preview" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>REM {Hide if not Meeting  DocTypes};
+@LowerCase(DocType) != @LowerCase(DefaultDocType3)</formula>
+              </code>
+            </pardef>
+            <par def="96">
+              <run>
+                <font size="9pt" style="italic"/>Combined list</run>
+              <run>
+                <font size="9pt" style="italic"/> of Attendee names from People &amp; Subteam lists</run>
+            </par>
+            <pardef id="97" leftmargin="1%" hide="read preview" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>Subteam1 = "" &amp; People = ""</formula>
+              </code>
+            </pardef>
+            <par def="97">
+              <run>
+                <font size="9pt"/>
+                <field type="text" allowmultivalues="true" kind="computed" name="People" description="Select the Team Members to whom you are directing this information." listinputseparators="comma semicolon" listdisplayseparator="semicolon" htmlid="People">
+                  <code event="htmlattributes">
+                    <formula>"size = 3"</formula>
+                  </code>
+                  <code event="defaultvalue">
+                    <formula>View := "SubteamLookup";
+REM {get a list of all subteams};
+STList := @DbColumn("":"NoCache";"";  View; 1);
+REM {get a list of the subteams};
+ParseST := Subteam1;
+REM {get a list of just the people};
+PeopleList  := People1;
+REM {expand the subteams into the individual people within the subteams};
+Key := ParseST;
+LookupSubteam := @DbLookup("" : "NoCache"; ""; View ; key; 2);
+
+REM {generate a list of all of the people, both individuals and people within a subteam};
+REM {then use @unique to avoid putting someone's name in twice};
+PeopleAndSubteams := @If(@IsError(LookupSubteam); "" : PeopleList; LookupSubteam : PeopleList);
+TPeopleAndSubteams := @Trim(PeopleAndSubteams);
+@Unique(TPeopleAndSubteams)</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="2" afterbegincount="5">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="white"/>
+              </run>
+            </par>
+            <par def="33">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="34">
+              <run>
+                <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+            <pardef id="98" leftmargin="1%" hide="read copy preview previewedit web" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>REM {Hide if  Meeting or Action Item};
+@LowerCase(DocType) = @LowerCase(DefaultDocType3) | @LowerCase(DocType) = @LowerCase(DefaultDocType2)</formula>
+              </code>
+            </pardef>
+            <par def="98">
+              <run>
+                <font size="9pt" style="underline" color="blue"/>
+              </run>
+              <actionhotspot hotspotstyle="none">
+                <run>
+                  <font size="9pt" style="underline" color="blue"/>Send link to reviewers</run>
+                <code event="click">
+                  <lotusscript>Sub Click(Source As Button)
+	Call SendLinkSub
+End Sub</lotusscript>
+                </code>
+              </actionhotspot>
+              <run>
+                <font size="9pt" style="underline" color="blue"/>
+              </run>
+            </par>
+            <pardef id="99" leftmargin="1%" hide="read copy preview previewedit web" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>REM {Hide if not Action Item DocType};
+@LowerCase(DocType) != @LowerCase(DefaultDocType2)</formula>
+              </code>
+            </pardef>
+            <par def="99">
+              <run>
+                <font size="9pt" style="underline" color="blue"/>
+              </run>
+              <actionhotspot hotspotstyle="none">
+                <run>
+                  <font size="9pt" style="underline" color="blue"/>Send link to assignees</run>
+                <code event="click">
+                  <lotusscript>Sub Click(Source As Button)
+	Call SendLinkSub
+End Sub</lotusscript>
+                </code>
+              </actionhotspot>
+              <run>
+                <font size="9pt" style="underline" color="blue"/>
+              </run>
+            </par>
+            <pardef id="100" leftmargin="1%" hide="read copy preview previewedit web" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>REM {Hide if not Meeting  DocTypes};
+@LowerCase(DocType) != @LowerCase(DefaultDocType3)</formula>
+              </code>
+            </pardef>
+            <par def="100">
+              <run>
+                <font size="9pt" style="underline" color="blue"/>
+              </run>
+              <actionhotspot hotspotstyle="none">
+                <run>
+                  <font size="9pt" style="underline" color="blue"/>Send link to attendees</run>
+                <code event="click">
+                  <lotusscript>Sub Click(Source As Button)
+	Call SendLinkSub
+End Sub</lotusscript>
+                </code>
+              </actionhotspot>
+              <run>
+                <font size="9pt" style="underline" color="white"/>
+              </run>
+            </par>
+            <table htmlid="sendlinkTbl" leftmargin="1%" widthtype="fixedleft" refwidth="3.5722in">
+              <tablecolumn width="3.5722in"/>
+              <tablerow>
+                <tablecell borderwidth="0px" htmlid="sl1">
+                  <pardef id="101" leftmargin="0.0104in" rightmargin="2.6660in" hide="read preview notes" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if  Meeting or Action Item};
+@LowerCase(DocType) = @LowerCase(DefaultDocType3) | @LowerCase(DocType) = @LowerCase(DefaultDocType2)</formula>
+                    </code>
+                  </pardef>
+                  <par def="101">
+                    <run>
+                      <font size="9pt" style="underline" color="blue"/>
+                    </run>
+                    <actionhotspot hotspotstyle="none">
+                      <code event="click">
+                        <formula>REM {WEB only};
+@Command([ViewRefreshFields]);
+@Command([ToolsRunMacro]; "(wSendLink)");
+@Command([ViewRefreshFields]);
+@SetProfileField("tempvars"; "MailSent"; "")</formula>
+                      </code>
+                      <run>
+                        <font size="9pt" style="underline" color="blue"/>Send link to reviewers</run>
+                    </actionhotspot>
+                    <run>
+                      <font size="9pt" style="underline" color="blue"/>
+                    </run>
+                  </par>
+                  <pardef id="102" leftmargin="0.0104in" rightmargin="2.6660in" hide="read preview notes" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if not Action Item DocType};
+@LowerCase(DocType) != @LowerCase(DefaultDocType2)</formula>
+                    </code>
+                  </pardef>
+                  <par def="102">
+                    <run>
+                      <font size="9pt" style="underline" color="blue"/>
+                    </run>
+                    <actionhotspot hotspotstyle="none">
+                      <code event="click">
+                        <formula>REM {WEB only};
+@Command([ViewRefreshFields]);
+@Command([ToolsRunMacro]; "(wSendLink)");
+@Command([ViewRefreshFields]);
+@SetProfileField("tempvars"; "MailSent"; "")</formula>
+                      </code>
+                      <run>
+                        <font size="9pt" style="underline" color="blue"/>Send link to assignees</run>
+                    </actionhotspot>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <pardef id="103" leftmargin="0.0104in" rightmargin="2.6660in" hide="read preview notes" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if not Meeting  DocTypes};
+@LowerCase(DocType) != @LowerCase(DefaultDocType3)</formula>
+                    </code>
+                  </pardef>
+                  <par def="103">
+                    <run>
+                      <font size="9pt" style="underline" color="blue"/>
+                    </run>
+                    <actionhotspot hotspotstyle="none">
+                      <code event="click">
+                        <formula>REM {WEB only};
+@Command([ViewRefreshFields]);
+@Command([ToolsRunMacro]; "(wSendLink)");
+@Command([ViewRefreshFields]);
+@SetProfileField("tempvars"; "MailSent"; "")</formula>
+                      </code>
+                      <run>
+                        <font size="9pt" style="underline" color="blue"/>Send link to attendees</run>
+                    </actionhotspot>
+                    <run>
+                      <font size="9pt" style="underline" color="blue"/>
+                    </run>
+                  </par>
+                  <pardef id="104" leftmargin="0.0104in" rightmargin="2.6660in" hide="read preview notes" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>!@IsNewDoc</formula>
+                    </code>
+                  </pardef>
+                  <par def="104">
+                    <run>
+                      <font size="9pt"/>(you must save the document first)   </run>
+                    <actionhotspot hotspotstyle="none">
+                      <code event="click">
+                        <formula>REM {WEB only};
+@Command([FileSave])</formula>
+                      </code>
+                      <run>
+                        <font size="9pt" style="underline" color="blue"/>Save only</run>
+                    </actionhotspot>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <pardef id="105" leftmargin="1%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="105">
+              <run>
+                <font size="9pt" color="maroon"/>
+                <field type="text" kind="computedfordisplay" name="MailSent" htmlid="MailSent">
+                  <code event="defaultvalue">
+                    <formula>@GetProfileField("tempvars"; "MailSent")</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="white"/>
+              </run>
+            </par>
+            <pardef id="106" leftmargin="1%" hide="read preview previewedit notes" keepwithnext="true" keeptogether="true"/>
+            <par def="106">
+              <run>
+                <font color="white"/>
+              </run>
+            </par>
+            <table htmlid="MainDocTbl4" leftmargin="1%" widthtype="fixedleft" refwidth="6.3000in">
+              <tablecolumn width="2.1000in"/>
+              <tablecolumn width="2.1000in"/>
+              <tablecolumn width="2.1000in"/>
+              <tablerow>
+                <tablecell borderwidth="0px" htmlid="T4_1">
+                  <pardef id="108" leftmargin="0.0104in" hide="read preview previewedit notes" tabs="L7.5625in" keepwithnext="true" keeptogether="true"/>
+                  <par def="108">
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="white"/> </run>
+                    <button width="1.5000in" widthtype="fixed" wraptext="true" bgcolor="system">
+                      <code event="onClick" for="web">
+                        <javascript>validate()</javascript>
+                      </code>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>Save &amp; Close</button>
+                    <run>
+                      <font color="white"/> </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px" htmlid="T4_2">
+                  <pardef id="109" leftmargin="0.0104in" hide="read preview previewedit notes" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>@Elements(readers)&gt;0</formula>
+                    </code>
+                  </pardef>
+                  <par def="109">
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="white"/> </run>
+                    <button width="1.5000in" widthtype="fixed" wraptext="true" bgcolor="system">
+                      <code event="click">
+                        <formula>FIELD readers:=@Trim(@Unique(From : @UserName));
+@PostedCommand([RefreshHideFormulas]);@Command([ViewRefreshFields])</formula>
+                      </code>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>Mark Private</button>
+                    <run>
+                      <font color="white"/> </run>
+                  </par>
+                  <pardef id="110" leftmargin="0.0104in" hide="read preview previewedit notes" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>@Elements(readers)&lt;1</formula>
+                    </code>
+                  </pardef>
+                  <par def="110">
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="white"/> </run>
+                    <button width="1.5000in" widthtype="fixed" wraptext="true" bgcolor="system">
+                      <code event="click">
+                        <formula>FIELD readers:=@DeleteField;
+@PostedCommand([RefreshHideFormulas]);@Command([ViewRefreshFields])</formula>
+                      </code>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>Mark Public</button>
+                    <run>
+                      <font color="white"/> </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px" htmlid="T4_3">
+                  <pardef id="111" leftmargin="0.0104in" hide="read preview previewedit notes" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if person clicked 'New doc' button};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w = "1" |
+(Form != "Mission" &amp; Form != "Interest Profile" &amp; !@IsNewDoc)</formula>
+                    </code>
+                  </pardef>
+                  <par def="111">
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="white"/> </run>
+                    <button width="1.5000in" widthtype="fixed" wraptext="true" bgcolor="system">
+                      <code event="click">
+                        <formula>REM {web only};
+CurrentView := @GetProfileField("tempvars"; "viewtitle");
+@Command([OpenView]; @If(CurrentView = ""; "ActiveDate"; CurrentView))</formula>
+                      </code>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>Cancel</button>
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="white"/> </run>
+                  </par>
+                  <pardef id="112" leftmargin="0.0104in" hide="read preview previewedit notes" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>REM {Hide if person clicked 'New doc' button};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w = "1" | @IsNewDoc</formula>
+                    </code>
+                  </pardef>
+                  <par def="112">
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="white"/> </run>
+                    <button width="1.5000in" widthtype="fixed" wraptext="true" bgcolor="system">
+                      <code event="click">
+                        <formula>REM {web only};
+CurrentView := @GetProfileField("tempvars"; "viewtitle");
+@Command([OpenView]; @If(CurrentView = ""; "ActiveDate"; CurrentView))</formula>
+                      </code>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>Cancel</button>
+                    <run>
+                      <font size="9pt" color="white"/> </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <pardef id="113" leftmargin="1%" hide="read preview" keepwithnext="true" keeptogether="true"/>
+            <par def="113">
+              <run>
+                <font size="9pt" color="white"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow/>
+        <tablerow/>
+      </table>
+      <pardef id="114" align="none" leftmargin="1in" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="114">
+        <run>
+          <font size="8pt" color="gray"/>
+        </run>
+      </par>
+      <pardef id="115" align="none" leftmargin="1in" hide="read preview" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="115">
+        <run>
+          <font size="9pt" style="bold"/>Content</run>
+      </par>
+      <pardef id="116" leftmargin="1in" tabs="L1.2500in L1.5000in"/>
+      <par def="116">
+        <run>
+          <font size="9pt"/>
+        </run>
+        <run>
+          <font size="9pt"/>
+          <field useoscontrolinbrowser="true" type="richtext" kind="editable" name="Body" description="Enter the content of this document." htmlid="Body" htmltitle="Enter the content of this document.">
+            <code event="htmlattributes">
+              <formula>"height=\"300\" width=625\" rows=\"15\" cols=\"90\""</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="2" afterbegincount="5">
+Yg4BAIQAAAAAAAEAAAA=
+</compositedata>
+      </par>
+      <pardef id="117" leftmargin="1in" tabs="L1.2500in L1.5000in">
+        <code event="hidewhen">
+          <formula>ReviewerLog = ""</formula>
+        </code>
+      </pardef>
+      <par def="117">
+        <run>
+          <font size="9pt" style="underline" color="olive"/>
+        </run>
+      </par>
+      <par def="117">
+        <run>
+          <font size="9pt" style="underline" color="olive"/>Reviewer Log</run>
+      </par>
+      <par def="117">
+        <run>
+          <font size="9pt" color="olive"/>
+          <field type="text" kind="computedwhencomposed" name="ReviewerLog">
+            <code event="defaultvalue">
+              <formula>""</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+      </par>
+      <pardef id="118" hide="read notes"/>
+      <par def="118"/>
+      <pardef id="119" hide="edit preview previewedit notes"/>
+      <par def="119">
+        <run>
+          <font size="9pt"/>
+          <sharedfieldref name="ViewList"/>
+        </run>
+      </par>
+      <pardef id="120" hide="read edit copy preview previewedit"/>
+      <par def="120"/>
+      <table widthtype="fitmargins" refwidth="9.0729in">
+        <tablecolumn width="36.9792%"/>
+        <tablecolumn width="63.0208%"/>
+        <tablerow>
+          <tablecell>
+            <par def="8">
+              <run>
+                <font size="9pt" color="gray"/>Needed for "Add to Calendar" action</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="9">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="datetime" kind="computed" name="StartDateTime" htmlid="StartDateTime">
+                  <datetimeformat show="datetime" date="yearmonthday" showtodaywhenappropriate="true" time="hourminutesecond" zone="never"/>
+                  <code event="defaultvalue">
+                    <formula>LCdoctype := @LowerCase(doctype);
+LCMtg := @LowerCase(DefaultDocType3);
+@If(@IsDocBeingLoaded | LCdoctype != LCMtg ; @Unavailable; @TextToTime(@Text(MtgDate) + " " + @Text(MtgTime)))</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="datetime" kind="computed" name="EndDateTime" htmlid="EndDateTime">
+                  <datetimeformat show="datetime" date="yearmonthday" showtodaywhenappropriate="true" time="hourminutesecond" zone="never"/>
+                  <code event="defaultvalue">
+                    <formula>LCdoctype := @LowerCase(doctype);
+LCMtg := @LowerCase(DefaultDocType3);
+@If(@IsDocBeingLoaded | LCdoctype != LCMtg ; @Unavailable; (MtgDate  = "" | MtgTime = ""); @Unavailable; @Adjust(StartDateTime; 0; 0; 0; 0; Duration; 0))</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="datetime" kind="computed" name="TimeRange" htmlid="TimeRange">
+                  <datetimeformat show="datetime" date="yearmonthday" showtodaywhenappropriate="true" time="hourminutesecond" zone="never"/>
+                  <code event="defaultvalue">
+                    <formula>LCdoctype := @LowerCase(doctype);
+LCMtg := @LowerCase(DefaultDocType3);
+@If(@IsDocBeingLoaded | LCdoctype != LCMtg ; @Unavailable; @TextToTime(@Text(StartDateTime) + "-" + @Text(EndDateTime)))</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="8">
+              <run>
+                <font size="9pt" color="gray"/>people who haven't completed their review (Disc. and Ref. doc types).  Used by the "Send Reminder" agent.</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="9">
+              <run>
+                <font size="9pt"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" allowmultivalues="true" kind="computed" name="ReviewedByNotDone" listinputseparators="comma semicolon" listdisplayseparator="semicolon" htmlid="ReviewedByNotDone">
+                  <code event="defaultvalue">
+                    <formula>REM {LCdef2 and LCdef3 are Action Item and Meeting doc types};
+LCdoctype := @LowerCase(DocType);
+LCdef2 := @LowerCase(DefaultDocType2);
+LCdef3 := @LowerCase(DefaultDocType3);
+
+NotDone := @If(
+LCdoctype = LCdef2 | LCdoctype = LCdef3; ""; People != ""; @ReplaceSubstring(@ProperCase(People); ReviewedBy; "");"");
+
+@Trim(NotDone)</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="7" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="8">
+              <run>
+                <font size="9pt" color="gray"/>People (other than the Author) who can edit this document</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="9">
+              <run>
+                <font size="9pt"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="authors" allowmultivalues="true" kind="computed" name="Editors" listinputseparators="comma" listdisplayseparator="comma" htmlid="Editors">
+                  <code event="defaultvalue">
+                    <formula>lcMtg := @LowerCase(DefaultDocType3);
+lcDocType := @LowerCase(DocType);
+lcAI := @LowerCase(DefaultDocType2);
+
+@If(
+lcDocType = lcMtg; "";
+Current_Status = "0" &amp; lcDocType = lcAI; @Name([Canonicalize]; People);
+Current_Status = "0"; @Name([Canonicalize]; ReviewedByNotDone); "")</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <pardef id="121" leftmargin="0.0104in" hide="notes web" tabs="L1.5000in" keepwithnext="true" keeptogether="true"/>
+            <par def="121">
+              <run>
+                <font color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <pardef id="122" leftmargin="0.0104in" hide="notes web mobile" tabs="L1.5000in" keepwithnext="true" keeptogether="true"/>
+            <par def="122">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="timezone" usenotesstyle="false" height="0.2250in" width="1in" multiline="true" borderstyle="single" kind="computed" name="LocalTimeZone">
+                  <code event="defaultvalue">
+                    <formula>REM {disable time zone calculations if pre-Notes 6 client};
+@If(@Version &lt; @Text(172) ; @Return(""); @GetCurrentTimeZone)</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="timezone" usenotesstyle="false" height="0.2500in" width="1in" multiline="true" borderstyle="single" kind="computed" name="EndTimeZone">
+                  <code event="defaultvalue">
+                    <formula>StartTimeZone</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <par def="120">
+        <run>
+          <font size="8pt"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+  <item name="RequestDate" summary="false" sign="true">
+    <rawitemdata type="400">
+AAAAAAAAAAA=
+</rawitemdata>
+  </item>
+  <item name="DateFiled" summary="false" sign="true">
+    <rawitemdata type="400">
+AAAAAAAAAAA=
+</rawitemdata>
+  </item>
+  <item name="$$DueDate_inp" summary="false" sign="true">
+    <text>'++LotusScript Development Environment:2:5:(Options):0:66
+
+'++LotusScript Development Environment:2:5:(Forward):0:1
+Declare Sub Exiting(Source As Field)
+
+'++LotusScript Development Environment:2:5:(Declarations):0:2
+
+'++LotusScript Development Environment:2:2:BindEvents:1:129
+Private Sub BindEvents(Byval Objectname_ As String)
+Static Source As FIELD
+Set Source = Bind(Objectname_)
+On Event Exiting From Source Call Exiting
+End Sub
+
+'++LotusScript Development Environment:2:2:Exiting:1:12
+Sub Exiting(Source As Field)
+	
+End Sub<break/>
+    </text>
+  </item>
+  <item name="dspDueDate" summary="false" sign="true">
+    <rawitemdata type="400">
+AAAAAAAAAAA=
+</rawitemdata>
+  </item>
+  <item name="$HTMLDocumentStyles" summary="true" sign="true">
+    <rawitemdata type="1">
+0ggBAAAA/wDSCAEA/wAAANIIAQCAAIAA
+</rawitemdata>
+  </item>
+  <item name="$$XMB_2">
+    <text>7E6A71C00D507F00344A3A2F4B2CD8A8</text>
+  </item>
+  <item name="$$XMB_3">
+    <text>67843E4301C6054E658E2C2D65E5AC9D</text>
+  </item>
+  <item name="$SubForm_RepIDs" sign="true">
+    <text>0000000000000000</text>
+  </item>
+  <item name="$XPageAlt" sign="true">
+    <text>topicThread.xsp</text>
+  </item>
+  <item name="Duration" summary="false" sign="true">
+    <number>0</number>
+  </item>
+</form>

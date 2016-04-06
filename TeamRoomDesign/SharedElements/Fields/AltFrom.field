@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sharedfield xmlns="http://www.lotus.com/dxl" name="AltFrom" language="en">
+  <field type="text" kind="computedwhencomposed" name="AltFrom">
+    <code event="defaultvalue">
+      <formula>ver := @TextToNumber(@Version);
+nam := @If(ver &lt; 148; @Return(@UserName); @UserName(1));
+@If(@IsNewDoc ; nam; AltFrom)</formula>
+    </code>
+  </field>
+</sharedfield>

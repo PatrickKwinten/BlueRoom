@@ -1,0 +1,593 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="(nAddress)" noquery="true" htmlallfields="true" publicaccess="false" language="en" bgcolor="#efefef">
+  <globals>
+    <code event="options">
+      <lotusscript>Option Public
+Use "AddrBook"
+
+
+
+</lotusscript>
+    </code>
+  </globals>
+  <code event="windowtitle">
+    <formula>"Address Lookup"</formula>
+  </code>
+  <code event="querysave">
+    <lotusscript>Sub Querysave(Source As Notesuidocument, Continue As Variant)
+	continue = False
+End Sub
+</lotusscript>
+  </code>
+  <code event="queryopen">
+    <lotusscript>Sub Queryopen(Source As Notesuidocument, Mode As Integer, Isnewdoc As Variant, Continue As Variant)
+'	Call FindAddressBook
+End Sub
+</lotusscript>
+  </code>
+  <code event="postopen">
+    <lotusscript>Sub Postopen(Source As Notesuidocument)
+	Set session = New NotesSession
+	Set db = session.CurrentDatabase
+	Set note = source.document
+	Dim svr As String
+	Dim count As Integer
+	Dim fn As String
+	
+	vbooks = session.addressbooks
+	Set TItleItem = note.getfirstitem("TitleList")	
+	Set FilenameItem = note.getfirstitem("FilenameList")	
+	Set ServerItem = note.getfirstitem("ServerList")
+	localtxt = note.getitemvalue("localTxt")(0)
+	count = 0
+	
+	Forall v In vbooks
+		svr = v.server
+		fn = v.filename
+		Set newnab = New notesdatabase(svr, fn)		
+		Dim title As String
+		title = newnab.title
+		
+		If svr = "" Then
+			ServerItem.appendtotextlist(localtxt)
+		Else
+			ServerItem.appendtotextlist(svr)	
+		End If
+		
+		FilenameItem.appendtoTextList(fn)
+		TItleItem.appendtotextlist(title)
+		
+	End Forall
+	
+	
+	source.refresh	
+	
+End Sub</lotusscript>
+  </code>
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="read edit print copy preview previewedit" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray" name="user-interface"/>
+          <field type="text" kind="computedwhencomposed" name="LocalTxt">
+            <code event="defaultvalue">
+              <formula>"local"</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" name="user-interface" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray" name="user-interface"/>
+          <field type="text" kind="computedwhencomposed" name="LookupView">
+            <code event="defaultvalue">
+              <formula>REM {DNT};
+"($VIMPeople)"</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" name="user-interface" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray" name="user-interface"/>
+          <field type="text" allowmultivalues="true" kind="computed" name="addressBooks" listinputseparators="comma semicolon" listdisplayseparator="semicolon">
+            <code event="defaultvalue">
+              <formula>AddressBooks</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray" name="user-interface"/>
+          <field type="text" allowmultivalues="true" kind="computed" name="TitleList" listinputseparators="comma semicolon" listdisplayseparator="semicolon">
+            <code event="defaultvalue">
+              <formula>TitleList</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="8pt" color="gray"/>
+          <field type="text" allowmultivalues="true" kind="computed" name="ServerList" listinputseparators="comma semicolon" listdisplayseparator="semicolon">
+            <code event="defaultvalue">
+              <formula>serverList</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray" name="user-interface"/>
+          <field type="text" allowmultivalues="true" kind="computed" name="FilenameList" listinputseparators="comma semicolon" listdisplayseparator="semicolon">
+            <code event="defaultvalue">
+              <formula>FilenameList</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+      </par>
+      <table widthtype="fixedleft" refwidth="3.1875in">
+        <tablerowstyle>
+          <font size="0pt" style="underline strikethrough emboss" name="monospace" color="#090000"/>
+        </tablerowstyle>
+        <tablecolumn width="0.3750in"/>
+        <tablecolumn width="2.8125in"/>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="system">
+            <pardef id="3" keepwithnext="true" keeptogether="true"/>
+            <par def="3">
+              <run>
+                <font name="user-interface"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="0px" bgcolor="system">
+            <pardef id="4" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in" keepwithnext="true" keeptogether="true"/>
+            <par def="4"/>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="system">
+            <pardef id="5" leftmargin="0.0104in" keepwithnext="true" keeptogether="true"/>
+            <par def="5">
+              <run>
+                <font name="user-interface"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="0px" bgcolor="system">
+            <pardef id="6" leftmargin="0.0104in" keepwithnext="true" keeptogether="true"/>
+            <par def="6">
+              <run>
+                <font size="9pt" style="bold" name="user-interface"/>Select an address book</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="system">
+            <par def="5">
+              <run>
+                <font name="user-interface"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="0px" bgcolor="system">
+            <pardef id="7" leftmargin="0.0104in" keepwithnext="true" keeptogether="true"/>
+            <par def="7">
+              <run>
+                <font size="9pt" name="user-interface"/>
+                <field usenotesstyle="false" height="0.5000in" width="2in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="AddrBook" description="Address book location" htmltitle="Address book location">
+                  <keywords helperbutton="false" recalconchange="true" recalcchoices="true" columns="1" ui="listbox">
+                    <formula>@Unique(TitleList)</formula>
+                  </keywords>
+                </field>
+              </run>
+              <run>
+                <font name="user-interface"/>
+              </run>
+            </par>
+            <pardef id="8" leftmargin="0.0104in" hide="notes" keepwithnext="true" keeptogether="true"/>
+            <par def="8">
+              <run>
+                <font size="9pt" name="user-interface"/>
+              </run>
+              <run>
+                <font size="9pt" name="user-interface"/>
+                <field type="text" kind="computedfordisplay" name="SERVER_NAME">
+                  <code event="defaultvalue">
+                    <formula>REM {cgi variable for web only};
+SERVER_NAME</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" name="user-interface"/>
+              </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt" name="user-interface"/>
+              </run>
+              <run>
+                <font size="9pt" name="user-interface"/>
+                <field usenotesstyle="false" height="0.2028in" width="2in" multiline="true" borderstyle="inset" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="AddrBookWeb">
+                  <keywords helperbutton="false" columns="1" ui="combobox">
+                    <formula>AddressBooks</formula>
+                  </keywords>
+                  <code event="defaultvalue">
+                    <formula>@Subset(AddressBooks; 1)</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" name="user-interface"/>
+              </run>
+            </par>
+            <pardef id="9" leftmargin="0.0104in" hide="notes web mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="9">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="8pt" color="gray"/>
+                <field type="text" allowmultivalues="true" kind="computed" name="svrdb" listinputseparators="comma semicolon" listdisplayseparator="semicolon">
+                  <code event="defaultvalue">
+                    <formula>mem := @Member(AddrBook; TItleList);
+Server := @Subset(@Subset(ServerList; mem); -1);
+Filename := @Subset(@Subset(FilenameList; mem); -1);
+Servername := @If(@LowerCase(server) = @LowerCase(localtxt); ""; Server);
+@If(AddrBook = ""; ""; Servername : Filename)</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray" name="user-interface"/>
+                <field type="text" allowmultivalues="true" kind="computed" name="LookupNames" listinputseparators="comma semicolon" listdisplayseparator="semicolon">
+                  <code event="defaultvalue">
+                    <formula>REM {Hint for translators:  construct the entire translated sentence in one long line of text, then break it up};
+REM {with approx. 30 characters per list item.  This will enable the text to fit in the width of the borders of the};
+REM {WhoList field};
+
+ErrorL :=
+"ERROR:  The address book generated " :
+"more than 65,000 bytes of results, " :
+"which is too large for Notes to handle ":
+"in this context.";
+
+NoNames :=
+"The address book(s) on this web server ":
+"are set up as 'user-less directories' ":
+" and cannot be used for name lookups.  ":
+"Contact your server administrator for more ":
+"information.";
+
+s1 := @Subset(svrdb; 1);
+f1 := @Subset(svrdb; -1);
+
+Server := @If(S1 = ""; ""; S1);
+db := @If(@ClientType = "Notes"; f1; AddrBookWeb);
+file  := server : db;
+
+view := LookupView;
+list := @If(db = ""; ""; @DbColumn("":"NoCache"; server : db; view; 1));
+@If(@ClientType != "Notes" &amp; list = ""; NoNames; @ClientType != "Notes" &amp; @IsError(list); "error";
+@Contains(@Text(list); "65,000"); ErrorL;
+@Trim(List))</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" name="user-interface" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="system">
+            <pardef id="10" hide="notes web mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="10">
+              <run>
+                <font name="user-interface"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="0px" bgcolor="system">
+            <pardef id="11" hide="notes web mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="11">
+              <run>
+                <font size="9pt" name="user-interface"/> </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="system">
+            <pardef id="12" keepwithnext="true" keeptogether="true"/>
+            <par def="12">
+              <run>
+                <font name="user-interface"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="0px" bgcolor="system">
+            <pardef id="13" keepwithnext="true" keeptogether="true"/>
+            <par def="13">
+              <run>
+                <font style="bold" name="user-interface"/>Select a name from the list</run>
+            </par>
+            <pardef id="14" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>AddrBook = ""</formula>
+              </code>
+            </pardef>
+            <par def="14">
+              <run>
+                <font size="9pt" name="user-interface" color="#5f5f5f"/>[Name &amp; Address book on </run>
+              <run>
+                <font size="9pt" name="user-interface" color="#5f5f5f"/>
+                <computedtext>
+                  <code event="value">
+                    <formula>mem := @Member(AddrBook; TItleList);
+Server := @Subset(@Subset(ServerList; mem); -1);
+@Name([Abbreviate]; Server)</formula>
+                  </code>
+                </computedtext>
+              </run>
+              <run>
+                <font size="9pt" name="user-interface" color="#5f5f5f"/>]</run>
+            </par>
+            <pardef id="15" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>AddrBook != ""</formula>
+              </code>
+            </pardef>
+            <par def="15">
+              <run>
+                <font size="9pt" name="user-interface" color="#5f5f5f"/>[select an address book from the list above]</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="system">
+            <pardef id="16" keepwithnext="true" keeptogether="true"/>
+            <par def="16">
+              <run>
+                <font name="user-interface"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="0px" bgcolor="system">
+            <pardef id="17" tabs="L3.7500in" keepwithnext="true" keeptogether="true"/>
+            <par def="17">
+              <run>
+                <font name="user-interface"/>
+              </run>
+              <run>
+                <font size="9pt" name="user-interface"/>
+                <field usenotesstyle="false" height="2in" width="2.5000in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="WhoList" description="Select a name from the list" htmltitle="Select a name from the list">
+                  <keywords helperbutton="false" recalconchange="true" recalcchoices="true" columns="1" ui="listbox">
+                    <formula>lookupNames</formula>
+                  </keywords>
+                  <code event="htmlattributes">
+                    <formula>"size=10"</formula>
+                  </code>
+                  <code event="defaultvalue">
+                    <formula>@Subset(lookupNames;1)</formula>
+                  </code>
+                  <code event="inputvalidation">
+                    <formula>Error := "Please choose a name.";
+@If(@IsDocBeingSaved &amp; @ClientType = "Notes" &amp; WhoList = ""; @Failure(Error); @Success)</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font name="user-interface"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="system">
+            <par def="16">
+              <run>
+                <font name="user-interface"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="0px" bgcolor="system">
+            <pardef id="18" hide="notes" keepwithnext="true" keeptogether="true"/>
+            <par def="18">
+              <run>
+                <font size="9pt" name="user-interface" color="gray"/> </run>
+            </par>
+            <par def="18">
+              <run>
+                <font size="9pt" name="user-interface" color="gray"/>
+              </run>
+              <button width="1in" widthtype="fixed" wraptext="true" bgcolor="#d5ccbb">
+                <code event="onClick" for="web">
+                  <javascript>OKClick()</javascript>
+                </code>
+                <font size="9pt" name="user-interface"/>OK</button>
+              <run>
+                <font size="9pt" name="user-interface" color="gray"/>
+              </run>
+              <button width="1in" widthtype="fixed" wraptext="true" bgcolor="#d5ccbb">
+                <code event="onClick" for="web">
+                  <javascript>CancelClick()</javascript>
+                </code>
+                <font size="9pt" name="user-interface"/>Cancel</button>
+              <run>
+                <font size="9pt" name="user-interface" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="19" hide="notes web mobile"/>
+      <par def="19">
+        <run>
+          <font size="9pt" name="user-interface" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray" name="user-interface"/>
+          <field type="text" kind="editable" name="enterWho">
+            <code event="inputtranslation">
+              <formula>WhoList</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" name="user-interface" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray" name="user-interface"/>
+          <field type="text" kind="computed" name="AddrBook2">
+            <code event="defaultvalue">
+              <formula>@If(@LowerCase(AddrBook) = @LowerCase(LocalTxt); ""; AddrBook)</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font name="user-interface"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray" name="user-interface"/>
+          <field type="text" kind="computed" name="Email">
+            <code event="defaultvalue">
+              <formula>REM {DNT};
+View := LookupView;
+Key := enterWho;
+s1 := @Subset(svrdb; 1);
+f1 := @Subset(svrdb; -1);
+Server := @If(S1 = ""; ""; S1);
+db := @If(@ClientType = "Notes"; f1; AddrBookWeb);
+file  := server : db;
+
+LookupDomain := @DbLookup("":"NoCache"; file; View; Key; "MailDomain");
+FwdAddress := @DbLookup("":"NoCache"; file; View; Key; "MailAddress");
+EmailAddress := @If(FwdAddress != ""; @Name([Abbreviate]; FwdAddress);
+LookupDomain != ""; @Name([Abbreviate]; WhoList) + "@" + LookupDomain; @Name([Abbreviate]; WhoList));
+@If(@IsError(LookupDomain); ""; EmailAddress)</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" name="user-interface" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray" name="user-interface"/>
+          <field type="text" kind="editable" name="Department">
+            <code event="inputtranslation">
+              <formula>REM {DNT};
+View := LookupView;
+Key := WhoList;
+s1 := @Subset(svrdb; 1);
+f1 := @Subset(svrdb; -1);
+Server := @If(S1 = ""; ""; S1);
+db := @If(@ClientType = "Notes"; f1; AddrBookWeb);
+file  := server : db;
+
+Server2 := AddrBook2;
+Db := "names.nsf";
+@DbLookup("":"NoCache"; file; View; Key; "Department")</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" name="user-interface" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray" name="user-interface"/>
+          <field type="text" kind="editable" name="Location">
+            <code event="inputtranslation">
+              <formula>REM {DNT};
+View := LookupView;
+Key := WhoList;
+s1 := @Subset(svrdb; 1);
+f1 := @Subset(svrdb; -1);
+Server := @If(S1 = ""; ""; S1);
+db := @If(@ClientType = "Notes"; f1; AddrBookWeb);
+file  := server : db;
+
+Server2 := AddrBook2;
+Db := "names.nsf";
+@DbLookup("":"NoCache"; file; View; Key; "Location")</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" name="user-interface" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray" name="user-interface"/>
+          <field type="text" kind="editable" name="Phone">
+            <code event="inputtranslation">
+              <formula>REM {DNT};
+View := LookupView;
+Key := WhoList;
+s1 := @Subset(svrdb; 1);
+f1 := @Subset(svrdb; -1);
+Server := @If(S1 = ""; ""; S1);
+db := @If(@ClientType = "Notes"; f1; AddrBookWeb);
+file  := server : db;
+
+Server2 := AddrBook2;
+Db := "names.nsf";
+@DbLookup("":"NoCache"; file; View; Key; "OfficePhoneNumber")</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" name="user-interface" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray" name="user-interface"/>
+          <field type="text" kind="editable" name="JobTitle">
+            <code event="inputtranslation">
+              <formula>REM {DNT};
+View := LookupView;
+Key := WhoList;
+s1 := @Subset(svrdb; 1);
+f1 := @Subset(svrdb; -1);
+Server := @If(S1 = ""; ""; S1);
+db := @If(@ClientType = "Notes"; f1; AddrBookWeb);
+file  := server : db;
+
+Server2 := AddrBook2;
+Db := "names.nsf";
+@DbLookup("":"NoCache"; file; View; Key; "JobTitle")</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="14pt"/>
+        </run>
+      </par>
+      <pardef id="20" hide="notes web"/>
+      <par def="20">
+        <run>
+          <font name="user-interface"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+  <item name="$SignatureStatus">
+    <text>1</text>
+  </item>
+</form>

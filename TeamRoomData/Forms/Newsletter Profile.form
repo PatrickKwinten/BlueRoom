@@ -1,0 +1,1090 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="Newsletter Profile" alias="InterestProfile|Interest Profile" nocompose="true" noquery="true" publicaccess="false" language="en">
+  <globals>
+    <code event="options">
+      <lotusscript>Option Public
+Use "DiscussionRoutines"
+</lotusscript>
+    </code>
+    <code event="declarations">
+      <lotusscript>Dim view As NotesView
+Dim profile As NotesDocument
+Dim DocWasSaved As Integer
+Dim ProfileKey(1) As String
+Dim tmpList As Variant</lotusscript>
+    </code>
+  </globals>
+  <code event="windowtitle">
+    <formula>"Newsletter Profile"</formula>
+  </code>
+  <code event="webquerysave">
+    <formula>@Command([ToolsRunMacro]; "(WebInterestProfileSave)")</formula>
+  </code>
+  <code event="webqueryopen">
+    <formula>@Command([ToolsRunMacro]; "(WebInterestProfileOpen)")</formula>
+  </code>
+  <code event="helprequest">
+    <formula>REM {DNT};
+@Command([OpenHelpDocument]; [ClientHelp]; "(Help)"; "TeamRoomFInterestProfile")</formula>
+  </code>
+  <code event="postopen">
+    <lotusscript>Sub Postopen(Source As Notesuidocument)
+	
+End Sub
+</lotusscript>
+  </code>
+  <code event="querysave">
+    <lotusscript>Sub Querysave(Source As Notesuidocument, Continue As Variant)
+	DocWasSaved = True
+	
+	If profile Is Nothing Then 
+		Exit Sub
+	Else
+		note.SaveOptions = "0"
+	End If
+End Sub
+</lotusscript>
+  </code>
+  <code event="queryclose">
+    <lotusscript>Sub Queryclose(Source As Notesuidocument, Continue As Variant)
+	
+'	If Profile Is Nothing Then
+'		note.save True, True
+'	End If
+	
+	If (DocWasSaved = False) Or (profile Is Nothing) Then
+		Exit Sub
+	End If
+	
+	ItemList = profile.Items
+	Forall n In ItemList
+		profile.RemoveItem(n.Name)    
+	End Forall
+	note.CopyAllItems profile
+	profile.SaveOptions = "1"
+	profile.save True, True
+End Sub
+</lotusscript>
+  </code>
+  <code event="queryopen">
+    <lotusscript>Sub Queryopen(Source As Notesuidocument, Mode As Integer, Isnewdoc As Variant, Continue As Variant)
+	If Isnewdoc Then Exit Sub
+	Set note = source.document
+     'remove all this so it can get resest with default values each time the doc is opened     
+	note.RemoveItem("WebProfileStrings")  
+	note.RemoveItem("WebProfileCategories")
+	
+End Sub</lotusscript>
+  </code>
+  <code event="jsheader" for="web">
+    <javascript>var pathname = window.location.pathname;
+filename = pathname.substring(0,(pathname.lastIndexOf('nsf')+4)) 
+
+function helpNProfile()
+{
+var newWindow = window.open(filename + '(ProfileInstructions)','secondary_window','toolbar=no,location=no,scrollbars=yes,directories=no,resizable=yes,height=525,width=550')
+}
+</javascript>
+  </code>
+  <code event="jsheader" for="client">
+    <javascript>var pathname = window.location.pathname;
+filename = pathname.substring(0,(pathname.lastIndexOf('nsf')+4)) 
+
+function helpNProfile()
+{
+var newWindow = window.open(filename + '(ProfileInstructions)','secondary_window','toolbar=no,location=no,scrollbars=yes,directories=no,resizable=yes,height=500,width=550')
+}
+</javascript>
+  </code>
+  <actionbar useappletinbrowser="true" bgcolor="#78b4bc" bordercolor="black">
+    <actionbarstyle height="4.7500ex">
+      <font size="9pt" name="multilingual"/>
+    </actionbarstyle>
+    <actionbuttonstyle margintype="fixed" margin="5" bgcolor="#c4dee1" displayborder="notesstyle" widthtype="background"/>
+    <font size="9pt" name="multilingual"/>
+    <border width="0px 0px 1px"/>
+    <sharedactionref id="53">
+      <action title="Forward" showinbar="false" hide="preview previewedit web">
+        <code event="click">
+          <formula>@Command([MailForward])</formula>
+        </code>
+        <code event="hidewhen">
+          <formula>@IsNewDoc</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="52">
+      <action title="Forward as Bookmark" showinbar="false" hide="preview previewedit web">
+        <code event="click">
+          <formula>@Command([Compose]; @MailDbName; "Bookmark")</formula>
+        </code>
+        <code event="hidewhen">
+          <formula>@IsNewDoc</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="65">
+      <action title="Edit Document" hide="preview edit previewedit">
+        <code event="click">
+          <formula>REM {For all forms except Main Document form, which needs special casing for assignees to edit};
+@Command([EditDocument])</formula>
+        </code>
+        <code event="hidewhen">
+          <formula>lcabAuthors := @LowerCase(@Name([Abbreviate]; Authors));
+lcabFrom := @LowerCase(@Name([Abbreviate]; From));
+lcabAltFrom := @LowerCase(@Name([Abbreviate]; AltFrom));
+lcabUN := @LowerCase(@Name([Abbreviate]; @UserName));
+Filename := @DbName;
+Level := @V4UserAccess(Filename);
+Getlevel := @TextToNumber(@Subset(Level; 1));
+
+getLevel &lt; 4 &amp;
+(
+!@Contains(lcabAuthors; lcabUN) |
+!@Contains(lcabFrom; lcabUN) |
+!@Contains(lcabAltFrom; lcabUN))</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="32">
+      <action title="Save &amp; Close" hide="preview read previewedit">
+        <code event="click">
+          <formula>REM {Can't use @isvalid on the web};
+@If(
+@ClientType != "Notes";
+@Do(@Command([FileSave]); @Command([FileCloseWindow]));
+@IsValid;
+@Do(@Command([FileSave]); @Command([FileCloseWindow])); "")</formula>
+        </code>
+        <code event="hidewhen">
+          <formula>REM {Hide if 'New doc' button was clicked};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w = "1" |  (@ClientType != "Notes" &amp; form = "MainTopic") | (@ClientType != "Notes" &amp; form = "Mission") | (@ClientType != "Notes" &amp; form = "IndStat")</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <action title="Instructions" hide="preview previewedit web">
+      <code event="click">
+        <formula>@DialogBox( "(ProfileInstructions)"; [AutoVertFit]:[AutoHorzFit] : [SizeToTable] : [NoOkCancel] : [NoCancel])</formula>
+      </code>
+    </action>
+    <action title="Instructions" showinmenu="false" hide="notes">
+      <code event="onClick" for="web">
+        <javascript>helpNProfile()
+</javascript>
+      </code>
+    </action>
+    <action title="Remove Thread" hide="preview read previewedit web">
+      <code event="click">
+        <formula>REM {notes only};
+REM {variables to translate};
+Title1 := "Current Threads";
+Msg1 := "Please choose the thread that you want to remove. (Note: This operation cannot be undone.)";
+Title2 := "Remove Thread";
+Msg2 := "There are currently no threads in your interest profile.  Select Add Topic to Interest Profile from any view.";
+REM {END variables to translate};
+
+RemoveSubject:="";
+@If(profilethreads!="";@Set("RemoveSubject";
+@Prompt([OkCancelList] : [NoSort]; Title1; Msg1; @Subset(ProfileThreadSubjects; 1); ProfileThreadSubjects));@Return(@Prompt([Ok]; Title2 ; Msg2)));
+
+Member := @Member(RemoveSubject; ProfileThreadSubjects);
+
+FIELD ProfileThreadSubjects := @Trim(@Replace(ProfileThreadSubjects; RemoveSubject; ""));
+
+RemoveId := @Subset(@Subset(ProfileThreads; Member); -1);
+
+FIELD ProfileThreads := @Trim(@Replace(ProfileThreads; RemoveId; ""));
+
+@PostedCommand([FileSave])</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>@Elements(ProfileThreads) = 0</formula>
+      </code>
+    </action>
+    <action title="Remove Thread" showinmenu="false" hide="read notes">
+      <code event="click">
+        <formula>REM {web only};
+@Command([Compose];"RemoveThread")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>ProfileThreadSubjects = ""</formula>
+      </code>
+    </action>
+    <sharedactionref id="48">
+      <action title="Cancel" hide="preview previewedit web">
+        <code event="click">
+          <formula>REM {Notes only};
+REM {cannot issue the SaveOptions command below on the web};
+FIELD SaveOptions := 0;
+@Command([FileCloseWindow])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="58">
+      <action title="Cancel" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>REM {web new docs};
+CurrentView := @GetProfileField("tempvars"; "viewtitle");
+@Command([OpenView]; CurrentView)</formula>
+        </code>
+        <code event="hidewhen">
+          <formula>REM {Hide if person clicked 'New doc' button};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w = "1" |
+(Form != "Mission" &amp; Form != "Interest Profile" &amp; !@IsNewDoc)</formula>
+        </code>
+      </action>
+    </sharedactionref>
+  </actionbar>
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="notes web" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1"/>
+      <pardef id="2" align="none" leftmargin="1in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <subformref name="WebFont"/>
+      <par def="1"/>
+      <pardef id="3" leftmargin="1in" hide="read edit copy preview previewedit"/>
+      <par def="3">
+        <run>
+          <font size="9pt" color="gray"/>Hidden Fields:</run>
+      </par>
+      <table widthtype="fitmargins" user4spacing="true" refwidth="9.5938in">
+        <tablecolumn width="61.0799%"/>
+        <tablecolumn width="38.9201%"/>
+        <tablerow>
+          <tablecell>
+            <pardef id="4" leftmargin="1%" rightmargin="100%" hide="read edit copy preview previewedit" keepwithnext="true" keeptogether="true"/>
+            <par def="4">
+              <run>
+                <font size="9pt" color="gray"/>List of threads that the user wants to be notified of</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <pardef id="5" leftmargin="1%" rightmargin="100%" hide="read edit copy preview previewedit" keepwithnext="true" keeptogether="true"/>
+            <par def="5">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" allowmultivalues="true" kind="computed" name="ProfileThreads" listinputseparators="comma semicolon" listdisplayseparator="semicolon" htmlid="ProfileThreads">
+                  <code event="defaultvalue">
+                    <formula>ProfileThreads</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="4">
+              <run>
+                <font size="9pt" color="gray"/>List of people who can see the document</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="5">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="readers" allowmultivalues="true" kind="computed" name="readers" listinputseparators="comma" listdisplayseparator="comma" htmlid="readers">
+                  <code event="defaultvalue">
+                    <formula>""</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="4">
+              <run>
+                <font size="9pt" color="gray"/>Subject for forwarding this note</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="5">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="computed" name="Subject" htmlid="Subject">
+                  <code event="defaultvalue">
+                    <formula>"Newsletter Profile for " + PersonName</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="4">
+              <run>
+                <font size="9pt" color="gray"/>No idea.</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="5">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="editable" name="HiddenDocument" htmlid="HiddenDocument">
+                  <code event="defaultvalue">
+                    <formula>"1"</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="4">
+              <run>
+                <font size="9pt" color="gray"/>Standard Return information for the web clients</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="5">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <sharedfieldref name="$$Return"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="4">
+              <run>
+                <font size="9pt" color="gray"/>Full Hierarchical Name of user</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="5">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="names" kind="computedwhencomposed" name="FullPersonName" htmlid="FullPersonName">
+                  <code event="defaultvalue">
+                    <formula>@UserName</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="4">
+              <run>
+                <font size="9pt" color="gray"/>Web User name</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <pardef id="6" leftmargin="1%" rightmargin="100%" hide="read edit notes" keepwithnext="true" keeptogether="true"/>
+            <par def="6">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="editable" name="Remote_User" htmlid="Remote_User">
+                  <code event="htmlattributes">
+                    <formula>"TYPE=hidden"</formula>
+                  </code>
+                  <code event="defaultvalue">
+                    <formula>Remote_User</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <pardef id="7" leftmargin="1%" hide="read edit notes" keepwithnext="true" keeptogether="true"/>
+            <par def="7">
+              <run>
+                <font size="9pt" color="gray"/>author of the document</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <pardef id="8" leftmargin="1%" hide="read edit notes" keepwithnext="true" keeptogether="true"/>
+            <par def="8">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <sharedfieldref name="From"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <pardef id="9" leftmargin="1%" hide="read edit copy preview previewedit" keepwithnext="true" keeptogether="true"/>
+            <par def="9">
+              <run>
+                <font size="9pt" color="gray"/>for when when interest profiles are converted to subscriptions</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <pardef id="10" leftmargin="1%" hide="read edit copy preview previewedit" keepwithnext="true" keeptogether="true"/>
+            <par def="10">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="computedwhencomposed" name="$HLTitle">
+                  <code event="defaultvalue">
+                    <formula>@DbTitle</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="9">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="computed" name="PROTECTFROMARCHIVE">
+                  <code event="defaultvalue">
+                    <formula>"1"</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>	don't allow these documents to be marked as "expired"</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="8">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <pardef id="11" leftmargin="0.0104in" hide="read edit notes" keepwithnext="true" keeptogether="true"/>
+            <par def="11">
+              <run>
+                <font size="9pt" color="gray"/>"1" means alternate name can be displayed</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <pardef id="12" leftmargin="0.0104in" hide="read edit notes" keepwithnext="true" keeptogether="true"/>
+            <par def="12">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <sharedfieldref name="AltNameDisplay"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="13" leftmargin="1in" hide="web"/>
+      <par def="13">
+        <run>
+          <font size="12pt"/>
+        </run>
+      </par>
+      <table widthtype="fitmargins" refwidth="9.6042in">
+        <tablecolumn width="100%"/>
+        <tablerow>
+          <tablecell borderwidth="0px">
+            <pardef id="15" leftmargin="1%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="15">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+            <table widthtype="fitmargins" leftmargin="0" refwidth="9.6042in">
+              <tablecolumn width="100%"/>
+              <tablerow>
+                <tablecell borderwidth="0px 0px 2px" bgcolor="#78b4bc">
+                  <pardef id="17" leftmargin="0.1000in" keepwithnext="true" keeptogether="true"/>
+                  <par def="17">
+                    <run>
+                      <font size="12pt" style="bold" color="white"/>Newsletter Profile Preferences for:  </run>
+                    <run>
+                      <font size="12pt" color="white" style="bold"/>
+                      <field type="authors" kind="computedwhencomposed" name="PersonName" description="Required:  enter a short description of this main topic." htmlid="PersonName">
+                        <code event="defaultvalue">
+                          <formula>@Name([CN]; @UserName)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="12pt" style="bold" color="white"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <par def="15">
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="0px">
+            <pardef id="18" leftmargin="1%" keepwithnext="true" keeptogether="true"/>
+            <par def="18">
+              <run>
+                <font size="9pt"/> </run>
+            </par>
+            <table widthtype="fitmargins" leftmargin="0.1000in" rightmargin="98%" refwidth="9.3118in">
+              <tablecolumn width="100%"/>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="20" leftmargin="1%" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>Lookup := @DbColumn("" : "NoCache"; ""; View;  1);
+Lookup = "Mission"</formula>
+                    </code>
+                  </pardef>
+                  <par def="20">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <sharedfieldref name="MissionError"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="20">
+                    <run>
+                      <font size="9pt"/> </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="21" keepwithnext="true" keeptogether="true"/>
+                  <par def="21">
+                    <run>
+                      <font size="9pt" style="bold"/>Inform me of new documents by these Authors</run>
+                  </par>
+                  <pardef id="22" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltNameDisplay = "0"</formula>
+                    </code>
+                  </pardef>
+                  <par def="22">
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.8000in" width="2in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="AltNameSelection" description="Select the Team Members to whom you are directing this information." listinputseparators="comma" listdisplayseparator="comma" htmlid="People1_1_1">
+                        <keywords recalconchange="true" columns="1" ui="listbox">
+                          <formula>PLookup :=  @DbColumn("" : "nocache"; ""; "PriAlt"; 1);
+isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 40));
+
+@If(PLookup = ""; sp; PLookup)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size = 4"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>getField := @If(@LowerCase(form) = "maintopic"; people1; @LowerCase(form) = "subteam";STMembers; @LowerCase(form) = "$replication"; AuthorList; @LowerCase(form) = "($subscription)"; ProfileAuthors;  @Contains(@LowerCase(form); @LowerCase("InteResT")); ProfileAuthors;
+"");
+@If(
+AltNameSelection = "" &amp; PriNameSelection = ""; getField;
+AltNameDisplay = "1"; AltNameSelection; PriNameSelection)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="#806210"/>
+                    </run>
+                  </par>
+                  <pardef id="23" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>AltNameDisplay = "1"</formula>
+                    </code>
+                  </pardef>
+                  <par def="23">
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="#806210"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.8000in" width="2in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="PriNameSelection" description="Select the Team Members to whom you are directing this information." listinputseparators="comma" listdisplayseparator="comma" htmlid="People1_2_1">
+                        <keywords recalconchange="true" columns="1" ui="listbox">
+                          <formula>PLookup :=  @DbColumn("" : "nocache"; ""; "PeopleLookup"; 1);
+isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 40));
+
+@If(PLookup = ""; sp; PLookup)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size = 4"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>getField := @If(@LowerCase(form) = "maintopic"; "people1"; @LowerCase(form) = "subteam";STMembers; @LowerCase(form) = "$replication"; AuthorList; @LowerCase(form) = "($subscription)"; ProfileAuthors; @Contains(@LowerCase(form); @LowerCase("InteResT")); ProfileAuthors;
+"");
+@If(
+AltNameSelection = "" &amp; PriNameSelection = "" &amp; (@LowerCase(form) = "maintopic" | @Contains(@LowerCase(form); @LowerCase("InteResT"))); @SetField(getField; "");
+AltNameSelection = "" &amp; PriNameSelection = ""; getField;
+AltNameDisplay = "0"; PriNameSelection; AltNameSelection)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="#806210"/>
+                    </run>
+                  </par>
+                  <pardef id="24" hide="notes web" keepwithnext="true" keeptogether="true"/>
+                  <par def="24">
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" allowmultivalues="true" kind="computed" name="ProfileAuthors" description="Inform me of new documents by these authors" listinputseparators="comma" listdisplayseparator="comma" htmlid="ProfileAuthors" htmltitle="Inform me of new documents by these authors">
+                        <code event="htmlattributes">
+                          <formula>"size=5"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>@If(PriNameSelection = ""; ""; @Trim(PriNameSelection))</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="21">
+                    <run>
+                      <font size="9pt"/> </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="21">
+                    <run>
+                      <font size="9pt" style="bold"/>Inform me of new documents in these Categories</run>
+                  </par>
+                  <par def="21">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="ProfileCategories" description="Inform me of new documents in these categories" listinputseparators="comma" listdisplayseparator="comma" htmlid="ProfileCategories" htmltitle="Inform me of new documents in these categories">
+                        <keywords columns="2" ui="dialoglist">
+                          <formula>View := "MissionLookup";
+list := @DbColumn("":"nocache"; ""; View; 4);
+
+isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 40));
+
+@If(list = ""; sp; list)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size=5"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@Trim(ProfileCategories)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="21">
+                    <run>
+                      <font size="9pt"/> </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="21">
+                    <run>
+                      <font size="9pt" style="bold"/>Inform me of new documents referencing these Events</run>
+                  </par>
+                  <par def="21">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="ProfileEvents" description="Inform me of new documents referencing these Events" listinputseparators="comma" listdisplayseparator="comma" htmlid="ProfileEvents" htmltitle="Inform me of new documents referencing these Events">
+                        <keywords columns="1" ui="dialoglist">
+                          <formula>View := "EventLookup";
+list := @DbColumn("":"nocache"; ""; View; 1);
+isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 40));
+
+@If(list = ""; sp; list)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size=5"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>ProfileEvents</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@Trim(ProfileEvents)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="25" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+                  <par def="25">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <pardef id="26" hide="web" keepwithnext="true" keeptogether="true"/>
+                  <par def="26">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="27" keepwithnext="true" keeptogether="true"/>
+                  <par def="27">
+                    <run>
+                      <font size="9pt" style="bold"/>Inform me of new documents referencing these Subteams</run>
+                  </par>
+                  <par def="27">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="ProfileSubteams" description="Inform me of new documents referencing these Subteams" listinputseparators="comma" listdisplayseparator="comma" htmlid="ProfileEvents_1" htmltitle="Inform me of new documents referencing these Subteams">
+                        <keywords columns="1" ui="dialoglist">
+                          <formula>list := @DbColumn("" : "nocache"; ""; "SubteamLookup"; 1);
+isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 40));
+
+@If(list = ""; sp; list)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size=5"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>ProfileSubteams</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@Trim(ProfileSubteams)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="28" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+                  <par def="28">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <pardef id="29" hide="web" keepwithnext="true" keeptogether="true"/>
+                  <par def="29">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="21">
+                    <run>
+                      <font size="9pt" style="bold"/>Inform me of new documents with Subjects containing these words or phrases</run>
+                  </par>
+                  <par def="26">
+                    <run>
+                      <font size="3pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>
+                    </run>
+                  </par>
+                  <par def="26">
+                    <run>
+                      <font size="9pt"/>(separate each listing with a new line )</run>
+                  </par>
+                  <pardef id="30" hide="read notes" keepwithnext="true" keeptogether="true"/>
+                  <par def="30">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="WebProfileStrings" description="Inform me of new documents with Subjects containing these words or phrases " listinputseparators="comma" listdisplayseparator="comma" htmlid="WebProfileStrings" htmltitle="Inform me of new documents with Subjects containing these words or phrases ">
+                        <keywords columns="1" ui="dialoglist">
+                          <formula>sp := @Repeat(" "; 40);
+@If(ProfileStrings = ""; sp; @Unique(ProfileStrings))</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size=5"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@Trim(WebProfileStrings)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <par def="30">
+                    <run>
+                      <font size="9pt"/>Enter a new word or phrase</run>
+                  </par>
+                  <par def="30">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" allowmultivalues="true" kind="editable" name="NewString" description="Enter a new word or phrase" listinputseparators="comma semicolon" listdisplayseparator="semicolon" htmlid="NewString" htmltitle="Enter a new word or phrase">
+                        <code event="htmlattributes">
+                          <formula>"size= 40"</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <pardef id="31" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>@ClientType != "Notes" &amp; @IsDocBeingEdited</formula>
+                    </code>
+                  </pardef>
+                  <par def="31">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" allowmultivalues="true" kind="editable" name="ProfileStrings" description="Enter a new word or phrase" listinputseparators="comma semicolon newline" listdisplayseparator="newline" htmlid="ProfileStrings" htmltitle="Enter a new word or phrase">
+                        <code event="htmlattributes">
+                          <formula>"size=6"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>ProfileStrings</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@If(@ClientType = "Notes"; @Trim(@Unique(ProfileStrings : WebProfileStrings :NewString)); @Trim(@Unique(WebProfileStrings : NewString)))</formula>
+                        </code>
+                        <code event="inputvalidation">
+                          <formula>FIELD WebProfileStrings := @If(@ClientType = "Notes"; @DeleteField; @Trim(@Unique(WebProfileStrings : NewString)));
+FIELD NewString := @DeleteField;
+@Success</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="25">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <par def="26">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="32" spaceafter="1.5" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>@Elements(ProfileThreads) = 0</formula>
+                    </code>
+                  </pardef>
+                  <par def="32">
+                    <run>
+                      <font size="9pt" style="bold"/>Inform me if there is activity in any of the following threads</run>
+                  </par>
+                  <pardef id="33" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>@Elements(ProfileThreads) = 0</formula>
+                    </code>
+                  </pardef>
+                  <par def="33">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" allowmultivalues="true" kind="computed" name="ProfileThreadSubjects" listinputseparators="comma blankline" listdisplayseparator="blankline" htmlid="ProfileThreadSubjects">
+                        <code event="defaultvalue">
+                          <formula>@Trim(ProfileThreadSubjects)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="34" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>@Elements(ProfileThreads) = 0</formula>
+                    </code>
+                  </pardef>
+                  <par def="34">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="27">
+                    <run>
+                      <font size="9pt" style="bold"/>
+                      <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="SkipInactive" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Inactive preference">
+                        <keywords helperbutton="false" columns="1" ui="checkbox">
+                          <textlist>
+                            <text>Do not send Newsletter if document is "Inactive"|1</text>
+                          </textlist>
+                        </keywords>
+                        <code event="inputtranslation">
+                          <formula>@SetProfileField("tempvars"; "SkipInactive"; SkipInactive);
+SkipInactive</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <pardef id="35" leftmargin="1%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="35">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="36" leftmargin="1%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="36">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="37" leftmargin="1in" hide="notes mobile"/>
+      <par def="37">
+        <run>
+          <font size="9pt"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+  <item name="$HTMLDocumentStyles" summary="true" sign="true">
+    <rawitemdata type="1">
+0ggBAAAA/wDSCAEA/wAAANIIAQCAAIAA
+</rawitemdata>
+  </item>
+  <item name="$SubForm_RepIDs" sign="true">
+    <text>0000000000000000</text>
+  </item>
+</form>

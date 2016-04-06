@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:xe="http://www.ibm.com/xsp/coreex"
+	enableModifiedFlag="true" modifiedControl="btnSilentSave">
+
+	<xp:this.afterPageLoad>
+		<![CDATA[#{javascript:viewScope.editableProfile = editableProfile}]]>
+	</xp:this.afterPageLoad>
+
+	<!--
+		XPiNC: custom save handler invoked when a user tries to close the
+		notes client or the application tab and clicks on "Save" in the action
+		dialog, or does a Ctrl+S keystroke, or Esc key...
+	-->
+	<xp:button value="Silent Save" id="btnSilentSave" rendered="false">
+		<xp:eventHandler event="onclick" submit="true"
+			refreshMode="partial" refreshId="dynamicContent">
+			<xp:this.action>
+				<![CDATA[#{javascript:
+					if((userBean.accessLevel >= lotus.domino.ACL.LEVEL_AUTHOR) && userBean.canCreateDocs){
+						if(viewScope.containsKey("editableProfile")){
+							// try to save datasources...
+							if(view.save(false)){
+								// only close process if not a Ctrl+S keystroke...
+								var sv = context.getSubmittedValue();
+								if(null != sv && sv != "$$xsp:file-save$$"){
+									// allow the current tab or window to close...
+									facesContext.closeProcess(
+										com.ibm.xsp.context.FacesContextEx.CLOSE_VALIDATION_RESULT,
+										true
+									);
+								}
+							}
+						}
+					}
+				}]]>
+			</xp:this.action>
+		</xp:eventHandler>
+	</xp:button>
+
+	<xp:this.data>
+		<xp:dominoDocument formName="ParticipantProfile"
+			action="editDocument" var="editableProfile" ignoreRequestParams="true"
+			computeWithForm="onsave" documentId="#{javascript:viewScope.editableProfile_documentId}">
+			<xp:this.querySaveDocument><![CDATA[#{javascript:// only keep most recent image...
+var al:java.util.List = editableProfile.getAttachmentList("thumbnailUrl");
+if(!al.isEmpty()){
+	var lastItemIndex = al.size() - 1;
+	if(lastItemIndex > 0){
+		for(var i = lastItemIndex - 1; i >= 0; i--){
+			var eo:NotesEmbeddedObject = al.get(i);
+			editableProfile.removeAttachment("thumbnailUrl", eo.getName());
+		}
+	}
+}}]]></xp:this.querySaveDocument>
+			<xp:this.postSaveDocument><![CDATA[#{javascript:try{
+	if(null != viewScope.personName && "" != viewScope.personName){
+		peopleBean.refreshPerson(viewScope.personName);
+	}
+}catch(e){
+	print("Error occurred refreshing person details: " + e);
+}}]]></xp:this.postSaveDocument>
+		</xp:dominoDocument>
+	</xp:this.data>
+
+	<xp:panel id="editableProfile">
+
+		<xe:formTable
+			loaded="${javascript:editableProfile.isEditable()}"
+			id="containerFormTable" disableErrorSummary="false"
+			disableRowError="true" style="width:100%;min-width:900px;"
+			ariaLabel="Edit member form" legend="Edit member form">
+			<xe:this.facets>
+				<xp:panel xp:key="header">
+					<xp:text escape="true" id="cfTitle" tagName="h2">
+						<xp:this.value><![CDATA[${javascript:var translatedTitle = "";
+if("" != viewScope.personName){
+	translatedTitle = I18n.format(strings.getString("edit.profile.for"), peopleBean.getPerson(viewScope.personName).abbreviatedName);
+}
+return(translatedTitle);}]]></xp:this.value>
+					</xp:text>
+				</xp:panel>
+				<xp:panel xp:key="footer">
+					<xp:button value="Save" id="btnSave">
+						<xp:this.loaded><![CDATA[${javascript:(userBean.accessLevel > lotus.domino.ACL.LEVEL_AUTHOR) && userBean.canCreateDocs}]]></xp:this.loaded>
+						<xp:eventHandler event="onclick" submit="true"
+							refreshMode="complete">
+							<xp:this.action>
+								<xp:actionGroup>
+									<xp:saveDocument></xp:saveDocument>
+									<xp:openPage name="/members.xsp">
+									</xp:openPage>
+								</xp:actionGroup>
+							</xp:this.action>
+						</xp:eventHandler>
+					</xp:button>
+					<xp:link text="Cancel" id="lnkCancel" role="button"
+						title="cancel">
+						<xp:eventHandler event="onclick" submit="true"
+							refreshMode="partial" refreshId="memberProfileDynamicContent"
+							immediate="true">
+							<xp:this.action>
+								<xp:actionGroup>
+									<xp:confirm>
+										<xp:this.message>
+											<![CDATA[${javascript://
+I18n.format(strings.getString("cancel.editing.x.profile"), peopleBean.getPerson(viewScope.personName).displayName)}]]>
+										</xp:this.message>
+									</xp:confirm>
+									<xe:changeDynamicContentAction
+										for="memberProfileDynamicContent"
+										facetName="readOnlyProfile">
+									</xe:changeDynamicContentAction>
+								</xp:actionGroup>
+							</xp:this.action>
+						</xp:eventHandler>
+					</xp:link>
+				</xp:panel>
+			</xe:this.facets>
+			<xe:formRow labelPosition="none" id="containerFormRow">
+				<xe:formTable disableRequiredMarks="false"
+					loaded="${javascript:editableProfile.isEditable()}"
+					id="memberDetailsFormTable" disableErrorSummary="true"
+					style="display:inline-block;width:65%;" labelWidth="120px"
+					ariaLabel="Edit member details" legend="Edit member details">
+
+					<xe:formRow label="Email:" labelPosition="left">
+						<xp:inputText value="#{editableProfile.Email}"
+							id="fldEmail" style="width:98%;">
+						</xp:inputText>
+					</xe:formRow>
+
+					<xe:formRow label="Department:"
+						labelPosition="left">
+						<xp:inputText
+							value="#{editableProfile.Department}" id="fldDepartment"
+							style="width:98%;">
+						</xp:inputText>
+					</xe:formRow>
+
+					<xe:formRow label="Location:"
+						labelPosition="left">
+						<xp:inputText
+							value="#{editableProfile.Location}" id="fldLocation"
+							style="width:98%;">
+						</xp:inputText>
+					</xe:formRow>
+
+					<xe:formRow label="Phone:" labelPosition="left">
+						<xp:inputText value="#{editableProfile.Phone}"
+							id="fldPhone" style="width:98%;">
+						</xp:inputText>
+					</xe:formRow>
+
+					<xe:formRow label="Job title:"
+						labelPosition="left">
+						<xp:inputText
+							value="#{editableProfile.JobTitle}" id="fldJobTitle"
+							style="width:98%;">
+						</xp:inputText>
+					</xe:formRow>
+
+					<xe:formRow>
+						<xp:this.facets>
+							<xp:label xp:key="label" value="Status:" />
+						</xp:this.facets>
+						<xp:div style="margin:-7px 0px 20px -13px;">
+							<xp:radioGroup id="rdgStatus"
+								value="#{editableProfile.FileThisStatusDoc}" defaultValue="0"
+								style="height:0px" legend="Status">
+								<xp:selectItem itemLabel="Active"
+									itemValue="0">
+								</xp:selectItem>
+								<xp:selectItem itemLabel="Inactive"
+									itemValue="1">
+								</xp:selectItem>
+							</xp:radioGroup>
+						</xp:div>
+					</xe:formRow>
+
+				</xe:formTable>
+
+				<xe:formTable disableRequiredMarks="false"
+					loaded="${javascript:editableProfile.isEditable()}"
+					id="thumbnailFormTable" disableErrorSummary="true"
+					style="display:inline-block;width:300px;" labelWidth="120px"
+					ariaLabel="Edit member photo">
+
+					<xe:formRow labelPosition="left" label="Photo:">
+						<xp:table cellspacing="0" cellpadding="0"
+							border="0">
+							<xp:tr>
+								<xp:td>
+									<xp:image id="thumbnailImage"
+										height="118px" width="118px" alt="" title="">
+										<xp:this.url><![CDATA[#{javascript:var imageName = "profileNoPhoto-118px.png";
+var al:java.util.List = editableProfile.getAttachmentList("thumbnailUrl");
+if(!al.isEmpty()){
+	var lastItemIndex = al.size() - 1;
+	if(lastItemIndex > 0){
+		var eo:NotesEmbeddedObject = al.get(lastItemIndex);
+		imageName = eo.getHref();
+	}else{
+		var eo:NotesEmbeddedObject = al.get(0);
+		imageName = eo.getHref();
+	}
+}
+return(imageName);}]]></xp:this.url>
+									</xp:image>
+								</xp:td>
+								<xp:td style="width:110px">
+									<xp:label
+										value="The photo must be in GIF, JPEG, or PNG format. Maximum size is 130px x 130px."
+										id="label1">
+									</xp:label>
+								</xp:td>
+							</xp:tr>
+						</xp:table>
+					</xe:formRow>
+
+					<xe:formRow label="Upload: " labelPosition="left"
+						id="thumbnailFormRow">
+						<xp:fileUpload id="fuImage"
+							value="#{editableProfile.thumbnailUrl}"
+							accept="image/png,image/gif,image/jpeg,image/jpg,image/pjpeg,image/x-png">
+							<xp:eventHandler event="onchange"
+								submit="true" refreshMode="complete">
+								<xp:this.action><![CDATA[#{javascript:// remove any thumbnails...
+											var al:java.util.List = editableProfile.getAttachmentList("thumbnailUrl");
+											if(!al.isEmpty())
+											{
+												if(al.length > 1)
+												{
+													var eo:NotesEmbeddedObject = al.get(0);
+													editableProfile.removeAttachment("thumbnailUrl", eo.getName());
+												}
+											}
+										}]]></xp:this.action>
+							</xp:eventHandler>
+						</xp:fileUpload>
+						<xp:link id="lkResetImage" text="Reset"
+							role="button" title="reset image">
+							<xp:this.style><![CDATA[#{javascript:// rendered if any images exist...
+var al:java.util.List = editableProfile.getAttachmentList("thumbnailUrl");
+if(!al.isEmpty()){
+	return "visibility:visible;";
+}
+return "visibility:hidden;";}]]></xp:this.style>
+							<xp:eventHandler event="onclick"
+								submit="true" refreshMode="partial">
+								<xp:this.action><![CDATA[#{javascript:// remove any thumbnails...
+var al:java.util.List = editableProfile.getAttachmentList("thumbnailUrl");
+if(!al.isEmpty()){
+	for(var i = 0; i < al.size(); i++){
+		var eo:NotesEmbeddedObject = al.get(i);
+		editableProfile.removeAttachment("thumbnailUrl", eo.getName());
+	}
+}}]]></xp:this.action>
+							</xp:eventHandler>
+						</xp:link>
+					</xe:formRow>
+
+				</xe:formTable>
+			</xe:formRow>
+		</xe:formTable>
+	</xp:panel>
+</xp:view>

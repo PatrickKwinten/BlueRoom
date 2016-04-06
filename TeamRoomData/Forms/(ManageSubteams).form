@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="(ManageSubteams)" alias="AddParticipantToSubteam" noquery="true" htmlallfields="true" publicaccess="false" language="en" bgcolor="#efefef">
+  <code event="windowtitle">
+    <formula>"Manage Subteam Lists"</formula>
+  </code>
+  <code event="webqueryopen">
+    <formula>@Command([ToolsRunMacro]; "(webOpenAddParticipant)")</formula>
+  </code>
+  <code event="postopen">
+    <formula>@SetProfileField("TempVars"; "notify"; "")</formula>
+  </code>
+  <code event="queryclose">
+    <formula>@SetProfileField("TempVars"; "Notify"; "")</formula>
+  </code>
+  <code event="onLoad" for="web">
+    <javascript>var Msgfield = document.forms[0].computeMsg.value
+
+if (Msgfield != ''){
+	 alert(Msgfield)
+	}
+	
+document.forms[0].computeMsg.value = ""
+</javascript>
+  </code>
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1"/>
+      <subformref name="WebFont"/>
+      <par def="1"/>
+      <pardef id="2" hide="notes web"/>
+      <par def="2">
+        <run>
+          <font size="8pt" name="user-interface" color="silver"/>
+        </run>
+        <run>
+          <font size="9pt" color="silver" name="user-interface"/>
+          <sharedfieldref name="AltNameDisplay"/>
+        </run>
+        <run>
+          <font size="8pt" name="user-interface" color="silver"/>
+        </run>
+      </par>
+      <par def="2">
+        <run>
+          <font size="9pt" color="silver" name="user-interface"/>
+          <field type="text" allowmultivalues="true" kind="computed" name="SList" listinputseparators="comma semicolon" listdisplayseparator="semicolon">
+            <code event="defaultvalue">
+              <formula>view := "SubteamLookup";
+Sub := @DbColumn("":"NoCache"; ""; view; 1);
+Sub</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font color="silver"/>
+        </run>
+        <run>
+          <font size="8pt" color="silver" name="user-interface"/>
+          <field type="text" allowmultivalues="true" kind="computed" name="AltPList" listinputseparators="comma semicolon" listdisplayseparator="semicolon">
+            <code event="defaultvalue">
+              <formula>PLookup :=  @DbColumn("" : "nocache"; ""; "PriAlt"; 1);
+isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 40));
+
+@If(PLookup = ""; sp; PLookup)</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="8pt" name="user-interface" color="silver"/>
+        </run>
+        <run>
+          <font size="8pt" color="silver" name="user-interface"/>
+          <field type="text" kind="computed" name="PriPList">
+            <code event="defaultvalue">
+              <formula>PLookup :=  @DbColumn("" : "nocache"; ""; "PeopleLookup"; 1);
+isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 40));
+
+@If(PLookup = ""; sp; PLookup)</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" name="user-interface" color="silver"/>
+        </run>
+      </par>
+      <table widthtype="fixedleft" refwidth="6.3125in">
+        <tablecolumn width="6.3125in"/>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="system">
+            <pardef id="4" leftmargin="1%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="4">
+              <run>
+                <font size="9pt" name="user-interface"/>
+              </run>
+            </par>
+            <table leftmargin="0.3000in" widthtype="fixedleft" refwidth="5.8250in">
+              <tablecolumn width="5.8250in"/>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="6" keepwithnext="true" keeptogether="true"/>
+                  <par def="6">
+                    <run>
+                      <font size="9pt" name="user-interface" color="white"/>
+                    </run>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                      <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="STFunction" description="Add or remove" htmltitle="Add or remove">
+                        <keywords helperbutton="false" recalconchange="true" columns="1" ui="radiobutton">
+                          <textlist>
+                            <text>Add a participant to a subteam | 1</text>
+                            <text>Remove a participant from a subteam | 2</text>
+                          </textlist>
+                        </keywords>
+                        <code event="defaultvalue">
+                          <formula>"1"</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="7" leftmargin="0.0104in" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+                  <par def="7">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <pardef id="8" leftmargin="0.0104in" hide="web" keepwithnext="true" keeptogether="true"/>
+                  <par def="8">
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                  <table leftmargin="0.0104in" widthtype="fixedleft" refwidth="5.5021in">
+                    <tablecolumn width="2.5646in"/>
+                    <tablecolumn width="0.2500in"/>
+                    <tablecolumn width="2.6875in"/>
+                    <tablerow>
+                      <tablecell borderwidth="0px" bgcolor="#d2d2d2">
+                        <cellbackground>
+                          <imageref name="bg_DIALOGBAND"/>
+                        </cellbackground>
+                        <pardef id="10" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                          <code event="hidewhen">
+                            <formula>STFunction = "2"</formula>
+                          </code>
+                        </pardef>
+                        <par def="10">
+                          <run>
+                            <font size="9pt" name="user-interface"/>1.   Choose the team member that you wish to add to the subteam.</run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px">
+                        <pardef id="11" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                          <code event="hidewhen">
+                            <formula>STFunction = "2"</formula>
+                          </code>
+                        </pardef>
+                        <par def="11">
+                          <run>
+                            <font size="9pt" name="user-interface" color="white"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px" bgcolor="#d2d2d2">
+                        <cellbackground>
+                          <imageref name="bg_DIALOGBAND"/>
+                        </cellbackground>
+                        <pardef id="12" leftmargin="0.0104in" rightmargin="2.6875in" keepwithnext="true" keeptogether="true">
+                          <code event="hidewhen">
+                            <formula>STFunction = "2"</formula>
+                          </code>
+                        </pardef>
+                        <par def="12">
+                          <run>
+                            <font size="9pt" name="user-interface"/>2.  C</run>
+                          <run>
+                            <font size="9pt" name="user-interface"/>hoose the subteam that the team member should be added to.</run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                    <tablerow>
+                      <tablecell borderwidth="0px" bgcolor="#d2d2d2">
+                        <cellbackground>
+                          <imageref name="bg_DIALOGBAND"/>
+                        </cellbackground>
+                        <pardef id="13" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                          <code event="hidewhen">
+                            <formula>STFunction = "1"</formula>
+                          </code>
+                        </pardef>
+                        <par def="13">
+                          <run>
+                            <font size="9pt" name="user-interface"/>1.   Choose the team member that you wish to remove from the subteam</run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px">
+                        <pardef id="14" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                          <code event="hidewhen">
+                            <formula>STFunction = "1"</formula>
+                          </code>
+                        </pardef>
+                        <par def="14">
+                          <run>
+                            <font size="9pt" name="user-interface" color="white"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px" bgcolor="#d2d2d2">
+                        <cellbackground>
+                          <imageref name="bg_DIALOGBAND"/>
+                        </cellbackground>
+                        <pardef id="15" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                          <code event="hidewhen">
+                            <formula>STFunction = "1"</formula>
+                          </code>
+                        </pardef>
+                        <par def="15">
+                          <run>
+                            <font size="9pt" name="user-interface"/>2.   Choose the subteam that the team member should be removed from.</run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                    <tablerow>
+                      <tablecell borderwidth="0px">
+                        <pardef id="16" hide="notes web" keepwithnext="true" keeptogether="true"/>
+                        <par def="16">
+                          <run>
+                            <font size="9pt" name="user-interface"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px">
+                        <pardef id="17" hide="notes web" keepwithnext="true" keeptogether="true"/>
+                        <par def="17">
+                          <run>
+                            <font size="9pt" name="user-interface"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px">
+                        <pardef id="18" hide="notes web" keepwithnext="true" keeptogether="true"/>
+                        <par def="18">
+                          <run>
+                            <font size="9pt" name="user-interface"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                    <tablerow>
+                      <tablecell borderwidth="0px" bgcolor="system">
+                        <pardef id="19" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                          <code event="hidewhen">
+                            <formula>AltNameDisplay = "0"</formula>
+                          </code>
+                        </pardef>
+                        <par def="19">
+                          <run>
+                            <font size="9pt" name="user-interface"/>
+                          </run>
+                          <run>
+                            <font size="9pt" name="user-interface"/>
+                            <field usenotesstyle="false" height="1.2000in" width="2.6000in" multiline="true" borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="AltParticipantList" htmltitle="Choose team member">
+                              <keywords helperbutton="false" recalconchange="true" recalcchoices="true" columns="1" ui="listbox">
+                                <formula>isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 60));
+
+@If(AltPList = ""; sp; AltPList)</formula>
+                              </keywords>
+                              <code event="htmlattributes">
+                                <formula>"size=6"</formula>
+                              </code>
+                              <code event="inputtranslation">
+                                <formula>@If(AltNameDisplay = "1"; AltParticipantList; PriParticipantList)</formula>
+                              </code>
+                            </field>
+                          </run>
+                          <run>
+                            <font size="9pt" name="user-interface"/>
+                          </run>
+                        </par>
+                        <pardef id="20" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                          <code event="hidewhen">
+                            <formula> AltNameDisplay = "1"</formula>
+                          </code>
+                        </pardef>
+                        <par def="20">
+                          <run>
+                            <font size="9pt" name="user-interface"/>
+                          </run>
+                          <run>
+                            <font size="9pt" name="user-interface"/>
+                            <field usenotesstyle="false" height="1.2000in" width="2.6000in" multiline="true" borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="PriParticipantList" htmltitle="Choose team member">
+                              <keywords helperbutton="false" recalconchange="true" recalcchoices="true" columns="1" ui="listbox">
+                                <formula>isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 60));
+
+@If(PriPList = ""; sp; PriPList)</formula>
+                              </keywords>
+                              <code event="htmlattributes">
+                                <formula>"size=6"</formula>
+                              </code>
+                              <code event="inputtranslation">
+                                <formula>@If(AltNameDisplay = "0"; PriParticipantList; AltParticipantList)</formula>
+                              </code>
+                            </field>
+                          </run>
+                          <run>
+                            <font size="9pt" name="user-interface"/>
+                          </run>
+                        </par>
+                        <pardef id="21" leftmargin="0.0104in" hide="notes web mobile" keepwithnext="true" keeptogether="true">
+                          <code event="hidewhen">
+                            <formula>AltPList = ""  &amp; PriPList = "" &amp; SList = "" &amp; EList = ""</formula>
+                          </code>
+                        </pardef>
+                        <par def="21">
+                          <run>
+                            <font size="9pt" name="user-interface"/>
+                          </run>
+                          <run>
+                            <font size="9pt" name="user-interface"/>
+                            <field type="text" kind="computed" name="ParticipantList">
+                              <code event="defaultvalue">
+                                <formula>@Trim(PriParticipantList)</formula>
+                              </code>
+                            </field>
+                          </run>
+                          <run>
+                            <font size="9pt" name="user-interface"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px">
+                        <pardef id="22" leftmargin="0.0104in" keepwithnext="true" keeptogether="true"/>
+                        <par def="22">
+                          <run>
+                            <font size="9pt" name="user-interface"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px" bgcolor="system">
+                        <pardef id="23" leftmargin="0.0104in" keepwithnext="true" keeptogether="true"/>
+                        <par def="23">
+                          <run>
+                            <font size="9pt" style="bold" name="user-interface"/>
+                          </run>
+                          <run>
+                            <font size="9pt" name="user-interface"/>
+                            <field usenotesstyle="false" height="1.2000in" width="2.6882in" multiline="true" borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="SubteamList" description="Subteam list" htmltitle="Choose subteam">
+                              <keywords recalcchoices="true" columns="1" ui="listbox">
+                                <formula>isMac := @Contains(@LowerCase(@Platform);  "mac");
+sp := @If(IsMac; ""; @ClientType = "Notes"; ""; @Repeat(" "; 60));
+
+@If(SList = ""; sp; SList)</formula>
+                              </keywords>
+                              <code event="htmlattributes">
+                                <formula>"size=6"</formula>
+                              </code>
+                              <code event="inputtranslation">
+                                <formula>SubteamList</formula>
+                              </code>
+                            </field>
+                          </run>
+                          <run>
+                            <font size="9pt" name="user-interface"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                  </table>
+                  <pardef id="9" leftmargin="0.0104in" keepwithnext="true" keeptogether="true"/>
+                  <par def="9">
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                  <par def="9">
+                    <run>
+                      <font size="9pt" style="underline" name="user-interface" color="blue"/>
+                    </run>
+                    <actionhotspot hotspotstyle="none">
+                      <code event="click">
+                        <formula>FIELD computeMsg := "";
+ST := @UpperCase(SubteamList) + ":  ";
+View := "SubteamLookup";
+Members := @DbLookup("" : "NoCache"; ""; View; SubteamList; "STmembers");
+AltMembers := @DbLookup("" : "NoCache"; ""; View; SubteamList; "AltNameMembers");
+ImpMembers := @Implode(Members; "; ");
+ImpMembersA := @Implode(AltMembers; "; ");
+@SetProfileField("TempVars"; "Notify"; "");
+
+@If(@IsError(Members); @Return("");
+AltNameDisplay = "1"; @SetField("MemberNames"; ST + @Name([Abbreviate]; ImpMembersA));
+
+ @SetField("MemberNames"; ST + ImpMembers))</formula>
+                      </code>
+                      <run>
+                        <font size="9pt" style="underline" name="user-interface" color="blue"/>Display current members of the selected subteam</run>
+                    </actionhotspot>
+                    <run>
+                      <font size="9pt" style="underline" name="user-interface" color="blue"/>
+                    </run>
+                  </par>
+                  <par def="9">
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                      <field type="text" allowmultivalues="true" kind="computedfordisplay" name="MemberNames" listinputseparators="comma semicolon newline" listdisplayseparator="semicolon">
+                        <code event="defaultvalue">
+                          <formula>MemberNames</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                  <par def="9">
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                  <table leftmargin="0.0104in" widthtype="fixedleft" refwidth="4.4604in">
+                    <tablecolumn width="2.5229in"/>
+                    <tablecolumn width="1.9375in"/>
+                    <tablerow>
+                      <tablecell borderwidth="0px">
+                        <pardef id="24" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                          <code event="hidewhen">
+                            <formula>STFunction = "2"</formula>
+                          </code>
+                        </pardef>
+                        <par def="24">
+                          <run>
+                            <font size="9pt" name="user-interface"/>
+                          </run>
+                          <button width="2.5000in" widthtype="fixed" wraptext="true" bgcolor="#d5ccbb">
+                            <code event="click">
+                              <formula>@If(@ClientType = "Notes"; @SetProfileField("TempVars"; "ClientType"; "Notes"); "");
+@SetProfileField("TempVars"; "Notify"; "");
+@Do(@Command([ToolsRunMacro]; "(AddParticipantToSubteam2)");
+@Command([ViewRefreshFields]);
+@SetProfileField("TempVars"; "Notify"; ""))</formula>
+                            </code>
+                            <font size="9pt" name="user-interface"/>Add Team Member</button>
+                          <run>
+                            <font size="9pt" name="user-interface"/>
+                          </run>
+                        </par>
+                        <pardef id="25" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                          <code event="hidewhen">
+                            <formula>STFunction = "1"</formula>
+                          </code>
+                        </pardef>
+                        <par def="25">
+                          <run>
+                            <font size="9pt" name="user-interface"/>
+                          </run>
+                          <button width="2.5000in" widthtype="fixed" wraptext="true" bgcolor="#d5ccbb">
+                            <code event="click">
+                              <formula>@If(@ClientType = "Notes"; @SetProfileField("TempVars"; "ClientType"; "Notes"); "");
+@SetProfileField("TempVars"; "Notify"; "");
+@Do(@Command([ToolsRunMacro]; "(AddParticipantToSubteam2)");
+@Command([ViewRefreshFields]);
+@SetProfileField("TempVars"; "Notify"; ""))</formula>
+                            </code>
+                            <font size="9pt" name="user-interface"/>Remove Team Member</button>
+                          <run>
+                            <font size="9pt" name="user-interface"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                      <tablecell borderwidth="0px">
+                        <pardef id="26" leftmargin="0.0104in" hide="web" keepwithnext="true" keeptogether="true"/>
+                        <par def="26">
+                          <run>
+                            <font size="9pt" name="user-interface"/>  </run>
+                          <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="#d5ccbb">
+                            <code event="click">
+                              <formula>@Command([FileCloseWindow])</formula>
+                            </code>
+                            <font size="9pt" name="user-interface"/>Done</button>
+                          <run>
+                            <font size="9pt" name="user-interface"/>
+                          </run>
+                        </par>
+                        <pardef id="27" leftmargin="0.0104in" hide="notes" keepwithnext="true" keeptogether="true"/>
+                        <par def="27">
+                          <run>
+                            <font size="9pt" name="user-interface"/>  </run>
+                          <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="#d5ccbb">
+                            <code event="onClick" for="web">
+                              <javascript>window.close(self)</javascript>
+                            </code>
+                            <font size="9pt" name="user-interface"/>Done</button>
+                          <run>
+                            <font size="9pt" name="user-interface"/>
+                          </run>
+                        </par>
+                      </tablecell>
+                    </tablerow>
+                  </table>
+                  <pardef id="28" leftmargin="0.0104in" hide="notes web" keepwithnext="true" keeptogether="true"/>
+                  <par def="28">
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                      <field type="text" kind="editable" name="computeMsg">
+                        <code event="defaultvalue">
+                          <formula>""</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>prof := @GetProfileField("TempVars"; "notify");
+@If(@IsDocBeingRecalculated; prof; "")</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <pardef id="29" leftmargin="1%" keepwithnext="true" keeptogether="true"/>
+            <par def="29">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/> </run>
+            </par>
+            <pardef id="5" leftmargin="0.3000in" keepwithnext="true" keeptogether="true"/>
+            <par def="5">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/>
+              </run>
+              <run>
+                <font size="9pt" name="user-interface"/>
+                <computedtext>
+                  <code event="value">
+                    <formula>msg := "There are no team members or subteams defined in the TeamRoom Setup.";
+@If(PList = "" &amp; SList = "";msg; "")</formula>
+                  </code>
+                </computedtext>
+              </run>
+              <run>
+                <font size="9pt" name="user-interface" color="maroon"/>
+              </run>
+            </par>
+            <par def="4">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/> </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="30" hide="notes web mobile"/>
+      <par def="30">
+        <run>
+          <font size="9pt" name="user-interface"/>
+        </run>
+        <run>
+          <font size="9pt" name="user-interface"/>
+          <field type="text" kind="computed" name="SaveOptions">
+            <code event="defaultvalue">
+              <formula>"0"</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font name="user-interface"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+  <item name="$SubForm_RepIDs" sign="true">
+    <text>0000000000000000</text>
+  </item>
+</form>

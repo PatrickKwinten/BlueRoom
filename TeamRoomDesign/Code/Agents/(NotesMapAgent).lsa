@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(NotesMapAgent)" hide="v3" publicaccess="false" language="en">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+Use "wStringResource"
+Option Declare
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>'MapOldCategories: 
+
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Dim session As New notessession
+	Dim db As notesdatabase
+	Dim MissView As notesview
+	Dim key As String
+	Dim MissDoc As Variant
+	Dim clienttype As Variant
+	Dim dlg As Variant
+	Dim uiwork As New notesuiworkspace
+	Dim tempNote As notesdocument
+	Dim dbug As noteslog
+	
+	Set db = session.currentdatabase
+	Set missview = db.getview("MissionLookup")
+	Set tempNote = db.createDocument
+	
+	key = "Mission"
+	clienttype = Evaluate("@Clienttype")
+	
+	Set MissDoc= MissView.getdocumentbykey(key)
+	
+	dlg= uiwork.dialogbox("MapCategories", True, True, True, True, True, False, getString(38),tempNote, True, True)
+	
+End Sub</lotusscript>
+  </code>
+</agent>

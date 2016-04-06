@@ -1,0 +1,794 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="(wAddress)" alias="(wAddress)" noquery="true" htmlallfields="true" publicaccess="false" language="en" bgcolor="#efefef">
+  <globals>
+    <code event="options">
+      <lotusscript>Option Public
+Use "AddrBook"
+
+
+
+</lotusscript>
+    </code>
+  </globals>
+  <code event="windowtitle">
+    <formula>"Address Lookup"</formula>
+  </code>
+  <code event="webqueryopen">
+    <formula>@Command([ToolsRunMacro]; "(wAddressOpen)")</formula>
+  </code>
+  <code event="querysave">
+    <lotusscript>Sub Querysave(Source As Notesuidocument, Continue As Variant)
+	continue = False
+End Sub
+</lotusscript>
+  </code>
+  <code event="queryopen">
+    <lotusscript>Sub Queryopen(Source As Notesuidocument, Mode As Integer, Isnewdoc As Variant, Continue As Variant)
+	Call FindAddressBook
+End Sub</lotusscript>
+  </code>
+  <code event="jsheader" for="web">
+    <javascript>navApp = navigator.appName;
+
+if (navApp != "Lotus Notes")
+{
+
+var fieldEntryList;
+var AddrVersion;
+
+if ((navApp.indexOf("Microsoft")!=-1))
+{
+	if (!(window.opener.closed))
+	{
+		mainForm = window.opener.document.forms[0];
+	}
+}
+else
+{
+	if (window.opener)
+	{
+		mainForm = window.opener.document.forms[0];
+	}
+}
+
+function OKClick(){
+
+var msg;
+var msgflag;
+
+if ((navApp.indexOf("Microsoft")!=-1))
+{
+	if (window.opener.closed)
+	{
+		self.close();
+	}
+}
+else
+{
+	if (!(window.opener))
+	{
+		self.close();
+	}
+}
+
+msgflag = 'false';
+document.forms[0].refresh;
+if(document.forms[0].enterWho.value == ''  &amp; (!(window.opener.closed) | (window.opener))   ){
+	msg='Click the &gt;&gt; button to move the selected name to the adjacent box.';
+	msgflag='true';
+                document.forms[0].WhoList.focus()
+	}
+
+ if(msgflag == 'true'){
+     alert(msg);
+}
+if(msgflag == 'false'){
+		obj = document.forms[0].WhoList;
+//		val=FixName(obj.options[fieldEntryList.selectedIndex].value);
+		mainForm.enterWho.value = document.forms[0].enterWho.value;
+		if ((document.forms[0].Department != null)) {
+		mainForm.Department.value = document.forms[0].Department.value;}
+		if ((document.forms[0].Location != null)) {
+		mainForm.Location.value = document.forms[0].Location.value;}
+		if ((document.forms[0].Email != null)) {
+		mainForm.Email.value = document.forms[0].Email.value;}
+		if ((document.forms[0].Phone != null)) {
+		mainForm.Phone.value = document.forms[0].Phone.value;}
+		if ((document.forms[0].JobTitle != null)) {
+		mainForm.JobTitle.value = document.forms[0].JobTitle.value;}
+		self.close()
+     }
+  }
+
+function CancelClick() 
+{
+	self.close();
+}
+
+function AddClick(field)
+{
+	if(fieldEntryList.selectedIndex != -1)
+	{
+		var selection = FixName(fieldEntryList.options[fieldEntryList.selectedIndex].value);
+		field.value = selection;
+	}
+}
+
+
+
+
+function FixName(name)
+{
+	if (name.indexOf("CN=")!= -1)
+		{
+			tmpstring=name.substring(3)
+			
+			var fullname=substring2(tmpstring,0,tmpstring.indexOf("/"));
+			
+			tmpstring=substring2(tmpstring,tmpstring.indexOf("/"),tmpstring.length);
+			strpos = tmpstring.indexOf("=")+1;
+			
+			
+			while (strpos != -1)
+			{
+			     tmpstring=substring2(tmpstring,strpos,tmpstring.length);     
+				if (tmpstring.indexOf("/")!= -1)
+				{
+				restofname=substring2(tmpstring,0,tmpstring.indexOf("/")); 
+				tmpstring = substring2(tmpstring,tmpstring.indexOf("/"),tmpstring.length);
+				
+				if (restofname.length!=0)
+					{				  	
+					fullname=fullname+"/"+restofname;
+					}
+				strpos=tmpstring.indexOf("=") + 1;  
+				} else {
+					fullname=fullname+"/"+tmpstring;
+					strpos=-1;
+					}		
+				
+			}
+			return fullname;
+		} else return name;
+}
+
+function substring2(string, start, length) {
+	return string.substring(start,start+length);
+}
+
+}
+
+
+</javascript>
+  </code>
+  <code event="onLoad" for="web">
+    <javascript>fieldEntryList = document.forms[0].WhoList;
+AddrVersion = document.forms[0].tmpAddrVersion.value;</javascript>
+  </code>
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1"/>
+      <subformref name="WebFont"/>
+      <pardef id="2" align="none" leftmargin="1in" hide="read edit print copy preview previewedit" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="2">
+        <run>
+          <font size="9pt" name="user-interface"/>
+          <field type="text" kind="computedwhencomposed" name="LocalTxt">
+            <code event="defaultvalue">
+              <formula>"local"</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="7" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" name="user-interface" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" name="user-interface"/>
+          <field type="text" kind="computedwhencomposed" name="LookupView">
+            <code event="defaultvalue">
+              <formula>REM {DNT};
+"($VIMPeople)"</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="16" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" name="user-interface" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" name="user-interface"/>
+          <field type="text" allowmultivalues="true" kind="computed" name="addressBooks_2" listinputseparators="comma semicolon" listdisplayseparator="semicolon">
+            <code event="defaultvalue">
+              <formula>AddressBooks</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="25" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <field type="text" kind="editable" name="tmpSendToRef">
+          <code event="defaultvalue">
+            <formula>tmpSendToRef</formula>
+          </code>
+        </field>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="31" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt"/>
+          <field type="text" kind="editable" name="tmpAddrVersion">
+            <code event="defaultvalue">
+              <formula>@If(@Contains(Query_String; "&amp;Vers=");
+	@If(@Contains(@Right(Query_String; "&amp;Vers=");"&amp;");
+		@Middle(Query_String; "&amp;Vers="; "&amp;");
+		@Right(Query_String; "&amp;Vers="));
+	"")</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="37" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+      </par>
+      <table htmlid="watbl1" widthtype="fixedleft" refwidth="6.4375in">
+        <tablerowstyle>
+          <font size="0pt" style="underline strikethrough emboss" name="monospace" color="#090000"/>
+        </tablerowstyle>
+        <tablecolumn width="0.2500in"/>
+        <tablecolumn width="2.6500in"/>
+        <tablecolumn width="3.5375in"/>
+        <tablerow>
+          <tablecell borderwidth="0px">
+            <pardef id="4" keepwithnext="true" keeptogether="true"/>
+            <par def="4">
+              <run>
+                <font name="user-interface"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell columnspan="2" borderwidth="0px" htmlid="wa1">
+            <pardef id="6" keepwithnext="true" keeptogether="true"/>
+            <par def="6">
+              <run>
+                <font size="9pt"/>Address book location: </run>
+              <run>
+                <font size="9pt"/>
+                <field type="text" kind="computedfordisplay" name="SERVER_NAME">
+                  <code event="defaultvalue">
+                    <formula>REM {cgi variable for web only};
+SERVER_NAME</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="7" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt"/>
+                <break/>
+              </run>
+              <run>
+                <font size="9pt"/>
+                <field type="text" allowmultivalues="true" kind="computed" name="LookupNames" listinputseparators="comma semicolon" listdisplayseparator="semicolon">
+                  <code event="defaultvalue">
+                    <formula>LookupNames</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="13" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="6">
+              <run html="true">
+                <font size="9pt"/>&amp;nbsp </run>
+              <run>
+                <font size="9pt"/>
+                <break/>Starts with: </run>
+              <run>
+                <font size="9pt"/>
+                <field type="text" kind="editable" name="FindText" htmlid="FindText_1" extrahtmlattrs="SIZE=15">
+                  <code event="onChange" for="web">
+                    <javascript>document.forms[0].tmpFindSubmit.value = "1";</javascript>
+                  </code>
+                  <code event="onChange" for="client">
+                    <javascript>document.forms[0].tmpFindSubmit.value = "1";</javascript>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65402" nexttype="65375" afterparcount="14" containertype="65418" aftercontainercount="6" afterbegincount="8">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run html="true">
+                <font size="9pt"/>
+              </run>
+              <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="system" name="Find">
+                <code event="click">
+                  <formula>FIELD tmpChangedNAB := "0";
+FIELD tmpFindSubmit := "2";
+FIELD tmpCurIndex := @DbCommand("Domino"; "LoadAddressListByName"; "names.nsf"; "WhoList"; "20"; FindText);
+FIELD tmpNextIndex := @Text( @TextToNumber(tmpCurIndex) + 20 );
+@Command([ViewRefreshFields])</formula>
+                </code>
+                <font size="9pt"/>  Find  </button>
+              <run>
+                <font size="9pt"/>
+                <break/>
+              </run>
+              <run html="true">
+                <font size="7pt"/>&amp;nbsp </run>
+            </par>
+            <par def="6">
+              <run>
+                <font size="9pt" name="user-interface"/>Select a name from the list and then click the &gt;&gt; button.  If you wish to insert additional details into the Team Member page, click the "Obtain Details" button.</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="0px">
+            <pardef id="7" keepwithnext="true" keeptogether="true"/>
+            <par def="7">
+              <run>
+                <font name="user-interface"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="0px" htmlid="wa2">
+            <pardef id="8" hide="notes" keepwithnext="true" keeptogether="true"/>
+            <par def="8">
+              <run>
+                <font size="9pt" name="user-interface" color="gray"/> </run>
+              <run html="true"/>
+              <run html="true">
+                <font size="9pt"/>
+                <field type="text" allowmultivalues="true" kind="computedwhencomposed" name="WhoList" listinputseparators="comma" listdisplayseparator="comma" htmlid="EntryList_1">
+                  <code event="defaultvalue">
+                    <formula>WhoList</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="13" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run html="true">
+                <font name="user-interface"/>
+              </run>
+            </par>
+            <pardef id="9" tabs="L3.7500in" keepwithnext="true" keeptogether="true"/>
+            <par def="9">
+              <run html="true">
+                <font name="user-interface"/>
+              </run>
+            </par>
+            <pardef id="10" keepwithnext="true" keeptogether="true"/>
+            <par def="10">
+              <run html="true">
+                <font size="9pt"/>
+              </run>
+              <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="system">
+                <code event="click">
+                  <formula>FIELD tmpChangedNAB := "0";
+@If(tmpCurIndex &lt;= 0;@Return("");"");
+tmpIndexStr := @Text(@TextToNumber(tmpCurIndex) - 20);
+tmpCur1      := @DbCommand("Domino"; "LoadAddressListByIndexExt"; "names.nsf";  "WhoList"; "20"; tmpCurIndex; "Prev");
+
+REM {revert to LoadAddressListByIndex if LoadAddressListByIndexExt is not supported};
+
+tmpCur2 := @If( @IsError(tmpCur1);
+     @DbCommand("Domino"; "LoadAddressListByIndex"; "names.nsf"; "WhoList"; "20"; tmpIndexStr);
+     tmpCur1);
+FIELD tmpCurIndex  := tmpCur2;
+FIELD tmpNextIndex := @Text( @TextToNumber(tmpCurIndex) + 20 );
+@Command([ViewRefreshFields])</formula>
+                </code>
+                <font size="9pt"/>&lt; Previous</button>
+              <run>
+                <font size="9pt"/>
+              </run>
+              <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="system">
+                <code event="click">
+                  <formula>FIELD tmpChangedNAB := "0";
+tmpCur1  := @DbCommand("Domino"; "LoadAddressListByIndexExt"; "names.nsf";   "WhoList"; "20"; tmpCurIndex; "Next");
+
+REM {revert to LoadAddressListByIndex if LoadAddressListByIndexExt is not supported};
+
+tmpCur2  := @If (@IsError(tmpCur1);
+  @DbCommand("Domino"; "LoadAddressListByIndex"; "names.nsf"; "WhoList"; "20"; tmpNextIndex);
+   tmpCur1);
+
+FIELD tmpCurIndex  := tmpCur2;
+FIELD tmpNextIndex := @Text( @TextToNumber(tmpCurIndex) + 20 );
+@Command([ViewRefreshFields])</formula>
+                </code>
+                <font size="9pt"/>Next &gt;    </button>
+              <run>
+                <font name="user-interface"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="0px">
+            <pardef id="11" rightmargin="3.5375in" keepwithnext="true" keeptogether="true"/>
+            <par def="11">
+              <run html="true">
+                <font size="9pt"/>&amp;nbsp </run>
+            </par>
+            <table widthtype="fitmargins" leftmargin="0" rightmargin="2.6528in" refwidth="3.4854in">
+              <tablecolumn width="12.7326%"/>
+              <tablecolumn width="87.2674%"/>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="13" rightmargin="0.4514in" keepwithnext="true" keeptogether="true"/>
+                  <par def="13">
+                    <run html="true">
+                      <font size="9pt"/>&amp;nbsp </run>
+                    <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="system">
+                      <code event="onClick" for="web">
+                        <javascript>document.forms[0].enterWho.value = FixName(document.forms[0].WhoList.options[WhoList.selectedIndex].value)</javascript>
+                      </code>
+                      <font size="8pt"/>&gt;&gt;</button>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="14" hide="notes web mobile" keepwithnext="true" keeptogether="true"/>
+                  <par def="14">
+                    <run>
+                      <font size="9pt"/>hidden</run>
+                  </par>
+                  <table cellbordercolor="#5f5f5f" htmlid="watbl2" leftmargin="0" widthtype="fixedleft" refwidth="3.0313in">
+                    <tablecolumn width="3.0313in"/>
+                    <tablerow>
+                      <tablecell bgcolor="#f7f7f7" htmlid="wa2a">
+                        <pardef id="16" keepwithnext="true" keeptogether="true"/>
+                        <par def="16">
+                          <run html="true">
+                            <font size="9pt"/>
+                          </run>
+                          <run>
+                            <font size="8pt"/>
+                            <field type="text" kind="editable" name="enterWho">
+                              <code event="htmlattributes">
+                                <formula>"size=30"</formula>
+                              </code>
+                              <code event="onchange">
+                                <lotusscript>Sub Onchange(Source As Field)
+	
+End Sub</lotusscript>
+                              </code>
+                            </field>
+                          </run>
+                          <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="1" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                          <run>
+                            <font size="9pt"/>
+                          </run>
+                        </par>
+                        <par def="16">
+                          <run html="true">
+                            <font size="9pt"/>&amp;nbsp</run>
+                        </par>
+                        <par def="16">
+                          <run html="true">
+                            <font size="9pt"/>
+                          </run>
+                          <button width="1.1000in" widthtype="fixed" wraptext="true" bgcolor="system">
+                            <code event="click">
+                              <formula>View := LookupView;
+Key := enterWho;
+@If(@Trim(Key)="";@Do(
+@If(@Contains(@LowerCase(query_string);"seq");"";@DbCommand("Domino"; "LoadAddressListByIndex"; "names.nsf"; "WhoList"; "20"; "1"));
+@Return(""));"");
+Server2 := "";
+Db := "names.nsf";
+
+LookupDomain := @DbLookup("":"NoCache"; Server2 : Db; View; Key; "MailDomain");
+FwdAddress := @DbLookup("":"NoCache"; Server2 : db; View; Key; "MailAddress");
+EmailAddress := @If(FwdAddress != ""; @Name([Abbreviate]; FwdAddress);
+LookupDomain != ""; @Name([Abbreviate]; key) + "@" + LookupDomain; @Name([Abbreviate]; key));
+FIELD Email := @If(@IsError(LookupDomain); ""; EmailAddress);
+FIELD Department := @DbLookup("":"NoCache"; Server2 : Db; View; Key; "Department");
+FIELD Location := @DbLookup("":"NoCache"; Server2 : Db; View; Key; "Location");
+FIELD Phone := @DbLookup("":"NoCache"; Server2 : Db; View; Key;"OfficePhoneNumber");
+FIELD JobTitle := @DbLookup("":"NoCache"; Server2 : Db; View; Key; "JobTitle");
+@If(@Contains(@LowerCase(query_string);"seq");"";@DbCommand("Domino"; "LoadAddressListByIndex"; "names.nsf"; "WhoList"; "20"; "1"))</formula>
+                            </code>
+                            <font size="9pt"/>Obtain Details</button>
+                          <run>
+                            <font size="8pt" name="user-interface"/>
+                            <break/>
+                          </run>
+                          <run html="true">
+                            <font size="9pt"/>&amp;nbsp</run>
+                        </par>
+                        <table widthtype="fitmargins" htmlid="watbl3" leftmargin="0" refwidth="3.0313in">
+                          <tablecolumn width="0.7396in" sizetofit="true"/>
+                          <tablecolumn width="100%"/>
+                          <tablerow>
+                            <tablecell borderwidth="0px" htmlid="wa3a">
+                              <pardef id="18" rightmargin="100%" keepwithnext="true" keeptogether="true"/>
+                              <par def="18">
+                                <run>
+                                  <font size="9pt"/>  Email</run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px">
+                              <pardef id="19" leftmargin="0.0500in" keepwithnext="true" keeptogether="true"/>
+                              <par def="19">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field type="text" kind="computed" name="Email">
+                                    <code event="defaultvalue">
+                                      <formula>Email</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="7" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                          </tablerow>
+                          <tablerow>
+                            <tablecell borderwidth="0px" htmlid="wa3b">
+                              <pardef id="20" keepwithnext="true" keeptogether="true"/>
+                              <par def="20">
+                                <run>
+                                  <font size="9pt"/>  Department</run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px">
+                              <par def="19">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field type="text" kind="computed" name="Department">
+                                    <code event="defaultvalue">
+                                      <formula>Department</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                          </tablerow>
+                          <tablerow>
+                            <tablecell borderwidth="0px" htmlid="wa3c">
+                              <par def="20">
+                                <run>
+                                  <font size="9pt"/>  Location</run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px">
+                              <par def="19">
+                                <run>
+                                  <font size="9pt" style="bold"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field type="text" kind="computed" name="Location">
+                                    <code event="defaultvalue">
+                                      <formula>Location</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                          </tablerow>
+                          <tablerow>
+                            <tablecell borderwidth="0px" htmlid="wa3d">
+                              <par def="20">
+                                <run>
+                                  <font size="9pt"/>  Phone</run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px">
+                              <par def="19">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field type="text" kind="computed" name="Phone">
+                                    <code event="defaultvalue">
+                                      <formula>Phone</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                          </tablerow>
+                          <tablerow>
+                            <tablecell borderwidth="0px" htmlid="wa3e">
+                              <par def="20">
+                                <run>
+                                  <font size="9pt"/>  </run>
+                                <run>
+                                  <font size="9pt"/>Title</run>
+                              </par>
+                            </tablecell>
+                            <tablecell borderwidth="0px">
+                              <par def="19">
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                                <run>
+                                  <font size="9pt"/>
+                                  <field type="text" kind="computed" name="JobTitle">
+                                    <code event="defaultvalue">
+                                      <formula>JobTitle</formula>
+                                    </code>
+                                  </field>
+                                </run>
+                                <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                                <run>
+                                  <font size="9pt"/>
+                                </run>
+                              </par>
+                            </tablecell>
+                          </tablerow>
+                        </table>
+                      </tablecell>
+                    </tablerow>
+                  </table>
+                  <pardef id="21" keepwithnext="true" keeptogether="true"/>
+                  <par def="21">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <pardef id="22" hide="notes web mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="22">
+              <run>
+                <font size="8pt" name="user-interface"/>hidden</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell columnspan="3" borderwidth="0px">
+            <pardef id="23" hide="notes" keepwithnext="true" keeptogether="true"/>
+            <par def="23">
+              <horizrule height="0.0250in" width="100%" use3dshading="true"/>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="0px">
+            <pardef id="24" hide="notes" keepwithnext="true" keeptogether="true"/>
+            <par def="24"/>
+          </tablecell>
+          <tablecell borderwidth="0px">
+            <par def="8"/>
+          </tablecell>
+          <tablecell borderwidth="0px">
+            <pardef id="25" align="right" hide="notes" keepwithnext="true" keeptogether="true"/>
+            <par def="25">
+              <run>
+                <font size="9pt" name="user-interface"/>
+              </run>
+              <button width="0.7500in" widthtype="fixed" wraptext="true" bgcolor="system">
+                <code event="onClick" for="web">
+                  <javascript>OKClick()</javascript>
+                </code>
+                <font size="9pt" name="user-interface"/>OK</button>
+              <run>
+                <font size="9pt" name="user-interface"/>
+              </run>
+              <button width="0.7500in" widthtype="fixed" wraptext="true" bgcolor="system">
+                <code event="onClick" for="web">
+                  <javascript>CancelClick()</javascript>
+                </code>
+                <font size="9pt" name="user-interface"/>Cancel</button>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="26" hide="copy preview previewedit notes">
+        <code event="hidewhen">
+          <formula>1</formula>
+        </code>
+      </pardef>
+      <par def="26">
+        <field type="text" kind="editable" name="tmpCurIndex" htmlid="tmpCurIndex">
+          <code event="defaultvalue">
+            <formula>@If(@Contains(@LowerCase(query_string);"seq");"";@DbCommand("Domino"; "LoadAddressListByIndex"; "names.nsf"; "WhoList"; "20"; "1"))</formula>
+          </code>
+        </field>
+        <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <field type="text" kind="editable" name="tmpNextIndex" htmlid="tmpNextIndex">
+          <code event="defaultvalue">
+            <formula>@Text( @TextToNumber(tmpCurIndex) + 20 )</formula>
+          </code>
+        </field>
+        <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="16" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <field type="text" allowmultivalues="true" kind="editable" name="AddressBooks" listinputseparators="comma semicolon" listdisplayseparator="semicolon" htmlid="AddressBooks">
+          <code event="initialize">
+            <lotusscript>Sub Initialize
+	
+End Sub</lotusscript>
+          </code>
+        </field>
+        <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="23" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="14pt"/>
+        </run>
+      </par>
+      <pardef id="27" hide="notes web"/>
+      <par def="27">
+        <run>
+          <font size="9pt" name="user-interface" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" name="user-interface"/>
+          <field type="text" kind="computed" name="AddrBook2">
+            <code event="defaultvalue">
+              <formula>@If(@LowerCase(AddrBook) = @LowerCase(LocalTxt); ""; AddrBook)</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+      </par>
+      <par def="27"/>
+      <par def="27">
+        <run>
+          <font name="user-interface"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+  <item name="OriginalModTime" sign="true">
+    <datetime dst="true">20050928T060759,17-04</datetime>
+  </item>
+  <item name="$SubForm_RepIDs" sign="true">
+    <text>0000000000000000</text>
+  </item>
+</form>

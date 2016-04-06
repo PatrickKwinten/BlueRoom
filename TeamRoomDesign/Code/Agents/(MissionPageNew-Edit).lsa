@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(MissionPageNew-Edit)" hide="v3" publicaccess="false" language="en" comment="Used in Leader/Facilitator Options hotspot">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+Use "DiscussionRoutines"
+Option Declare
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Dim session As New notessession	
+	Dim uiwork As New notesuiworkspace
+	Dim uidoc As notesuidocument
+	Dim DbProfile As NotesDocument
+	Dim missionView As notesview
+	Dim missionDoc As notesdocument
+	Dim agent As notesagent
+	Dim clientType As Variant
+	Dim dbpath As String
+	
+	Set db = session.currentdatabase
+	Set DbProfile = db.GetProfileDocument( "TempVars")
+	
+	dbpath = getdbpath
+	
+	Set missionView = db.getview("MissionLookup")
+	Call missionView.refresh
+	Set missionDoc = missionView.getdocumentbykey("Mission") 
+	clientType = dbProfile.clientType(0)
+	
+	If missionDoc Is Nothing Then
+		Set uidoc=uiwork.ComposeDocument(, , "Mission") 
+	Elseif Not missionDoc Is Nothing  Then
+		Set uidoc=uiwork.EditDocument(True,missionDoc, False)
+	End If
+	
+	dbProfile.clientType = ""
+	
+End Sub</lotusscript>
+  </code>
+</agent>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view xmlns="http://www.lotus.com/dxl" name="(Mailed and Pasted Documents)" alias="MailedPasted" showinmenu="false" useapplet="true" publicaccess="false" language="en" unreadmarks="standard" onopengoto="lastopened" onrefresh="displayindicator" headers="simple" opencollapsed="false" showresponsehierarchy="false" showmargin="true" shrinkrows="true" extendlastcolumn="true" showhierarchies="false" unreadcolor="maroon" rowlinecount="4" headerlinecount="1" rowspacing="1.25" haslinkcolumn="true" bgcolor="white" altrowcolor="#efefef" totalscolor="blue" headerbgcolor="#a8cfd4" boldunreadrows="false" evaluateactions="false" allownewdocuments="false" allowcustomizations="true" hidemarginborder="false" marginwidth="0px 0px 1px" marginbgcolor="white" uniquekeys="false">
+  <code event="selection">
+    <formula>SELECT MP = "1"</formula>
+  </code>
+  <code event="helprequest">
+    <formula>REM {DNT};
+@Command([OpenHelpDocument]; [ClientHelp]; "(Help)"; "TeamRoomVActiveDocs")</formula>
+  </code>
+  <actionbar useappletinbrowser="true" bgcolor="#78b4bc" bordercolor="white">
+    <actionbuttonstyle margintype="fixed" margin="6" bgcolor="#c4dee1" displayborder="notesstyle" widthtype="background" textalign="center"/>
+    <border width="0px 0px 1px"/>
+    <action title="_Edit Document" hide="web" systemcommand="edit"/>
+    <sharedactionref id="55">
+      <action title="Delete\Move to Trash" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>@Command([MoveToTrash])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="56">
+      <action title="Delete\Empty Trash" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>@Command([EmptyTrash])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="44">
+      <action title="Search" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>REM {Web only - used in Views};
+@Command([ViewShowSearchBar])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="60">
+      <action title="Database Help">
+        <code event="click">
+          <formula>@Command([HelpUsingDatabase])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+  </actionbar>
+  <column align="right" totals="total" hidedetailrows="true" itemname="$148" width="3" resizable="true" separatemultiplevalues="false" sortnoaccent="false" sortnocase="true" showaslinks="false">
+    <columnheader title=" ">
+      <font size="9pt" style="bold"/>
+    </columnheader>
+    <code event="value">
+      <formula>1</formula>
+    </code>
+  </column>
+  <column align="right" hidedetailrows="true" itemname="$149" width="1" resizable="true" separatemultiplevalues="false" sortnoaccent="false" sortnocase="true" showaslinks="false">
+    <columnheader>
+      <font size="9pt" style="bold"/>
+    </columnheader>
+    <code event="value">
+      <formula>"  "</formula>
+    </code>
+  </column>
+  <column sort="ascending" hidedetailrows="false" itemname="$147" width="1.2500" resizable="true" separatemultiplevalues="true" sortnoaccent="false" sortnocase="true" showaslinks="false" categorized="true">
+    <font style="bold"/>
+    <columnheader>
+      <font size="9pt" style="bold"/>
+    </columnheader>
+    <code event="value">
+      <formula>"MAILED/PASTED DOCUMENTS"</formula>
+    </code>
+  </column>
+  <column sort="descending" resort="ascending" hidedetailrows="false" listseparator="comma" itemname="$106" width="9" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false" twisties="true" formatdatatype="datetime">
+    <font size="9pt"/>
+    <columnheader title="Date">
+      <font size="9pt"/>
+    </columnheader>
+    <datetimeformat legacy="true" show="date" date="yearmonthday" time="hourminutesecond" zone="never"/>
+    <numberformat legacy="true" format="general" varying="true" digits="1" punctuated="false" parens="false" percent="false" bytes="false"/>
+    <code event="value">
+      <formula>@Created</formula>
+    </code>
+  </column>
+  <column sort="ascending" hidedetailrows="false" itemname="$121" width="1" resizable="false" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false" hidden="true">
+    <font size="9pt"/>
+    <columnheader>
+      <font size="9pt"/>
+    </columnheader>
+    <code event="value">
+      <formula>@Created</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" listseparator="comma" itemname="$143" width="40.6250" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="true">
+    <font size="9pt" color="teal"/>
+    <columnheader title="Subject">
+      <font size="9pt"/>
+    </columnheader>
+    <code event="value">
+      <formula>REM {Variables to translate};
+PrivateTxt := "PRIVATE: ";
+ExpiredTxt := "EXPIRED: ";
+NS := "No Subject Available";
+rs := "response document";
+REM {END variables to translate};
+
+subj := @If(@IsAvailable(subject) &amp; subject != ""; subject; NS);
+Resp := @If(@IsResponseDoc; "(" + rs + ") "; "");
+Resp + subj</formula>
+    </code>
+  </column>
+</view>

@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(-Convert TeamRoom 4.1 to new design)" hide="v3" publicaccess="false" language="en">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public 
+Option Declare
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>'Upgrade TeamRoom 4.1 to new (5.0) design
+Dim MDoc As NotesDocument
+Dim View As NotesView
+Dim db As notesdatabase
+Dim doc As notesdocument
+Dim Item As NotesItem
+Dim mForm As Variant
+Dim ConvNum As Integer
+
+'Variables to translate
+Const dtString = "Team Status Report"
+Const cString = "Team Status"
+Const NoConv = "No (further) conversion is necessary"
+Const Title = "Convert Documents"
+Const NumberConverted = "Number of documents that were converted from TeamRoom 4.1:  "
+Const trTxt = "TeamRoom Setup for "
+Const EventTxt = "Event/Milestone: "
+Const ParticipantTxt = "Team Member Profile for "
+Const scrDocType1 = "Discussion"
+Const scrDocType2 = "Action Item"
+Const scrDocType3 = "Meeting"
+Const ScrDocType4 = "Reference"
+Const OpenTxt = "Open"
+Const CompleteTxt = "Complete"
+Const ActiveTxt = "Active"
+Const FiledTxt = "Filed"
+Const PrivText = "Private"
+'END variables to translate
+
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Dim session As New notessession
+	Dim mSubject As Variant
+	Dim conv As Variant
+	
+	Set db = session.currentdatabase
+	
+	Set view = db.getview("41Convert")
+	Set Mdoc = view.getfirstdocument
+	convNum = 0
+'find old mission and convert to new design; must do TeamRoom setup first!
+	While Not(Mdoc Is Nothing)
+		mForm = Mdoc.getitemvalue("Form")
+		If mForm(0) &lt;&gt; "Mission" Then
+			Goto Continue
+		End If	
+		
+'if there's a subject field in the Mission page, then no conversion is needed (no Subject field existed in old teamroom Mission)		
+		If mForm(0) = "Mission" And Mdoc.hasitem("Subject") Then   
+			Msgbox NoConv, 64, Title
+			Exit Sub
+		End If
+		
+		Call ConvertMission
+		Goto ConvertOtherDocs
+Continue:
+		Set Mdoc = view.getnextdocument(MDoc)
+	Wend
+	
+ConvertOtherDocs:	
+'find other 4.1 documents and convert to new design	
+	view.refresh
+	Set Mdoc = view.getfirstdocument
+	While Not(mDoc Is Nothing)
+		conv = mDoc.getitemvalue("Converted")
+		mForm = Mdoc.getitemvalue("Form")
+		
+		If mform(0) = "Event" And conv(0) &lt;&gt; "1" Then
+			Call ConvertEvent
+		Elseif mform(0) = "Participant Profile" And conv(0) &lt;&gt; "1" Then
+			Call ConvertParticipant
+		Elseif mform(0) = "Status" And conv(0) &lt;&gt; "1" Then
+			Call ConvertStatus
+		Elseif mform(0) = "Subteam" And conv(0) &lt;&gt; "1" Then
+			Call ConvertSubteam
+		Elseif mform(0) = "Document" And conv(0) &lt;&gt; "1" Then
+			Call ConvertDocument
+		Elseif mDoc.isresponse  And conv(0) &lt;&gt; "1" Then
+			Call ConvertResponse
+		End If
+		
+		Set Mdoc = view.getnextdocument(MDoc)		
+	Wend
+	Msgbox( NumberConverted + Cstr(ConvNum))	
+	
+End Sub
+
+
+
+</lotusscript>
+  </code>
+  <code event="ConvertMission">
+    <lotusscript>Function ConvertMission
+	Dim mMod As Variant
+	Dim mTeamname As Variant
+	Dim dForm As Variant
+	Dim ItemVal1 As Variant
+	Dim ItemVal2 As Variant
+	Dim itemval3 As Variant
+	mMod = Mdoc.getitemvalue("ModifiedBy")	
+	Dim itemFrom As New notesname(mMod(0))
+	Dim delUNID(5) As Variant
+	
+	Set doc = view.getfirstdocument
+	While Not(doc Is Nothing)
+		dForm = doc.getitemvalue("Form")
+		
+'get the values that belong in the Mission Page from the TeamRoom 4.1 definition documents; then get UNIDs for future deletion
+		If dForm(0) = "DefAMission" Then
+			ItemVal1 = doc.getitemvalue("DefaultFilingInterval")
+			Set item = mDoc.replaceitemvalue("DefaultFilingInterval", ItemVal1)
+			delUNID(0) = doc.universalid
+		Elseif dForm(0) = "DefMission" Then
+			ItemVal1 = doc.getitemvalue("TeamName")
+			itemval2 = doc.getitemvalue("Mission")
+			Set item = mDoc.replaceitemvalue("TeamName", ItemVal1)
+			Set item  = mdoc.replaceitemvalue("Mission", ItemVal2)
+			delUNID(1) = doc.universalid
+		Elseif dForm(0) = "DefTeam" Then
+			ItemVal1 = doc.getitemvalue("TeamLeader")
+			ItemVal2 = doc.getitemvalue("dbFacilitator")
+			Set item = mDoc.replaceitemvalue("TeamLeader", ItemVal1)
+			Set item = mDoc.replaceitemvalue("dbFacilitator", ItemVal2)
+			delUNID(2) = doc.universalid
+		Elseif dForm(0) = "DefCategory" Then
+			ItemVal1 = doc.getitemvalue("WorkCategories")
+			Set item = mDoc.replaceitemvalue("Categories", ItemVal1)
+			delUNID(3) = doc.universalid
+		Elseif dForm(0) = "DefDocType" Then
+			ItemVal1 = doc.getitemvalue("DocType")
+			Set item = mDoc.replaceitemvalue("DocType", ItemVal1)
+			delUNID(4) = doc.universalid
+		Elseif dForm(0) = "DefEvent" Then
+			delUNID(5) = doc.universalid
+		End If
+		
+		Set doc = view.getnextdocument(Doc)
+	Wend			
+	
+	mTeamname = mDoc.getitemvalue("TeamName")
+	
+	Set item = mDoc.replaceItemValue("From", itemFrom.canonical)
+	Set item = mDoc.replaceItemValue("DefaultDocType1", scrDocType1)
+	Set item = mDoc.replaceItemValue("DefaultDocType2", scrDocType2)
+	Set item = mDoc.replaceItemValue("DefaultDocType3", scrDocType3)
+	Set item = mDoc.replaceItemValue("DefaultDocType4", scrDocType4)
+	Set item = mDoc.replaceItemValue("SetMissionEmbedOutline", "1")
+	Set item = mDoc.replaceItemValue("Subject", TRtxt + mTeamname(0))
+	Set item = mDoc.replaceItemValue("PROTECTFROMARCHIVE", "1")
+	Set item = mDoc.replaceItemValue("SavedDocFlag", "1")
+	Set item = mDoc.replaceItemValue("$MissionPage", "Mission")  'DNT
+	Set item = mDoc.replaceItemValue("SetMissionPage", "Mission") 'DNT
+	
+	Call mdoc.computewithform(0,0)
+	Call mdoc.save(True,False,True)
+	
+'Cleanup (remove the old TeamRoom's "Definition" documents
+	Forall x In delUNID
+		Set doc = db.getdocumentbyunid(x)
+		doc.remove(True)
+	End Forall
+	
+	ConvNum = ConvNum + 1
+	
+End Function
+
+
+</lotusscript>
+  </code>
+  <code event="ConvertParticipant">
+    <lotusscript>Function ConvertParticipant
+	Dim pAuthor As Variant
+	Dim pPosition As Variant
+	Dim pWho As Variant
+	
+	pWho = mdoc.getitemvalue("Who")
+	Dim itemWho As New notesname(pWho(0))
+	pAuthor = mDoc.getitemvalue("Author")
+	pPosition = mDoc.getitemvalue("Position")
+	Set item = mdoc.Replaceitemvalue("Form", "ParticipantProfile")
+	
+	Set item = mDoc.replaceitemvalue("DateFiled", "")
+	Set item = mDoc.replaceitemvalue("FileThisStatusDoc", "0")	
+	Set item = mDoc.replaceitemvalue("From", pAuthor(0))
+	Set item = mDoc.replaceitemvalue("JobTitle", pPosition(0))
+	Set item = mDoc.replaceitemvalue("Status", "1")
+	Set item = mDoc.replaceitemvalue("Subject", ParticipantTxt + itemWho.abbreviated)
+	Set item = mDoc.replaceitemvalue("Converted", "1")
+	
+	Call mdoc.computewithform(0,0)
+	Call mdoc.save(True,False,True)
+	convNum = ConvNum + 1
+	
+End Function
+
+
+</lotusscript>
+  </code>
+  <code event="ConvertEvent">
+    <lotusscript>Function ConvertEvent
+	Dim eAuthor As Variant
+	Dim eSummary As Variant
+	Dim eDate As Variant
+	
+	eAuthor = mDoc.getitemvalue("Author")
+	eSummary = mDoc.getitemvalue("EventSummary")
+	eDate = mDoc.getitemvalue("EventDate")
+	
+	Set item = mDoc.replaceitemvalue("DateFiled", "")	
+	Set item = mDoc.replaceitemvalue("FileThisStatusDoc", "0")	
+	Set item = mDoc.replaceitemvalue("From", eAuthor(0))
+	Set item = mDoc.replaceitemvalue("Status", "1")
+	Set item = mDoc.replaceitemvalue("Subject", EventTxt  + eSummary(0) + " (" + Cstr(eDate(0)) + ")")
+	Set item = mDoc.replaceitemvalue("Converted", "1")
+	
+	Call mdoc.computewithform(0,0)
+	Call mdoc.save(True,False,True)
+	convNum = ConvNum + 1
+	
+End Function
+
+
+</lotusscript>
+  </code>
+  <code event="ConvertStatus">
+    <lotusscript>Function ConvertStatus
+	Dim eCat As Variant
+	Dim eDocType As Variant
+	Dim eFrom As Variant
+	Dim eStatus As Variant
+	Dim eBody1 As notesRichTextItem
+	Dim eBody2 As notesRichTextItem
+	Dim Origbody As notesRichTextItem
+	Dim rtItem As Variant
+	
+	eDocType = mDoc.getitemvalue("DocType")
+	eFrom = mDoc.getitemvalue("Author")
+	Dim itemFrom As New notesname(eFrom(0))	
+	eStatus = mDoc.getitemvalue("Status")
+	Set eBody1 = mdoc.getfirstitem("Body")
+	Set eBody2 = mDoc.getfirstItem("Body_1") 
+	
+	Call eBody1.copyitemtodocument(mdoc, "Summary")
+	Set OrigBody = mdoc.getfirstitem("Body")
+	Call OrigBody.remove
+	Call eBody2.copyitemtodocument(mdoc, "Body")
+	
+	
+	Set item = mDoc.replaceitemvalue("Categories", "** " + cString + " **")
+	Set item = mDoc.replaceitemvalue("DocType", "** " + dtString + " **")
+	Set item = mDoc.replaceitemvalue("From", eFrom(0))
+	Set item = mDoc.replaceitemvalue("AbbreviateFrom", itemFrom.abbreviated)
+	Set item = mDoc.replaceitemvalue("Converted", "1")
+	
+	If eStatus(0) = "Active" Then
+		Set item = mDoc.replaceitemvalue("FileThisStatusDoc", "0")
+		Set item = mDoc.replaceitemvalue("Status", "1")
+	Else
+		Set item = mDoc.replaceitemvalue("FileThisStatusDoc", "1")
+		Set item = mDoc.replaceitemvalue("Status", "0")
+	End If
+	
+	Call mdoc.computewithform(0,0)
+	Call mdoc.save(True,False,True)
+	convNum = ConvNum + 1
+End Function
+
+
+</lotusscript>
+  </code>
+  <code event="ConvertSubteam">
+    <lotusscript>Function ConvertSubteam
+	Dim eAuthor As Variant
+	Dim eName As Variant
+	Dim eMembers As Variant
+	Dim mem As Variant
+	
+	eAuthor = mDoc.getitemvalue("Author")
+	eName = mDoc.getitemvalue("Who")
+	eMembers = mDoc.getitemvalue("STmembers")
+	
+	Set item = mDoc.replaceitemvalue("DateFiled", "")	
+	Set item = mDoc.replaceitemvalue("FileThisStatusDoc", "0")	
+	Set item = mDoc.replaceitemvalue("From", eAuthor(0))
+	Set item = mDoc.replaceitemvalue("Status", "1")
+	Set item = mDoc.replaceitemvalue("STName", eName(0))
+	
+	Set item = mDoc.replaceitemvalue("Converted", "1")
+	
+	Call mdoc.computewithform(0,0)
+	Call mdoc.save(True,False,True)
+	convNum = ConvNum + 1
+End Function
+</lotusscript>
+  </code>
+  <code event="ConvertDocument">
+    <lotusscript>Function ConvertDocument
+	Dim eAuthor As Variant
+	Dim eCat As Variant
+	Dim eStat As Variant
+	Dim eFiling As Variant
+	Dim ePeople As Variant
+	Dim eSubj As Variant
+	Dim eLog As Variant
+	Dim eLogStr As String
+	Dim ePrivate As Variant
+	Dim eDueDate As Variant
+	Dim x As Variant
+	Dim y As String
+	
+	eAuthor = mDoc.getitemvalue("Author")
+	Dim itemFrom As New notesname(eAuthor(0))	
+	eCat = mDoc.getitemvalue("WorkCategories")
+	eStat = mDoc.getitemvalue("Current_Status")
+	eFiling = mDoc.getitemvalue("Status")
+	ePeople = mDoc.getitemvalue("People")
+	eSubj = mDoc.getitemvalue("Subject")
+	eLog = mDoc.getitemvalue("EditorList")
+	ePrivate = mDoc.getitemvalue("AskPrivacy")
+	eDueDate = mdoc.getitemvalue("DueDate")
+	
+	x=mDoc.GetItemValue("DocType")
+	y=Lcase$(x(0))
+	
+'Open status is same for all document types	
+	If Lcase(eStat(0)) = Lcase(OpenTxt) Then
+		Set item = mDoc.replaceitemvalue("Current_Status", "0")
+		Set item = mDoc.replaceitemvalue("ReviewStatus", "")
+		Set item = mDoc.replaceitemvalue("DueDateStatus", "0")
+		Set item = mDoc.replaceitemvalue("Editors", ePeople)
+	  'disc, ref, and non-default types need ReviewedByNotDone field
+		If y &lt;&gt; Lcase(scrDocType2) And y &lt;&gt; Lcase(scrDocType3) And ePeople(0) &lt;&gt; "" Then
+			Set item = mDoc.replaceitemvalue("ReviewedByNotDone", ePeople)
+		End If
+	End If
+	
+'completed disc, ref, and non-default types need ReviewedBy field 
+	If y &lt;&gt; Lcase(scrDocType2) And y &lt;&gt; Lcase(scrDocType3) And ePeople(0) &lt;&gt; "" And Lcase(eStat(0)) = Lcase(CompleteTxt) Then
+		Set item = mDoc.replaceitemvalue("ReviewedBy", ePeople)
+	End If		
+	
+'convert the default document types
+	Select Case y
+	Case Is = Lcase(scrDocType1)                'discussion
+		If Lcase(eStat(0)) = Lcase(CompleteTxt) Then
+			Set item = mDoc.replaceitemvalue("Current_Status", "1")
+			Set item = mDoc.replaceitemvalue("ReviewStatus", "1")
+			Set item = mDoc.replaceitemvalue("DueDateStatus", "0")
+		End If	
+	Case Is = Lcase(scrDocType4)                'reference
+		If Lcase(eStat(0)) = Lcase(CompleteTxt)  Then
+			Set item = mDoc.replaceitemvalue("Current_Status", "1")
+			Set item = mDoc.replaceitemvalue("ReviewStatus", "1")
+			Set item = mDoc.replaceitemvalue("DueDateStatus", "0")
+		End If	
+	Case Is = Lcase(scrDocType2)                 'action item
+		If Lcase(eStat(0)) = Lcase(CompleteTxt) Then
+			Set item = mDoc.replaceitemvalue("Current_Status", "1")
+			Set item = mDoc.replaceitemvalue("ReviewStatus", "")
+			Set item = mDoc.replaceitemvalue("DueDateStatus", "1")
+		End If
+	Case Is = Lcase(scrDocType3)                'meeting
+		Set item = mDoc.replaceitemvalue("Editors", "")
+		Set item = mDoc.replaceitemvalue("MtgDate", eDueDate)
+	End Select
+	
+'convert all other document types to same as Discussion
+	If eStat(0) = "Complete" And (y &lt;&gt; Lcase(scrDocType1) And y &lt;&gt; Lcase(scrDocType2) And y &lt;&gt; Lcase(scrDocType3) And y &lt;&gt; Lcase(scrDocType4))Then
+		Set item = mDoc.replaceitemvalue("Current_Status", "1")
+		Set item = mDoc.replaceitemvalue("ReviewStatus", "1")
+		Set item = mDoc.replaceitemvalue("DueDateStatus", "0")
+	End If
+	
+	If Lcase(eFiling(0)) = Lcase(FiledTxt) Then
+		Set item = mDoc.replaceitemvalue("Status", "0")
+	Else
+		Set item = mDoc.replaceitemvalue("Status", "1")
+	End If
+	
+	If ePrivate(0) = PrivText Then
+		Set item = mDoc.replaceitemvalue("Readers", eAuthor(0))	
+	End If
+	
+	Set item = mDoc.replaceitemvalue("From", eAuthor(0))
+	Set item = mDoc.replaceitemvalue("AbbreviateFrom", itemFrom.abbreviated)
+	Set item = mDoc.replaceitemvalue("Categories", eCat)
+	Set item = mDoc.replaceitemvalue("People1", ePeople)
+	Set item = mDoc.replaceitemvalue("NewsletterSubject", eSubj)	
+	Set item = mDoc.replaceItemValue("DefaultDocType1", scrDocType1)
+	Set item = mDoc.replaceItemValue("DefaultDocType2", scrDocType2)
+	Set item = mDoc.replaceItemValue("DefaultDocType3", scrDocType3)
+	Set item = mDoc.replaceItemValue("DefaultDocType4", scrDocType4)
+	Set item = mDoc.replaceitemvalue("Converted", "1")
+	
+	Forall xx In eLog
+		eLogStr = eLogStr + xx + Chr(10) + Chr(13)
+	End Forall
+	
+	Set item = mDoc.replaceitemvalue("ReviewerLog", eLogStr)
+	Set item = mDoc.replaceitemvalue("Form", "MainTopic")
+	
+	Call mdoc.computewithform(0,0)
+	Call mdoc.save(True,False,True)
+	convNum = ConvNum + 1
+End Function
+</lotusscript>
+  </code>
+  <code event="ConvertResponse">
+    <lotusscript>Function ConvertResponse
+	Dim eAuthor As Variant
+	Dim pDocUNID As String
+	Dim pDoc As notesdocument
+	Dim pDocSubj As Variant
+	Dim pDocCat As Variant
+	
+	eAuthor = mDoc.getitemvalue("Author")
+	pDocUNID = mDoc.parentdocumentunid
+	Set pDoc = db.getdocumentbyunid(pDocUNID)
+	
+	pDocSubj = pDoc.getitemvalue("Subject")
+	pDocCat = pDoc.getitemvalue("Categories")
+	
+	Set item = mDoc.replaceitemvalue("From", eAuthor(0))
+	Set item = mDoc.replaceitemvalue("ImmediateParentSubject", pDocSubj)
+	Set item = mDoc.replaceitemvalue("Categories", pDocCat)
+	Set item = mDoc.replaceitemvalue("Form", "ResponseToResponse")
+	Set item = mDoc.replaceitemvalue("Converted", "1")
+	
+	Call mdoc.computewithform(0,0)
+	Call mdoc.save(True,False,True)
+	convNum = ConvNum + 1
+	
+	
+End Function</lotusscript>
+  </code>
+</agent>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<frameset xmlns="http://www.lotus.com/dxl" name="webTeamRoomFrameset" alias="webTeamRoomFrameset" publicaccess="false" language="en" columns="220px 1" spacing="0px" borderwidth="1px" bordercolor="black">
+  <frameset rows="65px 1 18px" spacing="0px">
+    <frame scrolling="never" noresize="true" marginwidth="3px">
+      <namedelementlink type="form" name="Template NameWeb"/>
+    </frame>
+    <frame name="NotesNavigator" targetframe="NotesView" scrolling="always">
+      <namedelementlink type="page" name="TeamRoom Outline"/>
+    </frame>
+    <frame name="Switcher" scrolling="never">
+      <namedelementlink type="form" name="DatabaseLocation"/>
+    </frame>
+  </frameset>
+  <frame name="NotesView">
+    <namedelementlink type="view" name="Announcements"/>
+  </frame>
+</frameset>

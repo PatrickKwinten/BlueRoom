@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><note class="form" maintenanceversion="1.5" replicaid="C1257F57006DE96D" version="9.0" xmlns="http://www.lotus.com/dxl">
+<noteinfo noteid="3b52" sequence="10" unid="52B09938B3D8654CC1257F580060B9AE">
+<created><datetime>20160213T183629,90+01</datetime></created>
+<modified><datetime>20160213T183816,21+01</datetime></modified>
+<revised><datetime>20160213T183816,20+01</datetime></revised>
+<lastaccessed><datetime>20160213T183816,21+01</datetime></lastaccessed>
+<addedtofile><datetime>20160213T183629,94+01</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Patrick Kwinten/O=quintessens</name></updatedby>
+<wassignedby><name>CN=Patrick Kwinten/O=quintessens</name></wassignedby>
+<item name="$Flags"><text>gC~4K</text></item>
+<item name="$TITLE"><text>index.xsp</text></item>
+<item name="$Comment" sign="true"><text>start page. will perform a redirect</text></item>
+
+
+
+<item name="$FileNames" sign="true"><text>index.xsp</text></item>
+<item name="$DesignerVersion"><text>8.5</text></item>
+
+
+
+</note>

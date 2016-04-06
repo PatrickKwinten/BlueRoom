@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="Send Newsletters" hide="v3" publicaccess="false" language="en" comment="Enable/Disable this agent through the TeamRoom Setup" activatable="false" enabled="false">
+  <trigger type="scheduled">
+    <schedule type="daily" runlocation="specific" runserver="CN=taurus/O=renovations">
+      <starttime>
+        <datetime>T010000,00</datetime>
+      </starttime>
+    </schedule>
+  </trigger>
+  <documentset type="modified"/>
+  <code event="options">
+    <lotusscript>Use "wStringResource"
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>'Send Newsletters: 
+
+
+'Send Newsletters: 
+
+Dim s As NotesSession
+Dim db As NotesDatabase 
+Dim view As NotesView
+Dim note As NotesDocument
+Dim profile As NotesDocument
+Dim newnote As NotesDocument
+Dim newsletter As NotesDocument
+Dim collection As NotesDocumentCollection
+Dim pPersonName As Variant
+Dim pCategories As Variant
+Dim pEvents As Variant
+Dim pAuthors As Variant
+Dim pStrings As Variant
+Dim pMyName As Variant
+Dim pSubteams As Variant
+Dim pThreads As Variant
+Dim searchtype As String
+Dim query As String
+Dim textlist As String
+Dim totalquery As String
+Dim failed As Integer
+
+Dim pInactive As Variant 
+
+
+
+
+
+
+
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	On Error Goto ErrorCleanup
+	
+	Set s = New NotesSession
+	Set db = s.CurrentDatabase
+	Set view = db.GetView("($Profiles)")
+	Set profile = view.GetFirstDocument
+	If profile Is Nothing Then Exit Sub
+	Failed = False
+	
+	Dim partAddress As String
+	
+	getWebAddress = getURL
+	
+	FormName = profile.Form
+	If FormName(0) &lt;&gt; "Interest Profile" Then Set profile = view.GetNextDocument(profile)
+	
+	dbpath = getdbpath
+	
+	Do Until profile Is Nothing
+		FormName = profile.Form
+		pPersonName = profile.PersonName
+		pSendTo = profile.FullPersonName
+		pCategories = profile.ProfileCategories
+		pSubteams = profile.ProfileSubteams
+		pEvents = profile.ProfileEvents
+		pAuthors = profile.ProfileAuthors
+		pStrings = profile.ProfileStrings
+		pMyName = profile.ProfileMyName
+		pThreads = profile.ProfileThreads
+		pInactive = profile.SkipInactive
+		
+		If pCategories(0) = "" And pAuthors(0) = "" And pStrings(0) = "" And pMyName(0) = "" And pThreads(0) = ""  And pEvents(0) = "" And pSubteams(0) = "" Then
+               'if all the fields are blank, don't bother to search               
+		Else
+			If db.IsFTIndexed = True Then
+				DoFTSearch
+			Else
+				DoFormulaSearch
+			End If
+			
+			If collection.Count &gt; 0 Then
+				Set newsletter = New NotesDocument(db)
+				Set rtitem = New NotesRichTextItem( newsletter, "Body")
+				If getWebAddress = "" Then
+					Call rtitem.appendtext(getString(59) &amp; Chr(13) &amp; Chr(13))
+				End If		
+				
+				
+				newsletter.Subject = getstring(46) &amp; db.Title
+				newsletter.Form = "Memo"
+	'get address from Participant profile, if available
+				Dim hierName As New notesname(pSendTo(0))
+				Set peopleView = db.getview("PeopleLookup")
+				
+				Set partdoc = peopleview.getdocumentbykey(hiername.abbreviated)
+				
+				If partDoc Is Nothing Then
+					Set partdoc = peopleview.getdocumentbykey(hiername.common)	
+				End If
+				
+				If Not partDoc Is Nothing Then
+					partAddress = partdoc.getitemvalue("email")(0)					
+				End If
+				
+				If partAddress &lt;&gt; "" Then
+					newsletter.SendTo = partAddress
+				Else
+					newsletter.SendTo = pSendTo(0)
+				End If
+				For i = 1 To collection.Count
+					Set currentnote = collection.getnthdocument(i)
+					collSubject = currentnote.subject(0)
+					
+					If currentnote.isresponse Then
+						collDocType = getString(11)
+					Else
+						collDocType = currentnote.DocType(0)						
+					End If
+					collStr = getString(59)			
+					
+					Call rtitem.appendtext(collDocType + ": ")
+					Call rtitem.appendtext(collSubject)
+					Call rtitem.AddNewline(1)
+					Call rtitem.AppendDocLink ( currentnote, db.Title)
+					
+					If getWebAddress = "" Then
+						wMail = ""
+					Else
+						wMail = "  http://" + getwebAddress +"/"+ dbpath+"/$All/"+ currentnote.universalid
+					End If	
+					
+					Call rtitem.appendtext(wMail)
+					Call rtitem.AddNewline(2)
+				Next
+				newsletter.Send True
+			End If
+		End If
+ErrorReset:
+		Set profile = view.GetNextDocument(profile)
+	Loop
+	
+	Exit Sub
+	
+ErrorCleanup:
+	If Err = 4294 Or Err = 4295 Then
+		Goto ErrorReset
+	Else
+		Failed = True
+		Msgbox Error
+		Exit Sub		
+	End If
+	
+End Sub
+</lotusscript>
+  </code>
+  <code event="DoFTSearch">
+    <lotusscript>Sub DoFTSearch
+	searchtype = "FT"
+	totalquery = ""
+	
+	Forall n  In pCategories
+		BuildTextList(n)
+	End Forall
+	If textlist &lt;&gt; "" Then
+		query = "field Categories contains (" &amp; textlist &amp; ")"
+		BuildTotalQuery         
+	End If          
+	
+	Forall n  In pSubteams
+		BuildTextList(n)
+	End Forall
+	If textlist &lt;&gt; "" Then
+		query = "field SubteamInterest contains (" &amp; textlist &amp; ")"
+		BuildTotalQuery         
+	End If          
+	
+	Forall n  In pEvents
+		BuildTextList(n)
+	End Forall
+	If textlist &lt;&gt; "" Then
+		query = "field Milestones contains (" &amp; textlist &amp; ")"
+		BuildTotalQuery         
+	End If          
+	
+	Forall n In pAuthors
+		BuildTextList(n)
+	End Forall
+	If textlist &lt;&gt; "" Then
+		query = "field AbbreviateFrom contains (" &amp; textlist &amp; ")"
+		BuildTotalQuery         
+	End If          
+	
+	Forall n In pStrings
+		BuildTextList(n)
+	End Forall
+	If pMyName(0) &lt;&gt; "" Then
+		Forall n In pPersonName
+			BuildTextList(n)
+		End Forall
+	End If
+	If textlist &lt;&gt; "" Then
+		query = "field Body contains (" &amp; textlist &amp; ") or field Subject contains (" &amp; textlist &amp; ")"
+		BuildTotalQuery         
+	End If          
+	
+	Forall n In pThreads
+		BuildTextList(n)
+	End Forall
+	If textlist &lt;&gt; "" Then
+		query = "field ThreadId contains (" &amp; textlist &amp; ")"
+		BuildTotalQuery         
+	End If
+	
+	If pInactive(0) = "1" Then
+		totalquery = "(" &amp; totalquery &amp; |) and (not(Field status = "0"))   and (field Form contains MainTopic or field Form contains Response or field Form contains ResponseToResponse) |
+	Elseif pInactive(0) = "" Then
+		totalquery = "(" &amp; totalquery &amp; ") and (field Form contains MainTopic or field Form contains Response or field Form contains ResponseToResponse) "
+	End If
+	
+	Set collection = db.UnprocessedFTSearch(totalquery, 0)
+	
+End Sub
+</lotusscript>
+  </code>
+  <code event="DoFormulaSearch">
+    <lotusscript>Sub DoFormulaSearch
+	searchtype = "Formula"
+	totalquery = ""
+	
+	If pCategories(0) &lt;&gt; "" Then
+		Forall n In pCategories
+			BuildTextList(n)
+		End Forall
+		If textlist &lt;&gt; "" Then
+			query = "(@Contains(@UpperCase(Categories); @UpperCase(" &amp; textlist &amp;_
+			")) )"
+			BuildTotalQuery         
+		End If
+	End If
+	
+	If pSubteams(0) &lt;&gt; "" Then
+		Forall n In pSubteams
+			BuildTextList(n)
+		End Forall
+		If textlist &lt;&gt; "" Then
+			query = "(@Contains(@UpperCase(SubteamInterest); @UpperCase(" &amp; textlist &amp;_
+			")) )"
+			BuildTotalQuery         
+		End If
+	End If
+	
+	If pEvents(0) &lt;&gt; "" Then
+		Forall n In pEvents
+			BuildTextList(n)
+		End Forall
+		If textlist &lt;&gt; "" Then
+			query = "(@Contains(@UpperCase(Milestones); @UpperCase(" &amp; textlist &amp;_
+			")) )"
+			BuildTotalQuery         
+		End If
+	End If
+	
+	If pAuthors(0) &lt;&gt; "" Then
+		Forall n In pAuthors
+			BuildTextList(n)
+		End Forall
+		If textlist &lt;&gt; "" Then
+			query = "@Contains(@UpperCase(AbbreviateFrom); @UpperCase(" &amp; textlist &amp; "))"
+			BuildTotalQuery
+		End If
+	End If
+	
+	If pStrings(0) &lt;&gt; "" Then
+		Forall n In pStrings
+			BuildTextList(n)
+		End Forall
+		If textlist &lt;&gt; "" Then
+			query = "@Contains(@UpperCase(Body); @UpperCase(" &amp; textlist &amp;_
+			")) | @Contains(@UpperCase(Subject); @UpperCase(" &amp; textlist &amp; "))"
+			BuildTotalQuery
+		End If
+	End If
+	
+	If pMyName(0) &lt;&gt; "" Then
+		query = "@Contains(@UpperCase(Body); @UpperCase(" &amp; """" &amp; pPersonName(0) &amp; """" &amp;_
+		")) | @Contains(@UpperCase(Subject); @UpperCase(" &amp; """" &amp; pPersonName(0) &amp; """" &amp; "))"
+		BuildTotalQuery
+	End If
+	
+	If pThreads(0) &lt;&gt; "" Then
+		Forall n In pThreads
+			BuildTextList(n)
+		End Forall
+		If textlist &lt;&gt; "" Then
+			query = "@Contains(@UpperCase(ThreadId); @UpperCase(" &amp; textlist &amp; "))"
+			BuildTotalQuery         
+		End If
+	End If
+	
+	If pInactive(0) = "" Then
+		totalquery = totalquery &amp; " &amp; @isavailable(NewsletterSubject) &amp; (form = ""MainTopic"" | form = ""Response""| form = ""ResponseToResponse""   ) &amp; (readers = """")"
+	Elseif pInactive(0) = "1" Then
+		totalquery = totalquery &amp; "&amp;  !@isavailable(DateFiled) &amp; @isavailable(NewsletterSubject) &amp; (form = ""MainTopic"" | form = ""Response"" | form = ""ResponseToResponse"" ) &amp; (readers = """")" 	
+	End If
+	
+	Set collection = db.UnprocessedSearch(totalquery, Nothing, 0)
+	
+	
+End Sub
+</lotusscript>
+  </code>
+  <code event="BuildTextList">
+    <lotusscript>Sub BuildTextList(n As Variant)
+	
+	If searchtype = "FT" Then
+		If textlist = "" Then
+			textlist = n
+		Else
+			textlist = textlist &amp; ", " &amp; n
+		End If
+	Else
+		nvalue = """" &amp; n &amp; """"                       
+		If textlist = "" Then
+			textlist = nvalue
+		Else
+			textlist = textlist &amp; " : " &amp; nvalue
+		End If
+	End If
+	
+End Sub
+</lotusscript>
+  </code>
+  <code event="BuildTotalQuery">
+    <lotusscript>Sub BuildTotalQuery
+	
+	If totalquery = "" Then
+		totalquery = query
+	Else
+		If searchtype = "FT" Then
+			totalquery = totalquery &amp; " or " &amp; query
+		Else
+			totalquery = totalquery &amp; " | " &amp; query
+		End If
+		query = ""
+	End If
+	
+	textlist = ""
+	
+End Sub
+</lotusscript>
+  </code>
+  <code event="terminate">
+    <lotusscript>Sub Terminate
+	If Not (failed) Then
+		Set collection = db.UnprocessedDocuments
+		For n = 1 To collection.Count
+			Set note = collection.GetNthDocument(n)
+			Call s.UpdateProcessedDoc(note)
+		Next
+		
+	End If     
+End Sub
+</lotusscript>
+  </code>
+  <code event="GetDBPath">
+    <lotusscript>Function GetDBPath
+'check to see if the database is in a directory and swap the slash directions
+	Dim tmpPath As String     
+	tmpPath = db.filepath
+	Do While Instr(tmpPath,"\") &gt; 0
+		tmpPath = Left$(tmpPath, Instr(tmpPath,"\")-1) + "/" + Right$(tmpPath,Len(tmpPath)-Instr(tmpPath,"\"))
+	Loop
+	
+'check and see if there are any embedded spaces and replace them with +     
+	Do While Instr(tmpPath," ") &gt; 0
+		tmpPath = Left$(tmpPath, Instr(tmpPath," ")-1) + "+" + Right$(tmpPath,Len(tmpPath)-Instr(tmpPath," "))
+	Loop
+	
+	GetDbPath = tmpPath
+	
+End Function
+</lotusscript>
+  </code>
+  <code event="GetURL">
+    <lotusscript>Function GetURL
+	Dim s As New notessession
+	Set SetupView = db.getview("MissionLookup")
+	Set setupDoc = SetupView.GetDocumentBYKey("Mission")
+	
+	GetURL = setupdoc.getitemvalue("URLAddress")(0)
+End Function</lotusscript>
+  </code>
+</agent>

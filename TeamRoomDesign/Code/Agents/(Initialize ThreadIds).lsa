@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(Initialize ThreadIds)" hide="v3" publicaccess="false" language="en" comment="If you want to convert existing documents such that they are identified as threads, run this once against all documents.">
+  <trigger type="agentlist"/>
+  <documentset type="all"/>
+  <code event="options">
+    <lotusscript>Option Public
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>Dim s As NotesSession
+Dim db As NotesDatabase
+Dim view As NotesView 
+Dim note As NotesDocument
+Dim parent As NotesDocument
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	
+	Set s = New NotesSession
+	Set db = s.CurrentDatabase
+	Set view = db.GetView("($All)")
+	Set note = view.GetFirstDocument
+	
+	Do Until note Is Nothing
+		FormName = note.Form
+		Subject = note.Subject
+		Select Case FormName(0)
+		Case "MainTopic", "Main Topic"
+			note.NewsLetterSubject = Subject(0)
+		Case "Response", "AnonymousResponse", "Response (Anonymous)"
+			OriginalSubject = note.OriginalSubject
+			note.NewsLetterSubject = Subject(0) &amp; "  (Response to:  -" &amp; OriginalSubject(0) &amp; "-)"
+		Case "ResponseToResponse", "Response to Response"
+			OriginalSubject = note.OriginalSubject
+			note.NewsLetterSubject = Subject(0) &amp; "  (Response to Response to:  -" &amp; OriginalSubject(0) &amp; "-)"
+		End Select
+		If note.IsResponse Then
+			Set parent = view.GetParentDocument(note)              
+			Do Until parent.IsResponse = False
+				Set parent = view.GetParentDocument(parent)              
+			Loop
+			NewId = parent.ThreadId
+		Else
+			NewId = Evaluate("@Unique")             
+		End If
+		note.ThreadId = NewId(0)
+		note.save True, True
+		Set note = view.GetNextDocument(note)
+	Loop
+	
+End Sub</lotusscript>
+  </code>
+</agent>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(WebMissionOpen)" hide="v3" runaswebuser="true" publicaccess="false" language="en">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Dim session As New notessession
+	Dim db As notesdatabase
+	Dim note As notesdocument
+	Dim FilingAgent As notesagent
+	Dim NewsletterAgent As notesagent
+	Dim NewsletterEnabled As Variant
+	Dim ReminderAgent As notesagent
+	Dim DbProfile As NotesDocument
+	
+	Set db = session.currentdatabase
+	Set note = session.documentcontext
+	Set DbProfile = db.GetProfileDocument( "TempVars")
+	Set FilingAgent = db.getagent("AutoFileAgent")
+	Set NewsletterAgent = db.getagent("Send Newsletters")
+	Set ReminderAgent = db.getagent("SendReminder")
+	
+	If FilingAgent.isenabled Then
+		DbProfile.FilingEnabled = "1"
+		Call note.replaceitemvalue("FilingEnabled", "1")
+	Else
+		DbProfile.FilingEnabled = "0"
+		Call note.replaceitemvalue("FilingEnabled", "0")
+	End If
+	
+	If NewsletterAgent.isenabled Then
+		DbProfile.NewsletterEnabled = "1"
+		Call note.replaceitemvalue("NewsletterEnabled", "1")
+	Else
+		DbProfile.NewsletterEnabled = "0"
+		Call note.replaceitemvalue("NewsletterEnabled", "0")
+	End If
+	
+	If ReminderAgent.isenabled Then
+		DbProfile.ReminderEnabled = "1"
+		Call note.replaceitemvalue("ReminderEnabled", "1")
+	Else
+		DbProfile.ReminderEnabled = "0"
+		Call note.replaceitemvalue("ReminderEnabled", "0")
+	End If
+	
+	Call dbprofile.save(False,False,True)
+	
+End Sub</lotusscript>
+  </code>
+</agent>

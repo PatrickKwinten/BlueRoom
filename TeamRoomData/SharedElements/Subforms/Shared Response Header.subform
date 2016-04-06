@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<subform xmlns="http://www.lotus.com/dxl" name="Shared Response Header" language="en">
+  <code event="querysave">
+    <formula>@Command([RefreshHideFormulas]);1</formula>
+  </code>
+  <body>
+    <richtext>
+      <pardef id="1" leftmargin="1in" hide="read edit copy preview previewedit"/>
+      <par def="1">
+        <run>
+          <font size="9pt" color="gray"/> Hidden Fields -----------------------------</run>
+      </par>
+      <table widthtype="fitmargins" user4spacing="true" refwidth="9.3028in">
+        <tablecolumn width="50%"/>
+        <tablecolumn width="50%"/>
+        <tablerow>
+          <tablecell>
+            <pardef id="2" leftmargin="1%" hide="read edit copy preview previewedit" keepwithnext="true" keeptogether="true"/>
+            <par def="2">
+              <run>
+                <font size="9pt" color="gray"/>used in the Newsletter profile searches</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <pardef id="3" leftmargin="1%" hide="read edit copy preview previewedit" keepwithnext="true" keeptogether="true"/>
+            <par def="3">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <sharedfieldref name="AbbreviateFrom"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <pardef id="4" leftmargin="0.0104in" hide="read edit copy preview previewedit" keepwithnext="true" keeptogether="true"/>
+            <par def="4">
+              <run>
+                <font size="9pt" color="gray"/>the author's alternate name</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <pardef id="5" leftmargin="0.0104in" hide="read edit copy preview previewedit" keepwithnext="true" keeptogether="true"/>
+            <par def="5">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <sharedfieldref name="AltFrom"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="4">
+              <run>
+                <font size="9pt" color="gray"/>the author's alternate language</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="5">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <sharedfieldref name="AltLang"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <pardef id="6" leftmargin="1%" rightmargin="100%" hide="read edit copy preview previewedit" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen" enabled="false">
+                <formula>ClientType = "W"</formula>
+              </code>
+            </pardef>
+            <par def="6">
+              <run>
+                <font size="9pt" color="gray"/>Preserves privacy of parent document to child</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <pardef id="7" leftmargin="1%" rightmargin="100%" hide="read edit copy preview previewedit" keepwithnext="true" keeptogether="true"/>
+            <par def="7">
+              <run>
+                <font size="9pt" style="bold" name="Small Fonts" pitch="variable" truetype="false" familyid="20" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="readers" allowmultivalues="true" kind="computed" name="Readers" listinputseparators="comma" listdisplayseparator="comma">
+                  <code event="defaultvalue">
+                    <formula>@If(@IsNewDoc &amp; @IsDocBeingLoaded; ""; readers)</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <pardef id="8" leftmargin="1%" rightmargin="100%" hide="read edit copy preview previewedit" keepwithnext="true" keeptogether="true"/>
+            <par def="8">
+              <run>
+                <font size="9pt" color="gray"/>Hidden fields to store the subject of this document's ancestors.</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="7">
+              <run>
+                <font size="9pt" style="underline" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="computedwhencomposed" name="OriginalSubject">
+                  <code event="defaultvalue">
+                    <formula>@If(@IsAvailable(OriginalSubject); OriginalSubject; Subject)</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="8">
+              <run>
+                <font size="9pt" color="gray"/>Hidden fields to store the subject of this document's ancestors.</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="7">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray" style="underline"/>
+                <field type="text" kind="computedwhencomposed" name="ImmediateParentSubject">
+                  <code event="defaultvalue">
+                    <formula>Subject</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="8">
+              <run>
+                <font size="9pt" color="gray"/>Hidden field to store type of form that is the parent document.  Used in Preview Parent action.</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="7">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="computedwhencomposed" name="ParentForm">
+                  <code event="defaultvalue">
+                    <formula>form</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="8">
+              <run>
+                <font size="9pt" color="gray"/>Used as caption in newsletter that is sent based on user's interest profile</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="7">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="computed" name="NewsLetterSubject">
+                  <code event="defaultvalue">
+                    <formula>Subject + "  (Response to:  \"" + OriginalSubject + "\")"</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="8">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="7">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="8">
+              <run>
+                <font size="9pt" color="gray"/>Used for submitting the form on the web</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="7">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <sharedfieldref name="$$Return"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="8">
+              <run>
+                <font size="9pt" color="gray"/>Used for inheriting expiredate from the parent document</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="7">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="datetime" kind="computedwhencomposed" name="ExpireDate">
+                  <datetimeformat date="yearmonthday" time="hourminutesecond" zone="never"/>
+                  <code event="defaultvalue">
+                    <formula>ExpireDate</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <par def="8">
+              <run>
+                <font size="9pt" color="gray"/>Used by threadmap subform </run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <pardef id="9" leftmargin="1%" rightmargin="100%" hide="read edit copy preview previewedit" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen" enabled="false">
+                <formula>ClientType = "W"</formula>
+              </code>
+            </pardef>
+            <par def="9">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="computedwhencomposed" name="ThreadSort">
+                  <code event="defaultvalue">
+                    <formula>FIELD ThreadSort := ThreadSort;
+temp := @Text(@Created ;"T0S1");
+ThreadSort + " " + @Text(@Year(@Created); "G") + @Text(@Created; "D2S0") + @Right(temp; 2) + @Left(temp; 8) + " " + @Text(@DocumentUniqueID)</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="11" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <pardef id="10" leftmargin="1%" rightmargin="100%" hide="read edit copy preview previewedit" keepwithnext="true" keeptogether="true"/>
+            <par def="10">
+              <run>
+                <font size="9pt" color="gray"/>Used by threadmap subform</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="9">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <field type="text" kind="computedwhencomposed" name="ThreadIndent">
+                  <code event="defaultvalue">
+                    <formula>threadindent+". . "</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <pardef id="11" hide="read edit copy preview previewedit" keepwithnext="true" keeptogether="true"/>
+            <par def="11">
+              <run>
+                <font size="9pt" color="gray"/>"1" means alternate names can be displayed</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <pardef id="12" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="12">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <sharedfieldref name="AltNameDisplay"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell>
+            <pardef id="13" hide="notes web mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="13">
+              <run>
+                <font size="9pt" color="gray"/>Used to store an abstract of the BODY for XPage views</run>
+            </par>
+          </tablecell>
+          <tablecell>
+            <par def="12">
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+                <sharedfieldref name="Abstract"/>
+              </run>
+              <run>
+                <font size="9pt" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="14" leftmargin="2.3750in" firstlineleftmargin="1in" hide="read edit copy preview previewedit"/>
+      <par def="14">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+      </par>
+      <par def="1">
+        <run>
+          <font size="9pt" color="gray"/>End Hidden Fields -----------------------------</run>
+      </par>
+    </richtext>
+  </body>
+  <item name="$HTMLDocumentStyles" summary="true" sign="true">
+    <rawitemdata type="1">
+0ggBAAAA/wDSCAEA/wAAANIIAQCAAIAA
+</rawitemdata>
+  </item>
+</subform>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="AutoFileAgent" hide="v3" publicaccess="false" language="en" comment="Enable/Disable this agent through the TeamRoom Setup" activatable="false" enabled="false">
+  <trigger type="scheduled">
+    <schedule type="daily" runlocation="any">
+      <starttime>
+        <datetime>T010000,00</datetime>
+      </starttime>
+    </schedule>
+  </trigger>
+  <documentset type="all"/>
+  <code event="action">
+    <simpleaction action="runformula">
+      <formula>REM {This agent files those documents whose filed-by-date is equal or older than today};
+REM {variables to translate};
+Filedtxt := "This document was filed on: ";
+REM {End variables to translate};
+
+REM {Check to see if Open documents can be filed};
+view := "MissionLookup";
+Key := "Mission";
+FileOpenDocs := @DbLookup("" : "NoCache"; ""; View; Key; "FileOpenDocs");
+
+FilingDate := FileByDate;
+CanBeFiled := @If(FileOpenDocs = "1"; "y"; Current_Status = "1"; "y"; "n");
+SELECT !@IsAvailable(DateFiled) &amp; filingdate != "" &amp; CanBeFiled = "y" &amp; @Date(@Today) &gt;= @Date(FilingDate) &amp; form = "MainTopic";
+REM {Don't file this if there's a due date and the status is still open};
+@If(DueDate != "" &amp; Current_Status = "0" &amp; FileOpenDocs = "0"; @Return(""); "");
+FIELD Status := "0";
+FIELD DateFiled := @Now;
+date := DateFiled;
+FIELD ViewDateFiled := @If(date = ""; ""; Date);</formula>
+    </simpleaction>
+  </code>
+</agent>

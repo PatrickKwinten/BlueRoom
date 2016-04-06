@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(UpdateACL)" hide="v3" runaswebuser="true" publicaccess="false" language="en">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>'UpdateACL: 
+
+'UpdateACL: 
+
+Dim ACL As notesacl
+Dim count As Integer
+Dim currentUsername As Variant
+Dim queryMgr As Integer
+
+Const AuthErr = "You do no have appropriate access to update the Access Control list of this database using this dialog box."
+Const AuthErr2 = "If this is a local database, try selecting File - Database - Access Control... instead."
+Const CountMsg = "Updated ACL entries:  "
+Const MgrMsg = "Do you want to remove manager access for yourself?" 
+Const MgrMsg2 = "You are attempting to change your access level to " 
+Const AlertTxt = "Alert"
+
+
+
+
+</lotusscript>
+  </code>
+  <code event="setACLLevel">
+    <lotusscript>Sub setACLLevel(ALevel As Variant, getLevel As Integer)
+	
+	Dim thisTeamMember As notesACLentry
+	Dim uiwork As New notesuiworkspace
+	Dim levelTxt  As String
+	
+	Select Case getLevel
+	Case Is = 5
+		levelTxt = "Designer"
+	Case Is = 4
+		levelTxt = "Editor"
+	Case Is = 3
+		levelTxt = "Author"
+		
+	End Select
+	
+	
+	Forall x In ALevel
+		Set thisTeamMember = acl.getEntry(x)
+		If thisTeamMember Is Nothing  Then
+			Set ACLentry = acl.createaclentry(x, getLevel)
+		Else
+			If Lcase(CurrentUsername(0)) = Lcase(thisTeamMember.name) And getLevel &lt;&gt; 6  Then
+				queryMgr = uiwork.prompt(Prompt_YESNO, "title", MgrMsg2 + levelTxt + "." + + Chr(10) + Chr(10) + MgrMsg)				
+			End If
+			
+			If queryMgr &lt;&gt; 0 Then 
+				thisTeamMember.level = getLevel				
+			End If
+			
+		End If		
+		If queryMgr &lt;&gt; 0 Then
+			count = count+1					
+		Else
+			queryMgr = 1
+		End If		
+	End Forall
+	
+	Call ACL.save
+	
+End Sub
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Dim s As New notessession
+	Dim note As notesdocument
+	Dim db As notesdatabase
+	Dim getLevel As Integer	
+	Dim ALevel As Variant
+	Dim ACLentry As notesaclentry
+	
+	queryMgr = 1
+	
+	On Error Goto showerror
+	
+	count = 0
+	
+	Set db = s.currentdatabase
+	Set note = s.documentcontext
+	Set ACL = db.ACL
+	
+	Set DbProfile = db.GetProfileDocument( "TempVars")
+	ct = DbProfile.clienttype
+	
+'see if current user can update ACL (e.g., has manager access to db)
+	CurrentUsername = Evaluate( "@name([canonicalize]; @username)")    'NEW812
+	ACLEntryLevel = db.QueryAccess(CurrentUsername(0))	
+	
+	If ct(0) = "" And ACLEntryLevel &lt;&gt; 6 Then
+		dbprofile.notify = AuthErr
+		Exit Sub
+	Elseif ct(0) = "Notes" And ACLEntryLevel &lt;&gt; 6 Then
+		Msgbox AuthErr + "  " + AuthErr2, 16, AlertTxt
+		Exit Sub
+	End If
+	
+'set Default
+	ALevel = note.getitemvalue("DefaultAccess")
+	If ALevel(0) = "" Then
+		Goto mgr
+	Else
+		Set ACLentry = acl.getentry("-Default-")  'DNT
+		ACLentry.level = Cint(ALevel(0))
+		Call note.replaceitemvalue("DefaultAccess", "")
+		count = count+1
+		Call ACL.save
+	End If
+	
+mgr:	
+'set Managers
+	ALevel = note.getitemvalue("ManagerAccess")
+	If ALevel(0) = "" Then
+		Goto Des
+	Else
+		getLevel = 6
+		Call SetACLLevel(ALevel, getLevel)		
+		Call note.replaceitemvalue("ManagerAccess", "")
+	End If
+	
+'set Designers
+Des:
+	ALevel = note.getitemvalue("DesignerAccess")
+	If ALevel(0) = "" Then
+		Goto Eds
+	Else
+		getLevel = 5
+		Call SetACLLevel(ALevel, getLevel)		
+		Call note.replaceitemvalue("DesignerAccess", "")
+	End If
+	
+Eds:	
+	ALevel = note.getitemvalue("EditorAccess")
+	If Alevel(0) = "" Then
+		Goto Auths 
+	Else
+		getLevel = 4
+		Call SetACLLevel(ALevel, getLevel)		
+		Call note.replaceitemvalue("EditorAccess", "")
+	End If
+	
+'set Authors	
+Auths:	
+	ALevel = note.getitemvalue("AuthorAccess")
+	If Alevel(0) = "" Then
+		Goto finish
+	Else
+		getLevel = 3
+		Call SetACLLevel(ALevel, getLevel)		
+		Call note.replaceitemvalue("AuthorAccess", "")
+	End If
+	
+Finish:
+	If ct(0) = ""Then
+		dbprofile.notify = CountMsg + Cstr(count)
+	Elseif ct(0) = "Notes"  Then
+		Msgbox CountMsg + Cstr(count)
+	End If
+	
+UpdateProfile:
+	dbprofile.clienttype = ""
+	Call dbprofile.save(False,False)
+	Exit Sub
+	
+ShowError:	
+	If Err = 4005 Then
+		Msgbox Cstr(Err) + " " + Error	
+		Exit Sub
+	Else
+		Msgbox Cstr(Err) + " " + Error
+	End If
+	
+End Sub</lotusscript>
+  </code>
+</agent>

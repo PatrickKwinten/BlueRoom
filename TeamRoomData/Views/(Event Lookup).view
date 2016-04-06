@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view xmlns="http://www.lotus.com/dxl" name="(Event Lookup)" alias="EventLookup" showinmenu="true" publicaccess="false" language="en" unreadmarks="none" onopengoto="lastopened" onrefresh="displayindicator" headers="beveled" opencollapsed="false" showresponsehierarchy="true" showmargin="true" shrinkrows="true" extendlastcolumn="true" showhierarchies="false" unreadcolor="teal" rowlinecount="4" headerlinecount="1" rowspacing="1.25" bgcolor="white" altrowcolor="#efefef" totalscolor="blue" headerbgcolor="white" boldunreadrows="false" evaluateactions="false" allownewdocuments="false" allowcustomizations="true" hidemarginborder="false" marginwidth="0px" marginbgcolor="white" uniquekeys="false">
+  <code event="selection">
+    <formula>SELECT form = "Event" &amp; Status = "1"</formula>
+  </code>
+  <actionbar bordercolor="black">
+    <actionbuttonstyle bgcolor="silver"/>
+    <border width="0px 0px 1px"/>
+    <action title="Categori_ze" showinmenu="false" showinbar="false" systemcommand="categorize"/>
+    <action title="_Edit Document" showinbar="false" systemcommand="edit"/>
+    <action title="Send Docu_ment" showinbar="false" systemcommand="send"/>
+    <action title="_Forward" showinbar="false" systemcommand="forward"/>
+    <action title="_Move To Folder..." showinbar="false" systemcommand="movetofolder"/>
+    <action title="_Remove From Folder" showinbar="false" systemcommand="removefromfolder"/>
+    <action title="Exit View" icon="112" showinmenu="false">
+      <code event="click">
+        <formula>@Command([FileCloseWindow])</formula>
+      </code>
+    </action>
+  </actionbar>
+  <column hidedetailrows="false" itemname="EventSummary" width="20" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <font size="9pt" style="bold"/>
+    <columnheader title="Event Title">
+      <font size="9pt"/>
+    </columnheader>
+  </column>
+  <column sort="ascending" resort="both" hidedetailrows="false" itemname="EventDate" width="9.1250" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <font size="9pt"/>
+    <columnheader title="Date">
+      <font size="9pt"/>
+    </columnheader>
+  </column>
+  <column hidedetailrows="false" itemname="EventDetail" width="35.7500" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <font size="9pt"/>
+    <columnheader title="Event Summary">
+      <font size="9pt"/>
+    </columnheader>
+  </column>
+  <item name="$CIAOOwner" sign="true">
+    <text>CN=Mike Johnston/O=Jacobson</text>
+  </item>
+  <item name="$CIAOTime" sign="true">
+    <datetime>19970123T161751,84-05</datetime>
+  </item>
+  <item name="$HTMLDocumentStyles" summary="true" sign="true">
+    <rawitemdata type="1">
+0ggBAAAA/wDSCAEA/wAAANIIAQCAAIAA
+</rawitemdata>
+  </item>
+</view>

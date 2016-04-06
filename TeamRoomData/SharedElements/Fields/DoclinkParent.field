@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sharedfield xmlns="http://www.lotus.com/dxl" name="DoclinkParent" language="en">
+  <field type="text" kind="computedfordisplay" name="DoclinkParent">
+    <code event="defaultvalue">
+      <formula>@If(@IsNewDoc; @Unavailable; $Ref)</formula>
+    </code>
+  </field>
+</sharedfield>

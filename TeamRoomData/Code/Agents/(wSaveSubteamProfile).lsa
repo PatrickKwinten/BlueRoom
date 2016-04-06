@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(wSaveSubteamProfile)" hide="v3" runaswebuser="true" publicaccess="false" language="en">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Dim s As New notessession
+	Dim db As notesdatabase
+	Dim view As notesview
+	Dim altSelection As Variant
+	Dim note As notesdocument
+	Dim TMNote As notesdocument
+	Dim uBoundSel As Integer
+	Dim getAltName As Variant
+	Dim commonName As String
+	
+	'logging is for debug purposes
+	Set dbug = New NotesLog("AddPart")
+'to turn off the debug log, set this to False     
+	dbug.LogActions = True
+	dbug.OpenAgentLog	
+	
+	Set db = s.currentdatabase
+	Set view = db.getview("PeopleLookup")
+	Set note = 	s.documentcontext
+	AltSelection = note.getitemvalue("AltNameSelection")
+	uBoundSel = Ubound(AltSelection)
+	Dim count As Integer
+	
+	Redim AltMembers(uBoundSel) As Variant
+	
+	dbug.logaction("here1")
+	
+	count = 0
+	
+'determine alternate names for all members selected	
+	Forall x In AltSelection
+		
+		Set TMNote = view.getdocumentbykey(x)
+		getAltName = TMNote.getitemvalue("GetAlternateName")
+		
+		AltMembers(count) = getAltName(0)
+		count = count + 1
+	End Forall
+	
+'	Dim b As Variant
+'	b = Fulltrim(AltMembers)
+'	
+	Call note.replaceitemvalue("AltNameMembers", AltMembers)	
+	
+End Sub</lotusscript>
+  </code>
+</agent>

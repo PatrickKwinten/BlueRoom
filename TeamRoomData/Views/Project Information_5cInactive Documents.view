@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view xmlns="http://www.lotus.com/dxl" name="Project Information\Inactive Documents" alias="Filed" showinmenu="true" allowdocselection="true" publicaccess="false" language="en" unreadmarks="standard" onopengoto="lastopened" onrefresh="displayindicator" headers="simple" opencollapsed="false" showresponsehierarchy="true" showmargin="true" shrinkrows="true" extendlastcolumn="true" showhierarchies="false" unreadcolor="maroon" rowlinecount="4" headerlinecount="1" rowspacing="1.25" haslinkcolumn="true" bgcolor="white" altrowcolor="#efefef" totalscolor="blue" headerbgcolor="#a8cfd4" boldunreadrows="false" evaluateactions="false" allownewdocuments="false" allowcustomizations="true" hidemarginborder="false" marginwidth="0px 0px 1px" marginbgcolor="white" uniquekeys="false" initialbuildrestricted="false" noemptycategories="true">
+  <code event="selection">
+    <formula>SELECT (Status = "0" | FileThisStatusDoc = "1") &amp; form != "Interest Profile"  | @IsResponseDoc</formula>
+  </code>
+  <code event="helprequest">
+    <formula>REM {DNT};
+@Command([OpenHelpDocument]; [ClientHelp]; "(Help)"; "TeamRoomVFiled")</formula>
+  </code>
+  <actionbar useappletinbrowser="true" bgcolor="#78b4bc" bordercolor="black">
+    <actionbarstyle height="4.7500ex">
+      <font size="9pt" name="multilingual"/>
+    </actionbarstyle>
+    <actionbuttonstyle margintype="fixed" margin="5" bgcolor="#c4dee1" displayborder="notesstyle" widthtype="background"/>
+    <font size="9pt" name="multilingual"/>
+    <border width="0px 0px 1px"/>
+    <action title="_Forward" showinbar="false" hide="web" systemcommand="forward"/>
+    <action title="_Edit Document" showinbar="false" hide="web" systemcommand="edit"/>
+    <sharedactionref id="63">
+      <action title="Mark Active" hide="web">
+        <code event="click">
+          <formula>@Command([ToolsRunMacro]; "(InactiveToActive)")</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="55">
+      <action title="Delete\Move to Trash" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>@Command([MoveToTrash])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="56">
+      <action title="Delete\Empty Trash" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>@Command([EmptyTrash])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="44">
+      <action title="Search" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>REM {Web only - used in Views};
+@Command([ViewShowSearchBar])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="60">
+      <action title="Database Help">
+        <code event="click">
+          <formula>@Command([HelpUsingDatabase])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+  </actionbar>
+  <column align="center" sort="ascending" hidedetailrows="false" itemname="$187" width="2.5000" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false" hidden="true">
+    <font size="9pt"/>
+    <columnheader title="Hidden for sorting">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <code event="value">
+      <formula>REM {for sorting the individual forms in non-alphabetical order};
+@If(form = "Mission"; 5;
+form = "ParticipantProfile";10 ;
+form = "Subteam"; 15;
+form = "announcement"; 20;
+ form = "Status" ; 25;
+form = "IndStat"; 30;
+form = "SubteamStatus"; 35;
+
+ 99)</formula>
+    </code>
+  </column>
+  <column align="center" sort="ascending" hidedetailrows="false" itemname="$135" width="2" resizable="true" separatemultiplevalues="true" sortnoaccent="true" sortnocase="true" showaslinks="false" categorized="true" twisties="true">
+    <font size="9pt" color="teal" style="bold"/>
+    <columnheader>
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <code event="value">
+      <formula>REM {variables to translate};
+InactTSforms := "- Team Status Reports";
+InactSTSforms := "- Subteam Status Reports\\" + SubteamName;
+InactPartforms := "- Team Members";
+SubteamTxt := "- Subteams";
+EventTxt := "- Milestone/Event";
+IndTxt := "- Individual Status Reports";
+AnnounceTxt := "- Announcements";
+REM {END variables to translate};
+
+@If(form  = "MainTopic"; DocType;
+form = "Status"; InactTSforms;
+form = "SubteamStatus"; InactSTSforms;
+form = "IndStat"; IndTxt;
+ form = "Event"; EventTxt;
+form = "ParticipantProfile"; InactPartForms;
+form = "announcement"; AnnounceTxt;
+form = "Subteam"; SubteamTxt;
+
+ form)</formula>
+    </code>
+  </column>
+  <column align="center" sort="ascending" resort="ascending" hidedetailrows="false" listseparator="comma" itemname="$129" width="9" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false" twisties="true" formatdatatype="datetime">
+    <font size="9pt"/>
+    <columnheader title="Date Filed">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <datetimeformat legacy="true" show="date" date="yearmonthday" time="hourminutesecond" zone="never"/>
+    <numberformat legacy="true" format="general" varying="true" digits="1" punctuated="false" parens="false" percent="false" bytes="false"/>
+    <code event="value">
+      <formula>@If(@IsResponseDoc; "";  @IsAvailable(IndStatInactive); IndStatInactive; Datefiled)</formula>
+    </code>
+  </column>
+  <column align="center" hidedetailrows="false" itemname="$116" width="2" resizable="false" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <font size="9pt"/>
+    <columnheader>
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <code event="value">
+      <formula>@If(@IsResponseDoc; ""; @DocDescendants(""; "%"; "%"))</formula>
+    </code>
+  </column>
+  <column align="center" sort="ascending" hidedetailrows="false" itemname="$121" width="1" resizable="false" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="false" hidden="true">
+    <font size="9pt" color="gray"/>
+    <columnheader title="hidden">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <code event="value">
+      <formula>@Created</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" listseparator="comma" itemname="$136" width="1.6250" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="true" responsesonly="true" twisties="true">
+    <font size="9pt"/>
+    <columnheader>
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <datetimeformat legacy="true" show="date" date="yearmonthday" time="hourminutesecond" zone="never"/>
+    <numberformat legacy="true" format="general" digits="2" punctuated="false" parens="false" percent="false" bytes="false"/>
+    <code event="value">
+      <formula>PrivateTxt := "PRIVATE: ";
+ExpiredTxt := "EXPIRED: ";
+AuthorName := @If(!@IsAvailable(From); "Anonymous"; @Name([Abbreviate]; From));
+@If(readers != ""; PrivateTxt; ExpireDate != ""; ExpiredTxt; "") + @If(Subject != ""; Subject + "  "; "") + "(" + AuthorName + " " + @Text(@Created; "D2S0") + ")"</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" listseparator="comma" itemname="$137" width="42.1250" resizable="true" separatemultiplevalues="false" sortnoaccent="true" sortnocase="true" showaslinks="true">
+    <font size="9pt"/>
+    <columnheader title="Topic">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <code event="value">
+      <formula>PrivateTxt := "PRIVATE: ";
+ExpiredTxt := "EXPIRED: ";
+MemberTxt := "Team Member Profile for: ";
+Author := @If(form = "Interest Profile"; ""; " (" + @Name([Abbreviate]; From) + ")");
+Subj := @If(form = "Event"; EventSummary + " (" + @Text(EventDate) + ")"; form = "ParticipantProfile";
+MemberTxt + @Name([Abbreviate]; Who); Subject);
+@If(readers != ""; PrivateTxt; ExpireDate != ""; ExpiredTxt; "") + Subj + Author</formula>
+    </code>
+  </column>
+</view>

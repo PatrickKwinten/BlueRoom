@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="s:TeamRoom DataSource" alias="sDataSource" publicaccess="false" renderpassthrough="true">
+  <actionbar bordercolor="black">
+    <actionbuttonstyle bgcolor="#d4d0c8"/>
+    <font color="system"/>
+    <border style="solid" width="0px 0px 1px"/>
+  </actionbar>
+  <body>
+    <richtext>
+      <pardef id="1"/>
+      <par def="1">
+        <run>
+          <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+        </run>
+      </par>
+      <par def="1">
+        <run>
+          <font size="18pt" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>DataSource Definition</run>
+      </par>
+      <par def="1">
+        <run>
+          <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+        </run>
+      </par>
+      <table cellbordercolor="silver" widthtype="fixedleft" rowspacing="0.0396in" columnspacing="0.0785in" refwidth="10.3139in">
+        <tablecolumn width="1.9688in"/>
+        <tablecolumn width="1.9688in"/>
+        <tablecolumn width="5.9056in"/>
+        <tablerow>
+          <tablecell borderwidth="1px 0px" bgcolor="yellow">
+            <pardef id="3" keepwithnext="true" keeptogether="true"/>
+            <par def="3">
+              <run>
+                <font style="italic" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>Key</run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px" bgcolor="yellow">
+            <pardef id="4" keepwithnext="true" keeptogether="true"/>
+            <par def="4">
+              <run>
+                <font style="italic" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>Value</run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px" bgcolor="yellow">
+            <pardef id="5" keepwithnext="true" keeptogether="true"/>
+            <par def="5">
+              <run>
+                <font style="italic" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>Good to know</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="1px 0px">
+            <par def="3">
+              <run>
+                <font style="bold" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>name</run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="4">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+                <field type="text" kind="editable" name="name"/>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>Choose an unique name for identifying the data-source...</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="1px 0px">
+            <par def="3">
+              <run>
+                <font style="bold" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>serverName</run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="4">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+                <field type="text" kind="editable" name="serverName"/>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>Enter the name of the server when the data DOES NOT reside on the same server where the application design (NSF) resides.</run>
+            </par>
+            <pardef id="6" spacebefore="2" spaceafter="1.5" keepwithnext="true" keeptogether="true"/>
+            <par def="6">
+              <run>
+                <font size="8pt" style="bold" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>Leave empty when data resides in the default data database and using the datasource.properties file.</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="1px 0px">
+            <par def="3">
+              <run>
+                <font style="bold" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>dbName</run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="4">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+                <field type="text" kind="editable" name="dbName"/>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>Enter the name of the database when the data DOES NOT reside on the default data database.</run>
+            </par>
+            <par def="6">
+              <run>
+                <font size="8pt" style="bold" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>Leave empty when data resides in the default data database and using the datasource.properties file.</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="1px 0px">
+            <par def="3">
+              <run>
+                <font style="bold" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>viewName</run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="4">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+                <field type="text" kind="editable" name="viewName"/>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>Enter the name of the data table/view where the data resides.</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="1px 0px">
+            <par def="3">
+              <run>
+                <font style="bold" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>columnIndex</run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="4">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+                <field type="text" kind="editable" name="columnIndex">
+                  <code event="defaultvalue">
+                    <formula>"1"</formula>
+                  </code>
+                </field>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>Column in the table where the JSON data resides. </run>
+            </par>
+            <par def="6">
+              <run>
+                <font size="8pt" style="bold" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>The column index is zero-based (first column = 0, second = 1 etcetera).</run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <par def="1">
+        <run>
+          <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+        </run>
+      </par>
+      <par def="1">
+        <run>
+          <font size="8pt" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>Additional information:</run>
+      </par>
+      <par def="1">
+        <run>
+          <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+        </run>
+        <run>
+          <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+          <field type="richtext" kind="editable" name="Body"/>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAEAAAA=
+</compositedata>
+        <run>
+          <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+</form>

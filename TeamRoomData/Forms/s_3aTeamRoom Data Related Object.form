@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="s:TeamRoom Data Related Object" alias="RelatedObject" publicaccess="false" renderpassthrough="true">
+  <body>
+    <richtext>
+      <pardef id="1"/>
+      <par def="1">
+        <run>
+          <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+        </run>
+      </par>
+      <par def="1">
+        <run>
+          <font size="18pt" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>Related Object</run>
+      </par>
+      <par def="1">
+        <run>
+          <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+        </run>
+      </par>
+      <table cellbordercolor="gray" widthtype="fixedleft" rowspacing="0.0396in" columnspacing="0.0785in" refwidth="11.4944in">
+        <tablecolumn width="1.1813in"/>
+        <tablecolumn width="3.9368in"/>
+        <tablecolumn width="5.9056in"/>
+        <tablerow>
+          <tablecell borderwidth="1px 0px" bgcolor="yellow">
+            <pardef id="3" keepwithnext="true" keeptogether="true"/>
+            <par def="3">
+              <run>
+                <font style="italic" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>Key</run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px" bgcolor="yellow">
+            <pardef id="4" keepwithnext="true" keeptogether="true"/>
+            <par def="4">
+              <run>
+                <font style="italic" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>Value</run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px" bgcolor="yellow">
+            <pardef id="5" keepwithnext="true" keeptogether="true"/>
+            <par def="5">
+              <run>
+                <font style="italic" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>Good to know</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="1px 0px">
+            <par def="3">
+              <run>
+                <font style="bold" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>Status</run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="4">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+                <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="Status">
+                  <keywords helperbutton="false" columns="2" ui="radiobutton">
+                    <textlist>
+                      <text>enable|1</text>
+                      <text>disable|0</text>
+                    </textlist>
+                  </keywords>
+                  <code event="defaultvalue">
+                    <formula>"1"</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>Wenn enable, dann in der Ansicht sichtbar und wird benutzt</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="1px 0px">
+            <par def="3">
+              <run>
+                <font style="bold" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>Object1 (From)</run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="4">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+                <field type="text" kind="editable" name="Object1"/>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>Name of the Object. Will be used as key in a lookup.</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="1px 0px">
+            <par def="3">
+              <run>
+                <font style="bold" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>Object2 (To)</run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="4">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+                <field type="text" kind="editable" name="Object2"/>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>Type der Objects in der Collection. Setzt TargetXpage bzw. content(type) Parameter in URL</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="1px 0px">
+            <par def="3">
+              <run>
+                <font style="bold" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>name</run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="4">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+                <field type="text" kind="editable" name="name"/>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>Bezeichnung der Relation. Wird als Caption in der RelationsBar verwendet</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="1px 0px">
+            <par def="3">
+              <run>
+                <font style="bold" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>category</run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="4">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+                <field type="text" kind="editable" name="category"/>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>Kategorie der Relation. Zur Zusammenfassung mehrerer Relationen.</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="1px 0px">
+            <par def="3">
+              <run>
+                <font style="bold" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>sort</run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="4">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+                <field type="number" kind="editable" name="sort">
+                  <numberformat format="general" digits="2" punctuated="false" parens="false" percent="false" bytes="false"/>
+                </field>
+              </run>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>Number, used for positioning (number ordering) in the list.</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="1px 0px">
+            <par def="3">
+              <run>
+                <font style="bold" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="4">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="1px 0px">
+            <par def="3">
+              <run>
+                <font style="bold" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>picture</run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="4">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+                <field type="text" kind="editable" name="picture"/>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>Which font-awesome image to be used to display the relation.</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="1px 0px">
+            <par def="3">
+              <run>
+                <font style="bold" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>Filter</run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="4">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+                <field type="text" kind="editable" name="filterConfig"/>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>Erzeuge ein JSONObjekt. z.B.</run>
+            </par>
+            <pardef id="6" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in" keepwithnext="true" keeptogether="true"/>
+            <par def="6">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>{</run>
+            </par>
+            <par def="6">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>     "filterName": "Person_Filter", //interactionConfig</run>
+            </par>
+            <par def="6">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>     "filterOptions" :</run>
+            </par>
+            <par def="6">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>  [</run>
+            </par>
+            <par def="6">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>    {</run>
+            </par>
+            <par def="6">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>        "name": "Beziehung",</run>
+            </par>
+            <par def="6">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>        "</run>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>propertyName</run>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>": "relation",</run>
+            </par>
+            <par def="6">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>        "method": "add"</run>
+            </par>
+            <par def="6">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>     },</run>
+            </par>
+            <par def="6">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>        "name": "Unternehmen",</run>
+            </par>
+            <par def="6">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>        "propertyName": "companyName",</run>
+            </par>
+            <par def="6">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>        "method": "remove"</run>
+            </par>
+            <par def="6">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>     }</run>
+            </par>
+            <par def="6">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>  ]</run>
+            </par>
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>}</run>
+            </par>
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>Felder </run>
+            </par>
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>"filterName": Name des Standard-Filters (InteractionConfig) (z.B. "Person_Filter"). Hier kann auch "NoFilter" angegeben werden, wenn kein Filter erwünscht ist.</run>
+            </par>
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>"filterOptions":</run>
+            </par>
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>- name: Name der Facette (display)</run>
+            </par>
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>- propertyName: Aus dem JSON-Object wird der Wert entsprechend dem Key geholt</run>
+            </par>
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>- method: Möglichkeit den Standard-Filter zu manipulieren (unterstützte Optionen "add", "replace", "remove")</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="1px 0px">
+            <par def="3">
+              <run>
+                <font style="bold" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>Collectionsort</run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="4">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+                <field type="text" kind="editable" name="CollectionSort"/>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>Name des Feldes im JSOnObj + "#" + 0(aufsteigend)/1(absteigend)</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="1px 0px">
+            <par def="3">
+              <run>
+                <font style="bold" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>initalLoad</run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="4">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+                <field type="text" kind="editable" name="initialLoad"/>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>gebe "1" an, wenn dieser RelationType bereits beim Laden des Objects geladen werden soll.</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="1px 0px">
+            <par def="3">
+              <run>
+                <font style="bold" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>DefaultRelation</run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="4">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+                <field type="text" kind="editable" name="DefaultRelation"/>
+              </run>
+              <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+          <tablecell borderwidth="1px 0px">
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>Name der (Sub)Relation, die beim Klick auf den Button geladen werden soll.</run>
+            </par>
+            <par def="5">
+              <run>
+                <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20" color="gray"/>Ist hier nicht angegeben, werden alle SubRelations geladen</run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <par def="1">
+        <run>
+          <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+        </run>
+      </par>
+      <par def="1">
+        <run>
+          <font size="8pt" name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>Additional information:</run>
+        <run>
+          <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+        </run>
+      </par>
+      <par def="1">
+        <run>
+          <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+        </run>
+        <run>
+          <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+          <field type="richtext" kind="editable" name="Body"/>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAEAAAA=
+</compositedata>
+        <run>
+          <font name="Lucida Sans Unicode" pitch="variable" truetype="true" familyid="20"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+  <item name="sort" summary="false">
+    <number>0</number>
+  </item>
+</form>

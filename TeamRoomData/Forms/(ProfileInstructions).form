@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="(ProfileInstructions)" alias="(ProfileInstructions)" nocompose="true" publicaccess="false" language="en">
+  <code event="windowtitle">
+    <formula>"Newsletter Profile Help"</formula>
+  </code>
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1"/>
+      <subformref name="WebFont"/>
+      <par def="1"/>
+      <table user4spacing="true" widthtype="fixedleft" refwidth="5.7500in">
+        <tablecolumn width="5.7500in"/>
+        <tablerow>
+          <tablecell borderwidth="0px">
+            <pardef id="3" leftmargin="2%" rightmargin="100%" firstlineleftmargin="3%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="3"/>
+            <table widthtype="fitmargins" leftmargin="0" rightmargin="100%" refwidth="5.7500in">
+              <tablecolumn width="100%"/>
+              <tablerow>
+                <tablecell borderwidth="0px 0px 2px" bgcolor="#78b4bc">
+                  <pardef id="5" leftmargin="0.1000in" keepwithnext="true" keeptogether="true"/>
+                  <par def="5">
+                    <run>
+                      <font size="6pt" style="bold" color="white"/>
+                    </run>
+                  </par>
+                  <par def="5">
+                    <run>
+                      <font size="12pt" style="bold" color="white"/>Newsletter Profile Help</run>
+                  </par>
+                  <par def="5">
+                    <run>
+                      <font size="4pt" style="bold" color="white"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <pardef id="6" leftmargin="2%" rightmargin="100%" firstlineleftmargin="3%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="6">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="7" leftmargin="2%" rightmargin="100%" firstlineleftmargin="3%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="7">
+              <run>
+                <font size="9pt" name="user-interface"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="white">
+            <pardef id="8" leftmargin="0.1000in" rightmargin="98%" keepwithnext="true" keeptogether="true"/>
+            <par def="8">
+              <run>
+                <font size="9pt"/>The Newsletter Profile allows you to find and follow TeamRoom topics that meet the criteria you designate in the Newsletter Profile. You will be notified of the relevant TeamRoom topics via a newsletter which will be mailed to you.  This newsletter will contain document links to the TeamRoom topics that meet your criteria.</run>
+            </par>
+            <pardef id="9" leftmargin="0.1000in" rightmargin="98%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="10" leftmargin="0.1000in" rightmargin="98%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="10">
+              <run>
+                <font size="9pt" color="white"/>
+              </run>
+            </par>
+            <pardef id="11" leftmargin="0.1000in" rightmargin="98%" keeptogether="true"/>
+            <par def="11">
+              <run>
+                <font size="9pt"/>You can choose the following in your Newsletter Profile:</run>
+            </par>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt" color="white"/>
+              </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt" style="bold"/>Inform me of new documents by these Authors</run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt"/>Specify one or more team members. 	</run>
+            </par>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt" color="white"/>
+              </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt" style="bold"/>Inform me of new documents in these Categories</run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt"/>Specify a category or categories that you wish to follow.</run>
+            </par>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt" color="white"/>
+              </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt" style="bold"/>Inform me of new documents referencing these Events</run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt"/>For example</run>
+              <run>
+                <font size="9pt" style="bold"/>
+              </run>
+            </par>
+            <par def="11">
+              <run>
+                <font size="9pt"/>Beta Release (April 23, 1989)</run>
+            </par>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt" color="white"/>
+              </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt" style="bold"/>Inform me of new documents referencing these Subteams</run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt"/>Specify one or more subteams.</run>
+            </par>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt" color="white"/>
+              </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt" style="bold"/>Inform me of new document Subjects containing these words or phrases </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt"/>Specify a word or phrase that would be contained in the subject of the document.</run>
+            </par>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt" style="bold"/>Do not send Newsletter if document is "Inactive"</run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt"/>Click the checkbox if you want documents which have been marked "Inactive" to be omitted from your newsletter.</run>
+            </par>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt" color="white"/>
+              </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt"/>In addition to the above selections, you can choose to track any individual discussion thread by selecting a document in that thread, then choosing the </run>
+              <run>
+                <font size="9pt"/>Actions menu </run>
+              <run>
+                <font size="9pt"/>item: </run>
+              <run>
+                <font size="9pt"/>Add Selected Topic to Newsletter Profile </run>
+              <run>
+                <font size="9pt"/>for Notes users</run>
+              <run>
+                <font size="9pt"/>.  </run>
+              <run>
+                <font size="9pt"/>Web users should open the main topic document that they want added and select the </run>
+              <run>
+                <font size="9pt"/>Add Selected Topic to Newsletter Profile</run>
+              <run>
+                <font size="9pt"/> action from the document.</run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+              <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="system">
+                <code event="click">
+                  <formula>@Command([FilePrint])</formula>
+                </code>
+                <font size="9pt"/>Print</button>
+              <run>
+                <font size="9pt"/>
+              </run>
+              <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="system">
+                <code event="click">
+                  <formula>@Command([FileCloseWindow])</formula>
+                </code>
+                <font size="9pt"/>Done</button>
+              <run>
+                <font size="9pt" style="bold"/>
+              </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt" style="bold"/>
+              </run>
+            </par>
+            <par def="9">
+              <run>
+                <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="teal"/>
+              </run>
+              <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="system">
+                <code event="onClick" for="web">
+                  <javascript>window.close(self)</javascript>
+                </code>
+                <code event="onClick" for="client">
+                  <javascript>window.close(self)</javascript>
+                </code>
+                <font size="9pt"/>Done</button>
+            </par>
+            <pardef id="12" leftmargin="4%" rightmargin="98%" hide="mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="12">
+              <run>
+                <font size="9pt" color="white"/> </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="13"/>
+      <par def="13">
+        <run>
+          <font size="9pt"/>
+        </run>
+      </par>
+      <pardef id="14" leftmargin="1in" hide="read edit copy preview previewedit"/>
+      <par def="14">
+        <run>
+          <font size="9pt"/>
+        </run>
+        <run>
+          <font size="9pt" color="red"/>
+          <field type="text" kind="computedwhencomposed" name="HiddenDocument">
+            <code event="defaultvalue">
+              <formula>"1"</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" color="green"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+  <item name="$HTMLDocumentStyles" summary="true" sign="true">
+    <rawitemdata type="1">
+0ggBAAAA/wDSCAEA/wAAANIIAQCAAIAA
+</rawitemdata>
+  </item>
+  <item name="$SubForm_RepIDs" sign="true">
+    <text>0000000000000000</text>
+  </item>
+</form>

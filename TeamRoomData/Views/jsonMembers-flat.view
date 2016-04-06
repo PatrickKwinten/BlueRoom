@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view xmlns="http://www.lotus.com/dxl" name="jsonMembers-flat" showinmenu="false" noreplace="true" publicaccess="false" unreadmarks="none" onopengoto="lastopened" onrefresh="displayindicator" headers="beveled" opencollapsed="false" showresponsehierarchy="false" showmargin="true" shrinkrows="false" extendlastcolumn="true" showhierarchies="false" unreadcolor="black" rowlinecount="1" headerlinecount="1" rowspacing="1" bgcolor="white" totalscolor="blue" headerbgcolor="white" boldunreadrows="false" evaluateactions="false" allownewdocuments="false" allowcustomizations="false" hidemarginborder="false" marginwidth="0px" marginbgcolor="white" uniquekeys="false">
+  <code event="selection">
+    <formula>SELECT (form = "ParticipantProfile" | form = "Participant Profile") &amp; status = "1"</formula>
+  </code>
+  <actionbar bordercolor="black">
+    <actionbuttonstyle bgcolor="silver"/>
+    <border width="0px 0px 1px"/>
+    <action title="Categori_ze" showinmenu="false" showinbar="false" systemcommand="categorize"/>
+    <action title="_Edit Document" showinbar="false" systemcommand="edit"/>
+    <action title="Send Docu_ment" showinbar="false" systemcommand="send"/>
+    <action title="_Forward" showinbar="false" systemcommand="forward"/>
+    <action title="_Move To Folder..." showinbar="false" systemcommand="movetofolder"/>
+    <action title="_Remove From Folder" showinbar="false" systemcommand="removefromfolder"/>
+  </actionbar>
+  <column sort="ascending" hidedetailrows="false" itemname="$14" width="17.1250" resizable="true" separatemultiplevalues="false" sortnoaccent="false" sortnocase="true" showaslinks="false">
+    <font size="8pt" color="red" name="Courier New" pitch="fixed" truetype="true" familyid="30"/>
+    <columnheader title="sort">
+      <font size="9pt" style="bold"/>
+    </columnheader>
+    <code event="value">
+      <formula>@Name([Abbreviate]; Who)</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" itemname="$15" width="68.6250" resizable="true" separatemultiplevalues="false" sortnoaccent="false" sortnocase="true" showaslinks="false">
+    <font size="8pt" name="Courier New" pitch="fixed" truetype="true" familyid="30"/>
+    <columnheader title="json">
+      <font size="9pt" style="bold"/>
+    </columnheader>
+    <code event="value">
+      <formula>REM {v1.0};
+src:="\\":"'":@NewLine:"\"";
+dst:="\\\\":"\\'":"\\n":"\\\"";
+
+REM { Notes identification properties };
+tmpUNID:=@Text(@DocumentUniqueID);
+tmpNoteID:=@Text(@NoteID);
+
+REM { Build Arrays from custom fields for the JSONObject };
+tmpNotesName:=Who;
+tmpCreated:=@Text(@Created);
+tmpEmail:=Email;
+tmpTitle:=JobTitle;
+
+REM { Avatar URL };
+hlpDUMMYPic:= "";
+hasPicture:= @If(@AttachmentNames !=""; @True; @False);
+tmpPicture:= @If(hasPicture; @AttachmentNames ;hlpDUMMYPic);
+
+separator:="\",";
+closure:="\"";
+
+"{" +
+
+"\"docUNID\":\"" + @ReplaceSubstring( tmpUNID; Src; Dst ) + separator +
+"\"docID\":\"" + @ReplaceSubstring( tmpNoteID; Src; Dst ) + separator +
+
+"\"member\":\"" + @ReplaceSubstring( tmpNotesName; Src; Dst ) + separator +
+"\"created\":\"" + @ReplaceSubstring( tmpCreated; Src; Dst ) + separator +
+"\"email\":\"" + @ReplaceSubstring( tmpEmail; Src; Dst ) + separator +
+"\"title\":\"" + @ReplaceSubstring( tmpTitle; Src; Dst ) + separator +
+"\"avatar\":\"" + @ReplaceSubstring( tmpPicture; Src; Dst ) + closure +
+
+
+"}"</formula>
+    </code>
+  </column>
+</view>

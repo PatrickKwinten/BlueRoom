@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://www.lotus.com/dxl" name="HelpACL" alias="HelpACL" publicaccess="false" language="en">
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="print notes embedded" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>&lt;HEAD&gt;<break/>&lt;STYLE TYPE="text/css"&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/> 	BODY {font-family: sans-serif}</run>
+      </par>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>&lt;/STYLE&gt;<break/>&lt;/HEAD&gt;</run>
+      </par>
+      <table widthtype="fixedleft" refwidth="5.8750in">
+        <tablecolumn width="5.8750in"/>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="#78b4bc">
+            <pardef id="3" leftmargin="1%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="3">
+              <run>
+                <font size="12pt"/>
+              </run>
+            </par>
+            <table widthtype="fitmargins" leftmargin="0" refwidth="5.8750in">
+              <tablecolumn width="100%"/>
+              <tablerow>
+                <tablecell borderwidth="0px 0px 2px">
+                  <pardef id="5" leftmargin="0.0104in" spacebefore="1.5" keepwithnext="true" keeptogether="true"/>
+                  <par def="5">
+                    <run>
+                      <font size="9pt"/> </run>
+                    <run>
+                      <font size="12pt" style="bold"/>Recommendations for ACL Control</run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <par def="3">
+              <run>
+                <font size="11pt"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="0px">
+            <pardef id="6" leftmargin="2%" rightmargin="98%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="6">
+              <run html="true">
+                <font size="9pt"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="7" leftmargin="2%" rightmargin="98%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="7">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <pardef id="8" leftmargin="6%" rightmargin="98%" list="bullet" keepwithnext="true" keeptogether="true"/>
+            <par def="8">
+              <run>
+                <font size="9pt" name="user-interface"/>The default access of a database created with this template is "Author".  </run>
+            </par>
+            <par def="6">
+              <run html="true">
+                <font size="9pt"/>&lt;br&gt;</run>
+            </par>
+            <par def="7">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <pardef id="9" leftmargin="0.3500in" rightmargin="98%" list="bullet" keepwithnext="true" keeptogether="true"/>
+            <par def="9">
+              <run>
+                <font size="9pt" name="user-interface"/>If you wish to make this a private TeamRoom, assign the default an access level of "No Access".  Add name(s) or group(s) of individuals who will be involved in this TeamRoom to the ACL.  These people/groups should have "Author" access.  </run>
+            </par>
+            <pardef id="10" leftmargin="0.1000in" rightmargin="98%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="10">
+              <run html="true">
+                <font size="9pt"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="11" leftmargin="0.1000in" rightmargin="98%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="11">
+              <run>
+                <font size="9pt" name="user-interface"/>
+              </run>
+            </par>
+            <par def="9">
+              <run>
+                <font size="9pt" name="user-interface"/>The people listed in the TeamRoom Setup as the Team Facilitator and Team Leader should have a minimum of "Editor" access.  This will allow them full use of the Leader/Facilitator Options. </run>
+            </par>
+            <par def="10">
+              <run html="true">
+                <font size="9pt"/>&lt;br&gt;</run>
+            </par>
+            <par def="11">
+              <run html="true">
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="9">
+              <run>
+                <font size="9pt" name="user-interface"/>If there are people other than the Leader/Facilitator who add categories, participants, etc., they should be added to the ACL with "Editor" access.  These people will also see all of the Team Leader/Facilitator options in the main outline of the TeamRoom.</run>
+            </par>
+            <par def="10">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="11">
+              <run>
+                <font size="9pt" name="user-interface"/>
+              </run>
+            </par>
+            <par def="9">
+              <run>
+                <font size="9pt" name="user-interface"/>You may want to give Subteam leaders "Editor" access so they can modify subteam profiles, create subteam status documents, etc.</run>
+            </par>
+            <par def="10">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="11">
+              <run>
+                <font size="9pt" name="user-interface"/>
+              </run>
+            </par>
+            <par def="9">
+              <run>
+                <font size="9pt" name="user-interface"/>Important note:  Anyone with Editor access or above can modify the TeamRoom Setup.</run>
+            </par>
+            <par def="10">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="11">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="11">
+              <run>
+                <font size="9pt"/>
+              </run>
+              <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="system">
+                <code event="click">
+                  <formula>@Command([FilePrint])</formula>
+                </code>
+                <font size="9pt"/>Print</button>
+              <run>
+                <font size="9pt"/>
+              </run>
+              <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="system">
+                <code event="click">
+                  <formula>@Command([FileCloseWindow])</formula>
+                </code>
+                <font size="9pt"/>Return to dialog box</button>
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="11">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+              <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="system">
+                <code event="onClick" for="web">
+                  <javascript>history.back()</javascript>
+                </code>
+                <font size="9pt"/>Return to dialog box</button>
+              <run>
+                <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+            <par def="6">
+              <run>
+                <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="12" leftmargin="1in" hide="notes"/>
+      <par def="12">
+        <run>
+          <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+</page>

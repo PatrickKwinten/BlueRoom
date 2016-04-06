@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="Template NameWeb" nocompose="true" noquery="true" publicaccess="true" language="en" bgcolor="#78b4bc" noinitialfocus="true" nofocusonf6="true">
+  <actionbar bgcolor="#78b4bc" bordercolor="black">
+    <actionbarstyle height="4.7500ex">
+      <font size="9pt" name="multilingual"/>
+    </actionbarstyle>
+    <actionbuttonstyle margintype="fixed" margin="5" bgcolor="none" displayborder="never" widthtype="background"/>
+    <font size="14pt" name="multilingual"/>
+    <border style="solid" width="0px 0px 1px"/>
+  </actionbar>
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <subformref name="WebFont"/>
+      <pardef id="2" align="none" leftmargin="1in" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="2"/>
+      <table cellbordercolor="black" leftmargin="0.7396in" widthtype="fixedcenter" refwidth="2in">
+        <tablecolumn width="2in"/>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="#a8cfd4">
+            <pardef id="4" align="center" leftmargin="0.1000in" hide="notes" keepwithnext="true" keeptogether="true"/>
+            <par def="4">
+              <run>
+                <font style="bold"/>TeamRoom</run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="#a8cfd4">
+            <pardef id="5" align="center" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="5">
+              <run>
+                <font style="bold"/>
+              </run>
+              <run>
+                <font size="9pt"/>
+                <computedtext>
+                  <code event="value">
+                    <formula>View := "MissionLookup";
+TeamNameLookup := @DbLookup("" : "NoCache"; ""; View; "Mission"; 2);
+@If(@IsError(TeamNameLookup); ""; TeamNameLookup = ""; ""; TeamNameLookup)</formula>
+                  </code>
+                </computedtext>
+              </run>
+              <run>
+                <font style="bold"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="6" leftmargin="0.7500in"/>
+      <par def="6">
+        <run>
+          <font size="2pt" name="Small Fonts" pitch="variable" truetype="false" familyid="20" color="#002060"/>
+        </run>
+      </par>
+      <pardef id="7" hide="web"/>
+      <par def="7">
+        <run>
+          <font size="2pt" name="Small Fonts" pitch="variable" truetype="false" familyid="20" color="#002060"/> </run>
+      </par>
+      <pardef id="8" hide="read edit copy preview previewedit"/>
+      <par def="8">
+        <run>
+          <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="green"/>// This field prevents the form from saving a document.</run>
+      </par>
+      <par def="8">
+        <run>
+          <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="gray"/>SaveOptions: </run>
+        <run>
+          <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>
+          <field type="text" kind="computed" name="SaveOptions">
+            <code event="defaultvalue">
+              <formula>"0"</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="14pt"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+  <item name="$SubForm_RepIDs" sign="true">
+    <text>0000000000000000</text>
+  </item>
+</form>

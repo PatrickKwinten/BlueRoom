@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<outline xmlns="http://www.lotus.com/dxl" name="TeamRoomSetup" alias="MissionPage" hide="v3 v4strict" publicaccess="false" language="en">
+  <outlineentry label="Team Name &amp; Purpose" alias="Team Name &amp; Purpose" type="action">
+    <code event="value">
+      <formula>REM {DNT};
+@If($MissionPage = "Mission"; @Return(""); "");
+FIELD $MissionPage := "Mission";
+FIELD $MissionEmbedOutline := 1;
+@Command([RefreshHideFormulas])</formula>
+    </code>
+  </outlineentry>
+  <outlineentry label="Team Members" alias="Participants" type="action">
+    <code event="value">
+      <formula>REM {DNT};
+@If($MissionPage = "Participants"; @Return(""); "");
+FIELD $MissionPage := "Participants";
+FIELD $MissionEmbedOutline := 2;
+@Command([RefreshHideFormulas])</formula>
+    </code>
+  </outlineentry>
+  <outlineentry label="Categories" alias="Categories" type="action">
+    <code event="value">
+      <formula>REM {DNT};
+@If($MissionPage = "Categories"; @Return(""); "");
+FIELD $MissionPage := "Categories";
+FIELD $MissionEmbedOutline := 3;
+@Command([RefreshHideFormulas])</formula>
+    </code>
+  </outlineentry>
+  <outlineentry label="Document Types" alias="Document Types" type="action">
+    <code event="value">
+      <formula>REM {DNT};
+@If($MissionPage = "CommTypes"; @Return(""); "");
+FIELD $MissionPage := "CommTypes";
+FIELD $MissionEmbedOutline := 4;
+@Command([RefreshHideFormulas])</formula>
+    </code>
+  </outlineentry>
+  <outlineentry label="Milestones/Events" alias="Milestones/Events" type="action">
+    <code event="value">
+      <formula>REM {DNT};
+@If($MissionPage = "Events"; @Return(""); "");
+FIELD $MissionPage := "Events";
+FIELD $MissionEmbedOutline := 5;
+@Command([RefreshHideFormulas])</formula>
+    </code>
+  </outlineentry>
+  <outlineentry label="Advanced Options" alias="Advanced Options" type="action">
+    <code event="value">
+      <formula>REM {DNT};
+@If($MissionPage = "AdvOpt"; @Return(""); "");
+FIELD $MissionPage := "AdvOpt";
+FIELD $MissionEmbedOutline := 6;
+@Command([RefreshHideFormulas])</formula>
+    </code>
+  </outlineentry>
+</outline>

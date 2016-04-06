@@ -1,0 +1,27 @@
+/*RTL overrides and specific styles*/
+
+.xspHtmlTrView img{
+	float: right;
+}
+
+.dijitSliderBottomBumper, .dijitSliderLeftBumper{
+	margin-left:0px;
+	margin-right:5px;
+}
+
+.lotusPaging div, .xspPagerContainer .xspPagerLeft{
+	padding: 0px 0px 0px 4px;
+}
+
+.lotusui .dijitSlider .dijitSliderImageHandle {
+    left: -5px;
+}
+
+.xspPickerBodyWrapper .xspPickerInput {
+	float: right;
+	line-height: 1.6em;
+}
+
+.xspPickerBodyWrapper .xspPickerSpan {
+	line-height: 1.6em;
+}

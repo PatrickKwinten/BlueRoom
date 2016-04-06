@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<subform xmlns="http://www.lotus.com/dxl" name="ArchiveReminder" language="en">
+  <code event="helprequest">
+    <formula>@Command([OpenHelpDocument];[ClientHelp];"(Help)";"ArcDialogBox")</formula>
+  </code>
+  <body>
+    <richtext>
+      <pardef id="1"/>
+      <par def="1"/>
+      <table widthtype="fixedleft" refwidth="4.5625in">
+        <tablecolumn width="4.5625in"/>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="system">
+            <pardef id="3" leftmargin="0.1000in" rightmargin="98%" keepwithnext="true" keeptogether="true"/>
+            <par def="3"/>
+            <par def="3">
+              <run>
+                <font style="bold"/>Important notice:</run>
+            </par>
+            <pardef id="4" leftmargin="0.1000in" rightmargin="90%" keepwithnext="true" keeptogether="true"/>
+            <par def="4"/>
+            <pardef id="5" leftmargin="0.1000in" rightmargin="97%" keepwithnext="true" keeptogether="true"/>
+            <par def="5">Database Archiving is a tool in every Notes database.  When you mark a document as "Expired", it can be removed by the archiving process.  </par>
+            <par def="5"/>
+            <par def="5">You must first enable the archiving process (via File - Database - Properties) and you must also choose to archive documents marked as expired.  If these items are not set, the document(s) that you mark as expired will not be archived.</par>
+            <par def="5"/>
+            <pardef id="6" leftmargin="0.1000in" rightmargin="97%" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>REM {non-mac only};
+LCplat := @LowerCase(@Platform);
+@Contains(LCplat; "mac")</formula>
+              </code>
+            </pardef>
+            <par def="6">For more information on the Archive Dialog Box, click the ? in the right corner of this message box.</par>
+            <pardef id="7" leftmargin="0.1000in" rightmargin="97%" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>REM {mac only};
+LCplat := @LowerCase(@Platform);
+!@Contains(LCplat; "mac")</formula>
+              </code>
+            </pardef>
+            <par def="7">For more information on the Archive Dialog Box, click the ? on the right side of this message box.</par>
+            <par def="3"/>
+            <par def="3">
+              <field borderstyle="none" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="NoArchiveReminder" listinputseparators="comma" listdisplayseparator="comma" htmltitle="Archive reminder">
+                <keywords helperbutton="false" recalconchange="true" columns="1" ui="checkbox">
+                  <textlist>
+                    <text>Do not display this message box again|1</text>
+                  </textlist>
+                </keywords>
+                <code event="defaultvalue">
+                  <formula>"0"</formula>
+                </code>
+                <code event="inputtranslation">
+                  <formula>@If(NoArchiveReminder = "1"; @SetProfileField("temp"; "Reminder"; "1"); "");
+NoArchiveReminder</formula>
+                </code>
+              </field>
+            </par>
+            <pardef id="8" leftmargin="0.1000in" keepwithnext="true" keeptogether="true"/>
+            <par def="8"/>
+          </tablecell>
+        </tablerow>
+      </table>
+      <par def="1">
+        <field type="text" kind="computed" name="SaveOptions">
+          <code event="defaultvalue">
+            <formula>"0"</formula>
+          </code>
+        </field>
+      </par>
+    </richtext>
+  </body>
+  <item name="$SignatureStatus">
+    <text>1</text>
+  </item>
+</subform>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sharedfield xmlns="http://www.lotus.com/dxl" name="DateFiled" language="en">
+  <field type="datetime" kind="editable" name="DateFiled" htmlid="DateFiled">
+    <datetimeformat show="datetime" date="yearmonthday" showtodaywhenappropriate="true" time="hourminutesecond" zone="never"/>
+    <code event="inputtranslation">
+      <formula>@If(DateFiled = "" &amp; FileThisStatusDoc = "1"; @Now; DateFiled)</formula>
+    </code>
+  </field>
+</sharedfield>

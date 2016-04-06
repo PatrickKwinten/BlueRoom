@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sharedfield xmlns="http://www.lotus.com/dxl" name="From" language="en">
+  <field type="authors" kind="computedwhencomposed" name="From" description="Author of this document">
+    <code event="defaultvalue">
+      <formula>@UserName</formula>
+    </code>
+  </field>
+</sharedfield>

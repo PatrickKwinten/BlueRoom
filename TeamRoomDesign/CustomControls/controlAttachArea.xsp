@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xp_1="http://www.ibm.com/xsp/coreex">
+	<xp:table
+		style="#{javascript: 'width:100%;'+ compositeData.containerStyle}"
+		styleClass="#{javascript: compositeData.containerStyleClass}"
+		role="presentation" id="attachmentTable">
+		<xp:tr>
+			<xp:td valign="top">
+				<!--  the upload TD -->
+				<xp:panel id="panel2"
+					style="padding: 4px; margin-bottom:1em">
+					<xp:link escape="true" id="link2" text="Attach File"
+						role="button" title="Select this link to show or hide the file attachment field"
+						tabindex="0">
+						<xp:this.style><![CDATA[#{javascript:
+								if(context.isDirectionRTL())
+								{
+									return "float:right;";
+								}
+								else
+								{
+									return "float:left;";
+								}
+							}]]></xp:this.style>
+							<xp:this.attrs>
+								<!-- This is a hack workaround to get spacebar working on this link
+									 when added as a proper onkeydown event, other key events get blocked.
+									 Adding it as below, preserves other key functionality, whilst fixing
+									 the spacebar functionality-->
+								<xp:attr name="onkeydown" value="var kc=event.keyCode?event.keyCode:event.which;if(kc==32){var fileContainer = dojo.byId('#{id:fileContainer}');if(null != fileContainer){var displayStyle = fileContainer.style.display;if(!displayStyle || displayStyle == 'none'){fileContainer.style.display = 'block';}else{fileContainer.style.display = 'none';}}event.preventDefault();}else{return true;}"></xp:attr>
+							</xp:this.attrs>
+							<xp:eventHandler event="onclick" submit="false">
+								<xp:this.script><![CDATA[
+										var fileContainer = document.getElementById("#{id:fileContainer}");
+										//var upload = document.getElementById("#{id:fileUpload1}");
+										if(null != fileContainer)
+										{
+											var displayStyle = fileContainer.style.display;
+											if (!displayStyle || displayStyle == "none")
+											{
+												fileContainer.style.display = 'block';
+											} 
+											else 
+											{
+												fileContainer.style.display = 'none';
+											}
+										}
+									]]></xp:this.script>
+							</xp:eventHandler>
+						<xp:image id="image1"
+							url="/.ibmxspres/global/theme/oneui/images/iconGenericFile.gif"
+							alt="Add Attachment">
+						</xp:image>
+					</xp:link>
+				</xp:panel>
+				<xp:panel id="fileContainer" style="display:none;">
+					<xp:label for="fileUpload1"
+						style="margin-right:10px;">
+						File:
+					</xp:label>
+					<xp:fileUpload id="fileUpload1"
+						value="${javascript: '#{'+ compositeData.valueEL+'}' }"
+						style="margin-top:5px;"
+						title="Used to attach files to the document">
+						<xp:eventHandler event="onchange" submit="true"
+							refreshMode="complete">
+							<xp:this.action><![CDATA[#{javascript:// kick off round-trip...}]]></xp:this.action>
+						</xp:eventHandler>
+					</xp:fileUpload>
+				</xp:panel>
+			</xp:td>
+			<xp:td valign="top">
+				<!--  the download TD -->
+				<xp:fileDownload rows="30" id="fileDownload2"
+					displayLastModified="false" style="float:right" allowDelete="true"
+					hideWhen="true"
+					value="${javascript: '#{'+ compositeData.valueEL+'}' }">
+					<xp:this.facets>
+						<xp:label xp:key="caption" value="Attached files" id="fileList"
+							style="font-weight: bold;text-align: #{javascript: context.isDirectionRTL() ? 'right' : 'left'};">
+						</xp:label>
+					</xp:this.facets>
+					<xp:this.attrs>
+						<xp:attr name="aria-labelledby" value="#{id:fileList}">
+						</xp:attr>
+					</xp:this.attrs>
+				</xp:fileDownload>
+			</xp:td>
+		</xp:tr>
+	</xp:table>
+</xp:view>

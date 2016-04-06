@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sharedfield xmlns="http://www.lotus.com/dxl" name="Status" language="en">
+  <field type="text" kind="editable" name="Status" htmlid="Status">
+    <code event="defaultvalue">
+      <formula>"1"</formula>
+    </code>
+    <code event="inputtranslation">
+      <formula>@If(FileThisStatusDoc = "1"; "0"; "1")</formula>
+    </code>
+  </field>
+</sharedfield>

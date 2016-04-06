@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sharedfield xmlns="http://www.lotus.com/dxl" name="$TemplateBuild" language="en">
+  <field type="text" kind="editable" name="$TemplateBuild"/>
+  <item name="$TemplateBuild" sign="true">
+    <text>9.0.1</text>
+  </item>
+  <item name="$TemplateBuildName" sign="true">
+    <text>StdR9TeamRoom</text>
+  </item>
+  <item name="$TemplateBuildDate" sign="true">
+    <datetime dst="true">20131002T160548,00+01</datetime>
+  </item>
+  <item name="$TemplateBuildTool" sign="true">
+    <text>CICO</text>
+  </item>
+</sharedfield>

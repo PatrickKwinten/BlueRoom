@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+
+	<xp:div id="moreOptionsOuterDiv">
+		<xp:section id="sectionMoreOptions" header="More options"
+			initClosed="true" disableTheme="true"
+			headerStyle="text-decoration:none">
+			<xp:eventHandler event="onclick" submit="true"
+				refreshMode="partial" refreshId="moreOptionsOuterDiv"
+				disableValidators="true">
+				<xp:this.action><![CDATA[#{javascript:							
+					var div = getComponent("moreOptionsDiv");
+					var style = div.style;
+					if("" != style && style.indexOf("none") > -1) {
+						div.style = "padding:10px;";
+					}else{
+						div.style = "display:none;padding:10px;";
+					}}]]>
+				</xp:this.action>
+			</xp:eventHandler>
+			<xp:eventHandler event="onkeydown" submit="true"
+				refreshMode="partial" refreshId="moreOptionsOuterDiv"
+				disableValidators="true">
+				<xp:this.script><![CDATA[
+					var kc=thisEvent.keyCode?thisEvent.keyCode:thisEvent.which;
+					//Capture the key. If enter or space, pass-through to SSJS
+					if(kc==32 || kc==13){
+						return true;
+					}else{
+						return false;
+					}]]>
+				</xp:this.script>
+				<xp:this.action><![CDATA[#{javascript:
+					var div = getComponent("moreOptionsDiv");
+					var section = getComponent("sectionMoreOptions");
+					var style = div.style;
+					if("" != style && style.indexOf("none") > -1) {
+						div.style = "padding:10px;";
+						section.setClosed(false);
+					}else{
+						div.style = "display:none;padding:10px;";
+						section.setClosed(true);
+					}}]]>
+				</xp:this.action>
+			</xp:eventHandler>
+		</xp:section>
+		<xp:div id="moreOptionsDiv" style="display:none;padding:10px">
+			<xe:formTable disableErrorSummary="true" ariaLabel="More Options">
+				<xe:formRow id="associatedEventRow" label="Associated event:">
+					<xe:this.style><![CDATA[#{javascript:if(context.isDirectionRTL()) {
+							return "text-align: right;";
+						}}]]>
+					</xe:this.style>
+					<xe:this.labelWidth><![CDATA[#{javascript:if(context.isDirectionRTL()) {
+							return "10%";
+						}}]]>
+					</xe:this.labelWidth>
+					<xp:comboBox id="fieldAssociatedEvent"
+						value="#{document1.Milestones}" style="width:300px">
+						<xp:selectItem itemLabel="#{''}"></xp:selectItem>
+						<xp:selectItems>
+							<xp:this.value><![CDATA[#{javascript:// Get the keywords from the appropriate view
+								@DbColumn(@DbName(), "EventLookup", 1);
+							}]]></xp:this.value>
+						</xp:selectItems>
+					</xp:comboBox>
+				</xe:formRow>
+
+				<xe:formRow id="subteamsRow" label="Associated subteams:">
+					<xp:listBox id="listboxAssociatedSubteams"
+						value="#{document1.SubteamInterest}" multiple="true"
+						style="width:300.0px">
+						<xp:selectItems>
+							<xp:this.value><![CDATA[#{javascript:// Get the keywords from the appropriate view
+								@DbColumn(@DbName(), "SubteamLookup", 1);
+							}]]></xp:this.value>
+						</xp:selectItems>
+					</xp:listBox>
+				</xe:formRow>
+
+				<xe:formRow id="rowMarkInactive" labelPosition="none">
+					<xp:checkBox text="Mark document inactive on: "
+						id="checkboxInactiveOn" value="#{requestScope.checkboxNeverFile}"
+						defaultChecked="#{javascript: document1.getItemValueString('NeverFile') != '1' }">
+						<xp:eventHandler event="onchange" submit="true"
+							refreshMode="partial" refreshId="moreOptionsOuterDiv"
+							disableValidators="true">
+							<xp:this.script><![CDATA[//
+								var hiddenNeverFile = XSP.getElementById('#{id:hiddenNeverFile}');
+								var checkBox = XSP.getElementById('#{id:checkboxInactiveOn}');
+								if( checkBox.checked ){
+									hiddenNeverFile.value='';
+								}else{
+									hiddenNeverFile.value='1';
+								}
+							]]></xp:this.script>
+						</xp:eventHandler>
+					</xp:checkBox>
+					
+					<xp:inputHidden id="hiddenNeverFile"
+						value="#{document1.NeverFile}">
+					</xp:inputHidden>
+
+					<xp:inputText id="fieldInactiveOn" value="#{document1.FileByDate}"
+						title="Used to select a date">
+						<xp:this.readonly><![CDATA[#{javascript://
+							var checkboxInactiveOn = getComponent("checkboxInactiveOn");
+							var state = checkboxInactiveOn.getSubmittedValue();
+							if( null == state ){
+								state = checkboxInactiveOn.getValue();
+							}
+							return (state=="false");
+						}]]></xp:this.readonly>
+						<xp:this.style><![CDATA[#{javascript://SPR #CCNI9AE43M - The width value causes issues in IE bidi
+							if(!(context.isDirectionRTL() && context.getUserAgent().isIE(7, 10))) {
+								return "width: 20%;float: none;margin-left: 5px;";
+							}else{
+								return "float: none;margin-left: 5px;";
+							}}]]>
+						</xp:this.style>
+						<xp:this.defaultValue><![CDATA[#{javascript://
+							//Get default filing interval choice from Advanced Options page
+							var defaultfiledate = @DbLookup(@DbName(), "MissionLookup", "Mission", 6); // column 6 is DefaultFilingInterval
+							
+							// Convert default to appropriate date.
+							// note, "1 week", "2 weeks" etc are not translated
+							var days = -1;
+							if( defaultfiledate == "1 week" ){
+								days = 7;
+							}else if( defaultfiledate == "2 weeks" ){
+								days = 14;
+							}else if( defaultfiledate == "3 weeks" ){
+								days = 21;
+							}else if( defaultfiledate == "1 month" ){
+								days = 30;
+							}else if( defaultfiledate == "2 months" ){
+								days = 60;
+							}else if( defaultfiledate == "3 months" ){
+								days = 90;
+							}// else team setup not done
+							if( days > 0 )
+							{
+								var date = java.util.Calendar.getInstance(context.getLocale());
+								date.add(java.util.Calendar.DATE, days);
+								return date.getTime();
+							}
+						}]]></xp:this.defaultValue>
+						<xp:dateTimeHelper
+							id="fieldInactiveOnHelper">
+						</xp:dateTimeHelper>
+						<xp:this.converter>
+							<xp:convertDateTime type="date"></xp:convertDateTime>
+						</xp:this.converter>
+					</xp:inputText>
+				</xe:formRow>
+			</xe:formTable>
+		</xp:div>
+	</xp:div>
+</xp:view>

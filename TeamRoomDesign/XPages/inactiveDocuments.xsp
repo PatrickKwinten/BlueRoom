@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:xc="http://www.ibm.com/xsp/custom"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+	<xp:this.afterPageLoad>
+		<![CDATA[#{javascript:// load navigation map...
+			viewScope.docTypeDetails = {
+				Mission: {xsp: false, parameter: 'documentId',  displayName: strings.getString('document.display.name.mission')},
+				ParticipantProfile: {xsp:'/members.xsp', parameter: 'status=0&profile', displayName: strings.getString('document.display.name.participant.profile')},
+				Subteam: {xsp:'/members.xsp', parameter: 'subteam', displayName: strings.getString('document.display.name.subteam')},
+				announcement: {xsp:'/announcements.xsp', parameter: 'documentId', displayName: strings.getString('document.display.name.announcement')},
+				Status: {xsp: '/statusReports.xsp', parameter: 'documentId', displayName: strings.getString('document.display.name.status')},
+				IndStat: {xsp: '/statusReports.xsp', parameter: 'documentId', displayName: strings.getString('document.display.name.indStat')},
+				SubteamStatus: {xsp: '/statusReports.xsp', parameter: 'documentId', displayName: strings.getString('document.display.name.subteamStatus')},
+				Event: {xsp: '/events.xsp', parameter: 'documentId', displayName: strings.getString('document.display.name.event')},
+				MainTopic: {xsp: '/topicThread.xsp', parameter: 'documentId', displayName: strings.getString('document.display.name.mainTopic')},
+				Response: {xsp: '/topicThread.xsp', parameter: 'documentId', displayName: strings.getString('document.display.name.response')},
+				ResponseToResponse: {xsp: '/topicThread.xsp', parameter: 'documentId', displayName: strings.getString('document.display.name.responseToResponse')}
+			}
+		}]]>
+	</xp:this.afterPageLoad>
+	<xe:pagerSaveState for="vwInactiveDocs"
+		globalRows="true" id="pagerSaveState1">
+	</xe:pagerSaveState>
+	<xc:layout navigationPath="/inactiveDocuments">
+		<xp:div id="inactiveView" styleClass="inactiveView">
+			<xp:text escape="true" id="titleField" tagName="h1">
+				<xp:this.value>
+					<![CDATA[#{javascript:
+						sessionScope.webFrom = "/inactiveDocuments.xsp";
+						sessionScope.webFromName = strings.getString('inactive.documents');
+						return strings.getString('inactive.documents');
+					}]]>
+				</xp:this.value>
+			</xp:text>
+			<xp:button value="Mark Active" id="button1" themeId="Button.Cancel">
+				<xp:this.loaded><![CDATA[${javascript:(userBean.accessLevel >= lotus.domino.ACL.LEVEL_AUTHOR) && userBean.canCreateDocs}]]></xp:this.loaded>
+				<xp:eventHandler event="onclick" submit="true"
+					refreshMode="partial" refreshId="vwInactiveDocs">
+					<xp:this.action>
+						<xp:actionGroup>
+							<xp:confirm message="Proceed to mark active selected documents?">
+							</xp:confirm>
+							<xp:executeScript>
+								<xp:this.script>
+									<![CDATA[#{javascript:
+										var viewPanel=getComponent('vwInactiveDocs');
+										var docIDArray = viewPanel.getSelectedIds();
+										var docs = [];
+										for(var i in docIDArray){
+											var doc = database.getDocumentByID(i);
+											doc.removeItem("FileByDate");	
+											doc.removeItem("DateFiled");	
+											doc.removeItem("ViewDateFiled");
+											doc.replaceItemValue('FileThisStatusDoc', '0');
+											
+											doc.replaceItemValue("Status", "1")
+											doc.replaceItemValue("NeverFile", "1")
+											
+											doc.save(true, false, true);
+											docs.push(doc.getItemValue('Status'));
+										}
+									}]]>
+								</xp:this.script>
+							</xp:executeScript>
+						</xp:actionGroup>
+					</xp:this.action>
+				</xp:eventHandler>
+			</xp:button>
+
+			<xp:br></xp:br>
+			<xp:br></xp:br>
+			
+			<!--
+			summary="A collection of documents that shows documents marked as inactive"
+			title="Inactive documents view"
+			-->
+			
+			<xe:dataView id="vwInactiveDocs" var="rowData"
+				binding="#{viewStateBean.dataIterator}" pageName="/topicThread.xsp"
+				columnTitles="true" rows="25"
+				ariaLabel="Inactive documents">
+				<xe:this.showCheckbox><![CDATA[#{javascript:(userBean.accessLevel > lotus.domino.ACL.LEVEL_AUTHOR) && userBean.canDeleteDocs}]]></xe:this.showCheckbox>
+				<xe:this.data>
+					<xp:dominoView var="inactiveDocs"
+						viewName="xvwInactiveDocuments" dataCache="id">
+					</xp:dominoView>
+				</xe:this.data>
+				<xe:this.extraColumns>
+					<xe:viewExtraColumn columnName="$144"
+						columnTitle="Author">
+						<xe:this.href><![CDATA[#{javascript:"/members.xsp?profile=" + rowData.getColumnValue("$144")}]]></xe:this.href>
+					</xe:viewExtraColumn>
+					<xe:viewExtraColumn columnName="dateFiled"
+						columnTitle="Date Filed">
+					</xe:viewExtraColumn>
+					<xe:viewExtraColumn columnName="dateCreated"
+						columnTitle="Date Created">
+					</xe:viewExtraColumn>
+					<xe:viewExtraColumn columnName="form"
+						columnTitle="Form">
+						<xe:this.value>
+							<![CDATA[#{javascript:
+								var form = rowData.getColumnValue('form');
+								var detailObj = viewScope.docTypeDetails[form];
+								return detailObj ? detailObj.displayName : strings.getString("unknown");
+							}]]>
+						</xe:this.value>
+					</xe:viewExtraColumn>
+				</xe:this.extraColumns>
+				<xe:this.summaryColumn>
+					<xe:viewSummaryColumn columnTitle="Subject"></xe:viewSummaryColumn>
+				</xe:this.summaryColumn>
+				<xp:this.facets>
+					<xp:panel xp:key="noRows">
+						<xp:br />
+						<xp:div styleClass="xlEmptyFacet">
+							<xp:label
+								value="No documents found in this view">
+							</xp:label>
+						</xp:div>
+					</xp:panel>
+					<xp:panel xp:key="summary" id="summaryPanel"
+						style="display:inline-block">
+						<xp:link id="inactiveDocSummaryLink">
+							<xp:this.text><![CDATA[#{javascript:
+								var doc = rowData.getDocument();
+								var readers = doc.getItemValueString("readers") != "";
+								var expire = doc.getItemValueString("expire") != "";
+								
+								var prefix = "";
+								if(readers){
+									prefix = strings.getString("private");
+								}else if(expire){
+									prefix = strings.getString("expired");
+								}
+								
+								if(rowData.getColumnValue('form') == "ParticipantProfile"){
+									var rawSubject = rowData.getColumnValue("rawSubject");
+									if("" != rawSubject){
+										return prefix + strings.getString("team.member.profile.for") + rawSubject;
+									}else{
+										return prefix + strings.getString("home.subject.untitled") + " (" + rowData.getColumnValue("$144") + ")";
+									}
+								}
+								else{
+									var rawSubject = rowData.getColumnValue("rawSubject");
+									if("" != rawSubject){
+										return prefix + rawSubject;
+									}else{
+										return prefix + strings.getString("home.subject.untitled") + " (" + rowData.getColumnValue("$144") + ")";
+									}
+								}
+							}]]></xp:this.text>
+							<xp:this.value>
+								<![CDATA[#{javascript:
+									var form = rowData.getColumnValue('form');
+									var detailObj = viewScope.docTypeDetails[form];
+									if(form == 'Subteam'){
+										var url = detailObj? detailObj.xsp : '/topicThread.xsp';
+										var param = detailObj ?detailObj.parameter : 'documentId'; 
+										var subteamName =  rowData.getColumnValue('STName');
+										return url += '?' + param + '=' + subteamName;
+									}else if(form == 'ParticipantProfile'){
+										var url = detailObj? detailObj.xsp : '/topicThread.xsp';
+										var param = detailObj ?detailObj.parameter : 'documentId';
+										var subteamName =  rowData.getColumnValue('rawSubject');
+										return url += '?' + param + '=' + subteamName;
+									}else{
+										var url = detailObj? detailObj.xsp : '/topicThread.xsp';
+										var param = detailObj ?detailObj.parameter : 'documentId';
+										return url += '?' + param + '=' + rowData.getUniversalID() + '&action=openDocument';
+									}
+								}]]>
+							</xp:this.value>
+						</xp:link>
+					</xp:panel>
+					<xp:pager layout="Previous Group Next" id="pager3"
+						xp:key="pagerTopRight" partialRefresh="true" partialExecute="true"
+						ariaLabel="Inactive documents header pager">
+					</xp:pager>
+					<xp:panel xp:key="pagerBottomLeft" id="panel3">
+						<xe:pagerSizes id="pagerSizes1"
+							sizes="10|25|50|100"
+							ariaLabel="Number of documents to show on the page">
+						</xe:pagerSizes>
+					</xp:panel>
+					<xp:pager layout="Previous Group Next" id="pager4"
+						xp:key="pagerBottomRight" partialRefresh="true"
+						partialExecute="true"
+						ariaLabel="Inactive documents footer pager">
+					</xp:pager>
+				</xp:this.facets>
+			</xe:dataView>
+		</xp:div>
+	</xc:layout>
+</xp:view>

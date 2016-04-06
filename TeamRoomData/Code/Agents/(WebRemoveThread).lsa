@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(WebRemoveThread)" hide="v3" runaswebuser="true" publicaccess="false" language="en" comment="This agent removes the selected thread from the users Interest Profile.  It is the querysaveagent on the RemoveThread form.">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+Use "wStringResource"
+Use "DiscussionRoutines"
+
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>Dim view As NotesView
+Dim profile As NotesDocument
+Dim item As NotesItem
+Dim Position As Integer
+Dim originalnote As notesdocument
+Dim CurrentDocumentURL As String
+Dim profileurl As String
+Dim profileunid As String
+Dim threadids As Variant
+Dim subjects As Variant
+Dim removethreads As Variant
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	InstantiateObjects
+	dbpath = getdbpath
+	
+	AllView =   "&lt;hr&gt;&lt;font size=2&gt;&lt;a href=/" + dbpath + "/($All)?OpenView&gt;"+ getString(50) +"&lt;/a&gt;&amp;nbsp&amp;nbsp"
+	MissionView = "&lt;a href=/" + dbpath + "/TeamOverview?OpenView&gt;"+GetString(51)+"&lt;/a&gt;&amp;nbsp&amp;nbsp"
+	ActiveView = "&lt;a href=/" + dbpath + "/ActiveDate?OpenView&gt;"+GetString(52)+"&lt;/a&gt;&lt;hr&gt;"
+	
+'Get referer url because that's the profile
+	profileUNID= Mid ( note.HTTP_Referer(0), Instr(note.HTTP_Referer(0), "=")+1,32)     
+	
+	Set profile = db.GetDocumentByUNID(profileUNID)
+	
+	If profile Is Nothing Then
+		Print "&lt;b&gt;"+GetString(16)+"&lt;/b&gt;" + AllView + MissionView + ActiveView
+		Exit Sub
+	Else      
+		
+          'Get ThreadID list and ProfileThreadSubject list 
+		ThreadIds = profile.ProfileThreads
+		Subjects = profile.ProfileThreadSubjects
+          'Get Thread subjects which should be removed
+		RemoveThreads = note.RemoveSubjects
+		If RemoveThreads(0) &lt;&gt; "" Then
+          'Remove the thread subjects from the existing profile
+			RemoveSubjects
+          'Rewrite the new values to the profile
+		Else
+			Print "&lt;b&gt; "GetString(24)+"&lt;/b&gt;"+ AllView + MissionView + ActiveView
+			Exit Sub
+		End If
+          'Rewrite the new values to the profile
+		
+		Call profile.replaceitemvalue("ProfileThreads",ThreadIDs)
+		Call profile.replaceitemvalue("ProfileThreadSubjects", Subjects)
+		Print "&lt;b&gt;"+GetString(17)+"&lt;/b&gt;"+ AllView + MissionView + ActiveView
+		
+	End If
+	
+	profile.Save True, True
+	
+End Sub
+
+
+</lotusscript>
+  </code>
+  <code event="RemoveSubjects">
+    <lotusscript>Sub RemoveSubjects
+	
+     'This routine removes all of the elements in the removethreads array from the subjects array 
+	Forall j In RemoveThreads
+		CurrentElementtoRemove = j     
+		index=0
+		Forall i In Subjects
+               'This set of statements gives us the matching index number to remove in the ThreadIDs list
+			If currentelementtoremove = i Then
+				ThreadIDs(index)=""
+				Subjects(index)=""
+			End If
+			index=index+1
+		End Forall
+	End Forall
+End Sub</lotusscript>
+  </code>
+</agent>

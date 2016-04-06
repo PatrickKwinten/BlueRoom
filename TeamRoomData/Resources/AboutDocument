@@ -1,0 +1,169 @@
+<?xml version='1.0' encoding='utf-8'?>
+<helpaboutdocument xmlns='http://www.lotus.com/dxl' version='9.0' maintenanceversion='1.5'
+ replicaid='C1257F57006DFDAE' publicaccess='false' designerversion='8.5.4'
+ default='true'>
+<noteinfo noteid='14e' unid='1BA0D88BB9FA9444802577C2003DF25B' sequence='2'>
+<created><datetime dst='true'>20101020T121637,39+01</datetime></created>
+<modified><datetime>20160212T210124,02+01</datetime></modified>
+<revised><datetime dst='true'>20131002T111058,29-04</datetime></revised>
+<lastaccessed><datetime>20160212T210124,02+01</datetime></lastaccessed>
+<addedtofile><datetime>20160212T210124,02+01</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Lotus Notes Template Development/O=Lotus Notes</name></updatedby>
+<wassignedby><name>CN=Lotus Notes Template Development/O=Lotus Notes</name></wassignedby>
+<body><richtext>
+<pardef id='1' align='none' leftmargin='1in' hide='notes' tabs='L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in'/>
+<par def='1'><run html='true'><font size='8pt'/>&lt;HEAD&gt;<break/>&lt;STYLE TYPE="text/css"&gt;</run></par>
+<par def='1'><run html='true'><font size='8pt'/> 	BODY {font-family: "Arial"}</run></par>
+<par def='1'><run html='true'><font size='8pt'/>&lt;/STYLE&gt;<break/>&lt;/HEAD&gt;</run></par>
+<pardef id='2' hide='notes'/>
+<par def='2'><run><font size='9pt' style='underline' color='blue'/></run><actionhotspot
+ hotspotstyle='none'><code event='onClick' for='web'><javascript>history.back()</javascript></code><code
+ event='onClick' for='client'><javascript>history.back()</javascript></code><run
+><font size='9pt' style='underline' color='blue'/>Go back</run></actionhotspot><run
+><font size='9pt' style='underline' color='blue'/></run></par>
+<pardef id='3' hide='web'/>
+<par def='3'><run><font size='9pt' style='underline' color='blue'/></run><actionhotspot
+ hotspotstyle='none'><code event='click'><formula>@Command([FileCloseWindow])</formula></code><run
+><font size='9pt' style='underline' color='blue'/>Close this document to view the database</run></actionhotspot><run
+><font size='9pt' style='underline' color='blue'/></run></par>
+<par def='3'><run><font size='9pt' style='underline' color='blue'/></run></par>
+<pardef id='4' align='center'/>
+<par def='4'><run><font size='18pt' style='bold extrude' color='#400000'/>About TeamRoom</run></par>
+<par def='4'><run><font size='9pt' style='bold' color='maroon'/>This database can be used only by Notes R6.0 and later clients and Domino servers.</run></par>
+<par def='4'><run><font size='9pt' style='bold' color='maroon'/>JavaScript must be enabled on the Notes client.</run></par>
+<pardef id='5'/>
+<par def='5'><run><font size='9pt' style='bold'/></run></par>
+<table minrowheight='0.5000in' cellbordercolor='black' htmlid='trabout_tbl'
+ widthtype='fixedcenter' refwidth='4.6674in'><border style='solid' width='2px'/><tablecolumn
+ width='4.6674in'/>
+<tablerow>
+<tablecell valign='center' htmlid='tra1'>
+<cellbackground repeat='hrepeat'><imageref name='TRMainDocHeader.gif'/></cellbackground>
+<pardef id='7' align='center' keepwithnext='true' keeptogether='true'><code
+ event='hidewhen' enabled='false'><formula>view := "MissionLookup";
+Lookup:= @DbColumn("":"NoCache"; ""; View; 1);
+Lookup = "Mission"</formula></code></pardef>
+<par def='7'><run><font size='14pt' style='bold' color='#400000'/>Initial Setup</run></par></tablecell></tablerow>
+<tablerow>
+<tablecell htmlid='tra2'>
+<cellbackground repeat='once'><imageref name=''/></cellbackground>
+<pardef id='8' leftmargin='1%' tabs='L8.3125in' keepwithnext='true' keeptogether='true'><code
+ event='hidewhen'><formula>view := "MissionLookup";
+Lookup:= @DbColumn("":"NoCache"; ""; View; 1);
+Lookup = "Mission"</formula></code></pardef>
+<par def='8'><run><font size='9pt' style='bold'/></run></par>
+<pardef id='9' leftmargin='0.1000in' rightmargin='99%' keepwithnext='true'
+ keeptogether='true'><code event='hidewhen'><formula>view := "MissionLookup";
+Lookup:= @DbColumn("":"NoCache"; ""; View; 1);
+Lookup = "Mission"</formula></code></pardef>
+<par def='9'><run><font size='9pt' style='bold'/>If you are the Team Leader or Team Facilitator setting up this TeamRoom</run><run
+><font size='8pt' name='Arial' pitch='variable' truetype='true' familyid='20'/>™</run><run
+><font size='8pt'/> </run><run><font size='9pt' style='bold'/>for the first time, you should create the TeamRoom Setup document.  To do so, click the 'Set Up TeamRoom Now' button below.  </run></par>
+<pardef id='10' leftmargin='3%' rightmargin='97%' keepwithnext='true' keeptogether='true'><code
+ event='hidewhen'><formula>view := "MissionLookup";
+Lookup:= @DbColumn("":"NoCache"; ""; View; 1);
+Lookup = "Mission"</formula></code></pardef>
+<par def='10'><run><font size='9pt' style='bold'/></run></par>
+<pardef id='11' leftmargin='0.1000in' rightmargin='98%' keepwithnext='true'
+ keeptogether='true'><code event='hidewhen'><formula>view := "MissionLookup";
+Lookup:= @DbColumn("":"NoCache"; ""; View; 1);
+Lookup = "Mission"</formula></code></pardef>
+<par def='11'><run><font size='9pt'/>Note:  If you do not wish to set up the TeamRoom now, you can choose 'Update TeamRoom Setup ' located under the Leader/Facilitator Options at any time.</run></par>
+<pardef id='12' leftmargin='1%' keepwithnext='true' keeptogether='true'><code
+ event='hidewhen'><formula>view := "MissionLookup";
+Lookup:= @DbColumn("":"NoCache"; ""; View; 1);
+Lookup = "Mission"</formula></code></pardef>
+<par def='12'><run><font size='9pt' style='bold'/></run></par>
+<pardef id='13' align='center' leftmargin='1%' keepwithnext='true' keeptogether='true'><code
+ event='hidewhen'><formula>view := "MissionLookup";
+Lookup:= @DbColumn("":"NoCache"; ""; View; 1);
+Lookup = "Mission"</formula></code></pardef>
+<par def='13'><run><font size='9pt' style='bold'/></run><button width='2in'
+ widthtype='maximum' maxlines='1' wraptext='true' bgcolor='#d5ccbb'><code
+ event='click'><formula>@If(@ClientType = "Notes"; @SetProfileField("TempVars"; "ClientType"; "Notes");"");
+@Do(@PostedCommand([FileCloseWindow]);
+@PostedCommand([Compose]; "Mission"))</formula></code><font size='9pt'/>Set Up TeamRoom Now</button><run
+><font size='9pt' style='bold'/></run></par>
+<par def='13'><run><font size='9pt' style='bold'/></run></par></tablecell></tablerow></table>
+<par def='5'><run><font size='9pt' style='bold'/></run></par>
+<par def='5'><run><font size='9pt' style='bold'/>What is TeamRoom?</run></par>
+<par def='5'><run><font size='9pt' style='bold'/></run></par>
+<par def='5'><run><font name='Arial' pitch='variable' truetype='true' familyid='20'/>TeamRoom is a IBM Notes application designed to support processes that help people work together.  The software does not create the sense of shared purpose, common language, focus, and drive which make effective teams productive.  But, by embedding in its technology a template for many of the basic practices of "good teaming," TeamRoom facilitates the creation and ongoing development of processes and practices common to high performance teams.</run><run
+><font size='9pt'/></run></par>
+<par def='5'><run><font size='9pt'/><break/>TeamRoom is a tool for information sharing and collaboration.  However, the work of a TeamRoom-based team is not fundamentally different than it was "before groupware."  By creating a </run><run
+><font size='9pt' style='underline'/>shared context</run><run><font size='9pt'/> for team work, TeamRoom does what many good tools do: creates leverage, both for the individuals on the team and for the team as a whole.  Because the technology is built on a Notes groupware "sharing" platform, this context is richer and the leverage is greater than is typically possible with "sending" tools like Email.  Notes also makes it possible for TeamRoom to support teams whose members who are geographically distributed, and who are sometimes unable to be connected to their computer network.</run></par>
+<par def='5'><run><font size='9pt'/></run></par>
+<pardef id='14' leftmargin='1.2500in' spacebefore='1.5'/>
+<par def='14'><run><font size='9pt'/>Examples of work made easier and more efficient by TeamRoom include:</run></par>
+<pardef id='15' leftmargin='1.5000in' spacebefore='1.5' list='bullet'/>
+<par def='15'><run><font size='9pt'/>Raising &amp; discussing issues and concerns</run></par>
+<par def='15'><run><font size='9pt'/>Creating (collaborative) product:  memos, presentations, other "deliverables"</run></par>
+<par def='15'><run><font size='9pt'/>Brainstorming (which, hopefully, leads to resolution and action)</run></par>
+<par def='15'><run><font size='9pt'/>Preparing for meetings:  one can present and share information in the TeamRoom before the meeting, so that meeting time can be focused on decision making</run></par>
+<par def='15'><run><font size='9pt'/>Tracking meeting agendas and resulting action items.</run></par>
+<par def='14'><run><font size='9pt'/></run></par>
+<pardef id='16' leftmargin='1in' tabs='L1in L1.5000in'/>
+<par def='16'><run><font size='9pt' style='bold'/>Where to find more information?</run></par>
+<pardef id='17' leftmargin='1in' firstlineleftmargin='1.2500in'/>
+<par def='17'><run><font size='9pt'/></run></par>
+<pardef id='18' leftmargin='1.2500in'/>
+<par def='18'><run><font size='9pt'/>More information can be found by pressing F1 while in any form in TeamRoom.  This will open extensive documentation found in the Notes Client Help database.  The </run><actionhotspot
+ hotspotstyle='none'><code event='click'><formula>DB := @ReplaceSubstring(@ReplaceSubstring(@Subset(@DbName; -1);" ";"+");"\\";"/");
+@If(@ClientType="Notes";@Command([HelpUsingDatabase]) ;@URLOpen("/"+db+"/$help?OpenHelp"))</formula></code><run
+><font size='9pt'/>Using Database document for this database also contains help information.</run></actionhotspot><run
+><font size='9pt'/>  </run></par>
+<pardef id='6' leftmargin='1in'/>
+<par def='6'/>
+<par def='18'><run><font size='9pt'/>Additional TeamRoom documentation, found on http://www.lotus.com/ldd/doc</run></par>
+<pardef id='19' leftmargin='1.5000in' tabs='L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in'/>
+<par def='19'><run><font size='9pt'/>Domino Designer Templates Guide for the current version of Notes</run></par>
+<pardef id='20' leftmargin='1.5000in'/>
+<par def='20'><run><font size='9pt'/>Best Practices: Templates and Sample Databases (bptemp.nsf)</run></par>
+<par def='5'><run><font size='9pt' style='bold'/></run></par>
+<par def='5'><run><font size='9pt' style='bold'/>Access Control:</run></par>
+<par def='5'><run><font size='9pt'/></run></par>
+<pardef id='21' leftmargin='1.5000in' spaceafter='1.5' list='bullet'/>
+<par def='21'><run><font size='9pt'/>The default access of a database created with this template is "Author".  </run></par>
+<par def='21'><run><font size='9pt'/>If you wish to make this a private TeamRoom, assign the default an access level of "No Access".  Add name(s) or group(s) of individuals who will be involved in this TeamRoom to the ACL.  These people/groups should have "Author" access.  </run></par>
+<par def='21'><run><font size='9pt'/>The people listed in the TeamRoom Setup as the Team Facilitator and Team Leader should be given a minimum of "Editor" access.  This will allow them full use of the Leader/Facilitator Options. </run></par>
+<par def='21'><run><font size='9pt'/>If there are people other than the Leader/Facilitator who add categories, participants, etc., they should be added to the ACL with "Editor" access.  These people will also see all of the Team Leader/Facilitator options in the main outline of the TeamRoom.</run></par>
+<par def='21'><run><font size='9pt'/>You may want to give Subteam leaders "Editor" access so they can modify subteam profiles, create subteam status documents, etc.</run></par>
+<par def='21'><run><font size='9pt'/>You can add groups found in the Name &amp; Address book to the Access Control List; these groups are not supported as Team Member names, however.</run></par>
+<par def='21'><run><font size='9pt'/>Important note: Anyone with Editor access or above can modify the TeamRoom Setup.</run></par>
+<par def='5'><run><font size='9pt'/></run></par>
+<pardef id='22' leftmargin='1in' hide='web' keeptogether='true'/>
+<par def='22'><run><font size='9pt' style='bold'/>Upgrading from Other Template Designs:</run></par>
+<pardef id='23' leftmargin='1in' hide='notes web mobile' keeptogether='true'/>
+<par def='23'><run><font size='9pt' color='gray'/>[the upgrading paragraphs are hidden from web browser users]</run></par>
+<pardef id='24' leftmargin='1.2500in' hide='web' keeptogether='true'/>
+<par def='24'><run><font size='9pt'/></run></par>
+<par def='24'><run><font size='9pt'/>The TeamRoom template has been designed from the ground up to be compatible with the Discussion template.  This means that any R4.6 or higher Discussion database can be upgraded to a TeamRoom database by replacing the design with the TeamRoom template.</run></par>
+<par def='24'><run><font size='9pt'/></run></par>
+<par def='24'><run><font size='9pt'/>The TeamRoom template is now also compatible with the 4.1 release of the Lotus Institute TeamRoom.  After replacing the design of the 4.1 TeamRoom, you must run the agent "Convert 4.1 TeamRoom to new design".  This agent is hidden by default.  To make it available to use, edit the agent and change "When this agent should be run" to </run><run
+><font size='9pt' style='italic'/>Manually from the Actions Menu.</run><run
+><font size='9pt'/>  It is recommended that you hide the agent after use, to avoid confusion.</run></par>
+<par def='24'><run><font size='9pt'/></run></par>
+<par def='22'><run><font size='9pt' style='bold'/>Alternate Name Support -- Upgrading from R5 TeamRoom</run></par>
+<par def='23'><run><font size='9pt' color='gray'/>[the alternate name support paragraphs are hidden from web browser users]</run></par>
+<par def='22'><run><font size='9pt'/></run></par>
+<par def='24'><run><font size='9pt'/>The Notes 6 (and future) TeamRoom provides support for </run><popup
+ show='onclick' hotspotstyle='none'><popuptext>An alternate name is helpful when you want to use your native language and character set to type, display, and look up names. For example, you can type a name in a native language and character set when sending mail. Your primary name is recognizable to an international audience; an alternate name is recognizable in your native language. </popuptext><run
+><font size='9pt' style='underline' color='blue'/>Alternate Names</run></popup><run
+><font size='9pt'/>.  The Subteam Details feature displays the names of the people assigned to a particular subteam.  Because R5 Subteam documents did not have alternate name support, the Subteam Details dialog box would only list primary names.  To update the Subteam documents, open the TeamRoom setup and click Manage Lists - </run><run
+><font size='9pt'/>Upgrade Subteams to New Design.</run></par>
+<par def='24'><run><font size='9pt'/></run></par>
+<pardef id='25' leftmargin='1in' keeptogether='true'/>
+<par def='25'><run><font size='9pt' style='bold'/>Using the Notes 6 (and future) TeamRoom with an R5 Notes Client</run></par>
+<par def='25'><run><font size='9pt'/></run></par>
+<pardef id='26' leftmargin='1.2500in' keeptogether='true'/>
+<par def='26'><run><font size='9pt'/>The Main Document form in the TeamRoom has time zone support.  The time zone fields use @functions that are not supported in R5.  Therefore, R5 clients will not be able to create new Meeting documents or edit existing Meeting documents.</run></par>
+<par def='26'><run><font size='9pt'/></run></par>
+<par def='26'><run><font size='9pt'/></run></par></richtext></body>
+<item name='$SourceSeqTime' sign='true'><datetime dst='true'>19980708T153842,50-04</datetime></item>
+<item name='$SourceSequence' sign='true'><text>0000003B</text></item>
+<item name='$SourceURL' sign='true'><textlist><text>Notes:///852565AB00647D57//85255A0A0010AC8E852558BF00737B2A</text><text
+>Notes:///852565AB00647D57:852565AB00647D57//11E</text><text>Notes:///852565AB00647D57//$about</text></textlist></item>
+<item name='$ClassName' sign='true'><text>About</text></item>
+<item name='$SourceDbTitle' sign='true'><text>TeamRoom (5.0)</text></item>
+<item name='OriginalModTime' sign='true'><datetime>20050307T132201,49-05</datetime></item></helpaboutdocument>
+

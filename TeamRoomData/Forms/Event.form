@@ -1,0 +1,714 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="Event" alias="Event" nocompose="true" htmlallfields="true" publicaccess="false" language="en">
+  <code event="windowtitle">
+    <formula>@If(@IsNewDoc; "New Event"; Subject)</formula>
+  </code>
+  <code event="webqueryopen">
+    <formula>@Command([ToolsRunMacro]; "(WebOpenForm)")</formula>
+  </code>
+  <code event="helprequest">
+    <formula>REM {DNT};
+@Command([OpenHelpDocument];[ClientHelp]; "(Help)"; "TeamRoomFEvent")</formula>
+  </code>
+  <code event="htmlhead">
+    <formula>"&lt;script src='/" + @WebDbName + "/WebDateValidation?OpenJavaScriptLibrary'&gt;&lt;/script&gt;"</formula>
+  </code>
+  <code event="options">
+    <lotusscript>Option Declare
+</lotusscript>
+  </code>
+  <code event="queryclose">
+    <lotusscript>Sub Queryclose(Source As Notesuidocument, Continue As Variant)
+
+End Sub</lotusscript>
+  </code>
+  <code event="jsheader" for="web">
+    <javascript>function validate(){
+
+var msg;
+var msgflag;
+
+msgflag = 'false';
+
+if(document.forms[0].EventDate.value == ''){
+	msg='Please enter the date of the milestone/event.';
+	msgflag='true';
+                document.forms[0].EventDate.focus()
+	}
+//if (dateVal("EventDate") == false)
+//{
+//return false
+//}
+
+ if(document.forms[0].EventSummary.value == ''){
+	msg='Please enter the name of the milestone/event.';
+	msgflag='true';
+                document.forms[0].EventSummary.focus()
+	}
+
+ if(msgflag == 'true'){
+     alert(msg);
+}
+if(msgflag == 'false'){
+document.forms[0].submit()
+}
+}
+</javascript>
+  </code>
+  <actionbar useappletinbrowser="true" bgcolor="#78b4bc" bordercolor="black">
+    <actionbarstyle height="4.7500ex">
+      <font size="9pt" name="multilingual"/>
+    </actionbarstyle>
+    <actionbuttonstyle margintype="fixed" margin="5" bgcolor="#c4dee1" displayborder="notesstyle" widthtype="background"/>
+    <font size="9pt" name="multilingual"/>
+    <border width="0px 0px 1px"/>
+    <action title="Forward" showinbar="false" hide="preview previewedit web">
+      <code event="click">
+        <formula>@Command([MailForward])</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>@IsNewDoc</formula>
+      </code>
+    </action>
+    <action title="Forward as Bookmark" showinbar="false" hide="preview previewedit web">
+      <code event="click">
+        <formula>@Command([Compose]; @MailDbName; "Bookmark")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>@IsNewDoc</formula>
+      </code>
+    </action>
+    <action title="Edit Document" hide="preview edit previewedit">
+      <code event="click">
+        <formula>REM {For all forms except Main Document form, which needs special casing for assignees to edit};
+@Command([EditDocument])</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>lcabAuthors := @LowerCase(@Name([Abbreviate]; Authors));
+lcabFrom := @LowerCase(@Name([Abbreviate]; From));
+lcabAltFrom := @LowerCase(@Name([Abbreviate]; AltFrom));
+lcabUN := @LowerCase(@Name([Abbreviate]; @UserName));
+Filename := @DbName;
+Level := @V4UserAccess(Filename);
+Getlevel := @TextToNumber(@Subset(Level; 1));
+
+getLevel &lt; 4 &amp;
+(
+!@Contains(lcabAuthors; lcabUN) |
+!@Contains(lcabFrom; lcabUN) |
+!@Contains(lcabAltFrom; lcabUN))</formula>
+      </code>
+    </action>
+    <action title="Save &amp; Close" hide="preview read previewedit">
+      <code event="click">
+        <formula>REM {Can't use @isvalid on the web};
+@If(
+@ClientType != "Notes";
+@Do(@Command([FileSave]); @Command([FileCloseWindow]));
+@IsValid;
+@Do(@Command([FileSave]); @Command([FileCloseWindow])); "")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>REM {Hide if 'New doc' button was clicked};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w = "1" |  (@ClientType != "Notes" &amp; form = "MainTopic") | (@ClientType != "Notes" &amp; form = "Mission") | (@ClientType != "Notes" &amp; form = "IndStat")</formula>
+      </code>
+    </action>
+    <action title="Save &amp; Close" showinmenu="false" hide="notes">
+      <code event="hidewhen">
+        <formula>REM {Hide if 'New doc' button not clicked};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w != "1"</formula>
+      </code>
+      <code event="onClick" for="web">
+        <javascript>validate()</javascript>
+      </code>
+      <code event="onBlur" for="web">
+        <javascript>/*
+used only in Participant, Event, and Subteam profiles
+hidden if NewDoc has not been clicked
+*/</javascript>
+      </code>
+    </action>
+    <action title="Cancel" showinmenu="false" hide="notes">
+      <code event="hidewhen">
+        <formula>REM {Hide if person clicked 'New doc' button};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w != "1"</formula>
+      </code>
+      <code event="onClick" for="web">
+        <javascript>window.close(self)</javascript>
+      </code>
+      <code event="onBlur" for="web">
+        <javascript>/*
+only used in Participant, Subteam, and Event profiles
+Hidden if they did not click the 'New document' button
+*/</javascript>
+      </code>
+    </action>
+    <action title="Cancel" hide="preview previewedit web">
+      <code event="click">
+        <formula>REM {Notes only};
+REM {cannot issue the SaveOptions command below on the web};
+FIELD SaveOptions := 0;
+@Command([FileCloseWindow])</formula>
+      </code>
+    </action>
+    <action title="Cancel" showinmenu="false" hide="notes">
+      <code event="click">
+        <formula>REM {web only; saved docs};
+REM {hidden if 'NewDoc' button was clicked for Participant, Event, or Subteam};
+@Command([FileCloseWindow])</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>REM {Hide if person clicked 'New doc' button};
+w := @RightBack(QUERY_STRING_DECODED; "w=");
+w = "1" | @IsNewDoc</formula>
+      </code>
+    </action>
+  </actionbar>
+  <body>
+    <richtext>
+      <pardef id="1" leftmargin="1in" rightmargin="0%" spaceafter="1.5">
+        <parstyle name="Body"/>
+      </pardef>
+      <pardef id="2" align="none" leftmargin="1in" rightmargin="0%" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in">
+        <parstyle name="HTML">
+          <font size="9pt" color="teal" name="face14"/>
+        </parstyle>
+      </pardef>
+      <pardef id="3" align="none" leftmargin="1in" hide="notes web" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="3"/>
+      <pardef id="4" align="none" leftmargin="1in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <subformref name="WebFont"/>
+      <par def="3"/>
+      <pardef id="5" leftmargin="2.5000in" firstlineleftmargin="1in" hide="read edit copy preview previewedit notes web" tabs="L2.5000in" keeptogether="true"/>
+      <par def="5">
+        <run>
+          <font size="9pt" color="gray"/>Hidden Fields:</run>
+      </par>
+      <par def="5">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="From"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>	Person creating the profile</run>
+      </par>
+      <par def="5">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="computed" name="form">
+            <code event="defaultvalue">
+              <formula>"Event"</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+      </par>
+      <par def="5">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="AbbreviateFrom"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>used in the Newsletter profile searches</run>
+      </par>
+      <pardef id="6" leftmargin="1in" hide="read edit copy preview previewedit notes web"/>
+      <par def="6">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="$$Return"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>		used for saving the document on the web</run>
+      </par>
+      <par def="6">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="QUERY_STRING_DECODED"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/> 	used in hide-when formulas in the action buttons on this form</run>
+      </par>
+      <par def="6">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="deleteQueryString"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>removes the QueryString whenever the doc. is edited and saved</run>
+      </par>
+      <par def="5">
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="computed" name="Abstract">
+            <code event="defaultvalue">
+              <formula>_ellipsis	:= " ...";
+_length	:= 300;
+_range	:= 10;
+
+_abstract	:= @Abstract([TextOnly]; _length; ""; "EventDetail");
+
+REM {to make sure we don't truncate/clip in the middle of a word,};
+REM {get the text up to the last word before the last space};
+REM {and append ellipsis ' ...'};
+
+@If(	@Length(_abstract) &gt;= (_length - _range);
+	@LeftBack(_abstract; " ") + _ellipsis;
+	_abstract
+)</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65418" nexttype="222" afterparcount="6" containertype="65418" aftercontainercount="1" afterbegincount="3">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+      </par>
+      <pardef id="7" hide="web"/>
+      <par def="7">
+        <run>
+          <font size="8pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="gray"/>
+        </run>
+      </par>
+      <table widthtype="fixedleft" refwidth="5.9375in">
+        <tablecolumn width="5.9375in"/>
+        <tablerow>
+          <tablecell borderwidth="0px">
+            <pardef id="9" leftmargin="1%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="9"/>
+            <table widthtype="fitmargins" htmlid="EventTbl" leftmargin="0" refwidth="5.9375in">
+              <tablecolumn width="100%"/>
+              <tablerow>
+                <tablecell borderwidth="0px 0px 2px" bgcolor="#78b4bc" htmlid="et1">
+                  <pardef id="11" leftmargin="0.1000in" spacebefore="1.5" keepwithnext="true" keeptogether="true"/>
+                  <par def="11">
+                    <run>
+                      <font size="12pt" style="bold" color="white"/>Milestone/Event Profile</run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="white">
+            <pardef id="13" leftmargin="0.0104in" rightmargin="100%" firstlineleftmargin="1%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="13">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="14" leftmargin="0.0104in" rightmargin="100%" firstlineleftmargin="1%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="14">
+              <run>
+                <font size="9pt" color="white"/>
+              </run>
+            </par>
+            <table widthtype="fitmargins" htmlid="eventSubTbl" leftmargin="1%" rightmargin="99%" refwidth="5.8188in">
+              <tablecolumn width="1.0625in" sizetofit="true"/>
+              <tablecolumn width="100%"/>
+              <tablerow>
+                <tablecell borderwidth="0px" bgcolor="white" htmlid="est1">
+                  <pardef id="16" leftmargin="0" rightmargin="100%" keepwithnext="true" keeptogether="true"/>
+                  <par def="16">
+                    <run>
+                      <font size="9pt" style="bold"/>Milestone/Event</run>
+                  </par>
+                  <pardef id="17" leftmargin="0" rightmargin="100%" spacebefore="1.5" keepwithnext="true" keeptogether="true"/>
+                  <par def="17">
+                    <run>
+                      <font size="9pt" color="white"/> </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px" htmlid="est8">
+                  <pardef id="18" leftmargin="0.1000in" hide="read preview" keepwithnext="true" keeptogether="true"/>
+                  <par def="18">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.2000in" width="3in" multiline="true" borderstyle="single" type="text" kind="editable" name="EventSummary" description="Enter a brief description of the event or milestone" htmlid="EventSummary">
+                        <code event="htmlattributes">
+                          <formula>"size = 30"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>@Trim(EventSummary)</formula>
+                        </code>
+                        <code event="inputvalidation">
+                          <formula>MsgText := "Please enter an Event Summary.";
+@If(EventSummary = ""; @Failure(MsgText); @Success)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <pardef id="19" leftmargin="0.1000in" hide="edit copy previewedit" keepwithnext="true" keeptogether="true"/>
+                  <par def="19">
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" kind="computedfordisplay" name="dspEventSummary" description="Enter a brief description of the event or milestone" htmlid="EventSummary_1">
+                        <code event="htmlattributes">
+                          <formula>"size = 30"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>EventSummary</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="9" containertype="65418" aftercontainercount="2" afterbegincount="5">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt" color="white"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px" bgcolor="white">
+                  <pardef id="20" hide="read preview" keepwithnext="true" keeptogether="true"/>
+                  <par def="20">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <pardef id="21" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+                  <par def="21">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <pardef id="22" hide="web" keepwithnext="true" keeptogether="true"/>
+                  <par def="22">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px" bgcolor="white" htmlid="est2">
+                  <pardef id="23" leftmargin="0" keepwithnext="true" keeptogether="true"/>
+                  <par def="23">
+                    <run>
+                      <font size="9pt" style="bold"/>Date</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px" htmlid="est7">
+                  <par def="18">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.2250in" width="1.2000in" multiline="true" borderstyle="single" type="datetime" kind="editable" name="EventDate" description="Enter the date of the event or milestone." htmlid="EventDate">
+                        <datetimeformat show="date" date="yearmonthday" fourdigityear="true" time="hourminutesecond" zone="never"/>
+                        <code event="htmlattributes">
+                          <formula>"size=30"</formula>
+                        </code>
+                        <code event="inputvalidation">
+                          <formula>MsgText := "Please enter the date of the event";
+@If(EventDate = ""; @Failure(MsgText); @Success)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <par def="19">
+                    <run>
+                      <font size="9pt"/>
+                      <field type="datetime" kind="computedfordisplay" name="dspEventDate" description="Enter the date of the event or milestone." htmlid="EventDate_1">
+                        <datetimeformat date="yearmonthday" fourdigityear="true" time="hourminutesecond" zone="never"/>
+                        <code event="htmlattributes">
+                          <formula>"size=30"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>EventDate</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" color="white"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <par def="20">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="21">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <par def="22">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px" htmlid="est3">
+                  <par def="23">
+                    <run>
+                      <font size="9pt" style="bold"/>Details</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px" htmlid="est6">
+                  <par def="18">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field usenotesstyle="false" height="0.2000in" width="3in" multiline="true" borderstyle="single" type="text" kind="editable" name="EventDetail" description="Enter the details for this event or milestone." htmlid="EventDetail">
+                        <code event="htmlattributes">
+                          <formula>"size=30"</formula>
+                        </code>
+                        <code event="inputtranslation">
+                          <formula>GetWeb := @If(EventDetail != ""; EventDetail; EventDetail);
+@Trim(GetWeb)</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                  <par def="19">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <field type="text" kind="computedfordisplay" name="dspEventDetail" description="Enter the details for this event or milestone." htmlid="EventDetail_1">
+                        <code event="htmlattributes">
+                          <formula>"size=30"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>EventDetail</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="8" containertype="65418" aftercontainercount="2" afterbegincount="5">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+                    <run>
+                      <font size="9pt" color="white"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="24" keepwithnext="true" keeptogether="true"/>
+                  <par def="24">
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px">
+                  <par def="21">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <par def="22">
+                    <run>
+                      <font size="9pt" style="bold"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px" htmlid="est4">
+                  <par def="24">
+                    <run>
+                      <font size="9pt" style="bold"/>Status</run>
+                  </par>
+                </tablecell>
+                <tablecell borderwidth="0px" htmlid="est5">
+                  <pardef id="25" keepwithnext="true" keeptogether="true"/>
+                  <par def="25">
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                      <sharedfieldref name="FileThisStatusDoc"/>
+                    </run>
+                    <run>
+                      <font size="9pt"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <pardef id="26" leftmargin="1%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="26">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="27" leftmargin="1%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="27">
+              <run>
+                <font size="9pt" color="white"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="28" leftmargin="1in" hide="read notes"/>
+      <par def="28">
+        <run>
+          <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="teal"/>
+        </run>
+      </par>
+      <par def="28">
+        <run>
+          <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20" color="teal"/>
+        </run>
+      </par>
+      <par def="5">
+        <run>
+          <font size="8pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="computed" name="Subject" htmlid="Subject">
+            <code event="defaultvalue">
+              <formula>EventSummary + " (" + @Text(EventDate) + ")"</formula>
+            </code>
+          </field>
+        </run>
+        <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>	Event subject</run>
+      </par>
+      <par def="6">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <field type="text" kind="editable" name="webNewDoc" htmlid="webNewDoc"/>
+        </run>
+        <compositedata type="98" prevtype="65402" nexttype="222" afterparcount="10" containertype="65418" aftercontainercount="2" afterbegincount="4">
+Yg4BAIQAAAAAAAAAAAA=
+</compositedata>
+        <run>
+          <font size="9pt" color="gray"/>	determines if the web new document.  Used in $$Return.</run>
+      </par>
+      <par def="6">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="Status"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>	status of the document</run>
+      </par>
+      <par def="6">
+        <run>
+          <font size="9pt" color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/>
+          <sharedfieldref name="DateFiled"/>
+        </run>
+        <run>
+          <font size="9pt" color="gray"/> date the doc. was marked as "inactive"</run>
+      </par>
+    </richtext>
+  </body>
+  <item name="EDITX" summary="false" sign="true">
+    <number>0</number>
+  </item>
+  <item name="WhenRequestDone" summary="false" sign="true">
+    <rawitemdata type="400">
+AAAAAAAAAAA=
+</rawitemdata>
+  </item>
+  <item name="WhenCommitDone" summary="false" sign="true">
+    <rawitemdata type="400">
+AAAAAAAAAAA=
+</rawitemdata>
+  </item>
+  <item name="WhenDone" summary="false" sign="true">
+    <rawitemdata type="400">
+AAAAAAAAAAA=
+</rawitemdata>
+  </item>
+  <item name="$CIAOTime" sign="true">
+    <datetime>19970218T101329,04-05</datetime>
+  </item>
+  <item name="sortorder" summary="false" sign="true">
+    <number>0</number>
+  </item>
+  <item name="EventDateWeb" summary="false" sign="true">
+    <rawitemdata type="400">
+AAAAAAAAAAA=
+</rawitemdata>
+  </item>
+  <item name="$HTMLDocumentStyles" summary="true" sign="true">
+    <rawitemdata type="1">
+0ggBAAAA/wDSCAEA/wAAANIIAQCAAIAA
+</rawitemdata>
+  </item>
+  <item name="$SubForm_RepIDs" sign="true">
+    <text>0000000000000000</text>
+  </item>
+  <item name="$XPageAlt" sign="true">
+    <text>events.xsp</text>
+  </item>
+  <item name="DateFiled" summary="false" sign="true">
+    <rawitemdata type="400">
+AAAAAAAAAAA=
+</rawitemdata>
+  </item>
+</form>

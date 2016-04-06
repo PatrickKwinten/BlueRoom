@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="Mark/Unmark Document As Expired" hide="v3" publicaccess="false" language="en" comment="This is for a Notes user only.">
+  <trigger type="actionsmenu"/>
+  <documentset type="selected"/>
+  <code event="options">
+    <lotusscript>Option Public
+Option Declare
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>Dim UIwork As NotesUIWorkspace
+Dim UIview As NotesUIView
+Dim Session As NotesSession
+
+Dim db As notesdatabase
+Dim doc As notesdocument
+
+Dim UIdoc As notesuidocument
+
+Dim collection As NotesDocumentCollection
+
+Dim i As Integer 
+Dim PFA As Variant
+Dim FormItem As Variant
+Dim ExDate As Variant
+Dim ExQues As Variant
+Dim Subj As Variant
+
+'The following variables are available to be translated
+Const Msg1 ="This "
+Const Msg2 =" cannot be marked as expired."
+Const Msg3 = " is already Marked Expired.  Do you wish to remove the expiration flag?"
+Const Msg4 = "The requested action has been completed.  The document must be saved for the changes to take effect."
+Const Msg5 = "You must first select a document.  Note:  highlight bar cannot be on a category."
+Const msg6 = "Document has not yet been saved"
+Const msg7 = "Cannot mark document(s) as expired because archiving has not yet been set up for this database.  To set up archiving, select File--Database--Archive or click Archive Settings in the Database Properties infobox."
+Const BoxTitle ="Already Marked Expired"
+Const BoxTitle2 ="Expire Not Permitted"
+'End translatable variables
+
+
+
+
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Dim archReminder As Variant
+	Set UIwork = New notesuiworkspace	
+	Set uiview = uiwork.currentview
+	
+	Set session = New NotesSession
+	
+	Set db = session.CurrentDatabase
+	Set collection = db.UnprocessedDocuments
+	Set UIdoc = UIwork.currentdocument
+	
+	Dim tempDoc  As notesdocument	
+	Set tempDoc = db.getprofiledocument("temp")
+	
+	ArchReminder = tempDoc.reminder
+	
+	If ArchReminder(0) = "1" Then
+		Goto NoBox		
+	Else
+		Call uiwork.dialogbox("ArchiveReminder", True,True, True,True,True, False,"Archive Reminder", tempDoc, True)
+	End If
+	
+NoBox:	
+	If collection.Count &lt; 1 Then
+		Msgbox Msg5
+		Exit Sub
+	End If
+	
+	If uidoc Is Nothing Then
+		Goto continue
+	Elseif uidoc.isnewdoc And uiview Is Nothing Then
+		Msgbox Msg6
+		Exit Sub		
+	End If
+	
+continue:
+	If Not UIdoc Is Nothing And UIview Is Nothing Then
+		Set doc = uidoc.document
+		Call SetSharedVariables
+		If Not(CheckArchiveProtection) Then
+			UIWork.editdocument(True)
+			Call RenderExpireDate(doc)
+			ExQues = doc.GetItemvalue("ExpireQuestion")
+			UIdoc.refresh
+		End If
+	Else
+		For i = 1 To collection.Count
+			Set doc = collection.GetNthDocument( i )
+			Call SetSharedVariables
+			
+			If Not(CheckArchiveProtection) Then
+				Call RenderExpireDate(doc)
+				Call doc.save(True, True, True)    
+			End If
+		Next		
+	End If
+	
+End Sub
+</lotusscript>
+  </code>
+  <code event="SetSharedVariables">
+    <lotusscript>Sub SetSharedVariables
+	FormItem=doc.GetItemValue("Form")
+	ExDate=doc.GetItemValue("ExpireDate")
+	PFA = doc.HasItem( "PROTECTFROMARCHIVE" )
+	Subj=doc.GetitemValue("Subject")
+End Sub
+</lotusscript>
+  </code>
+  <code event="RenderExpireDate">
+    <lotusscript>Sub RenderExpireDate(doc As notesdocument)
+	Dim UIwork As New notesuiworkspace
+	
+	If Not ExDate(0) =""  Then
+		ExQues = Messagebox (Subj(0) &amp; Msg3, 4 + 32 + 0 , BoxTitle)		
+		
+		Select Case ExQues
+		Case 	Is = 2
+			Exit Sub
+		Case Is = 6
+			Call doc.ReplaceItemvalue("ExpireDate", "")	
+			If Not UIdoc Is Nothing Then
+				Print Msg4
+			End If
+		Case Is = 7
+			Exit Sub
+		End Select
+		
+	Else
+		Call doc.ReplaceItemValue ( "ExpireDate", Now)
+		If Not UIdoc Is Nothing Then
+			Print Msg4
+		End If
+		
+	End If
+	
+End Sub
+</lotusscript>
+  </code>
+  <code event="CheckArchiveProtection">
+    <lotusscript>Function CheckArchiveProtection As Integer
+	If PFA Then
+		Messagebox Msg1 &amp; FormItem(0) &amp; Msg2 , 0 + 64, BoxTitle2
+		
+	End If
+	CheckArchiveProtection = PFA
+End Function
+</lotusscript>
+  </code>
+  <code event="terminate">
+    <lotusscript>Sub Terminate
+	
+End Sub</lotusscript>
+  </code>
+</agent>

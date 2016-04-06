@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="My Newsletter Profile" hide="v3" publicaccess="false" language="en">
+  <trigger type="actionsmenu"/>
+  <documentset type="runonce"/>
+  <code event="action">
+    <simpleaction action="runformula">
+      <formula>abrName := @Name([Abbreviate]; @UserName);
+abrNameReplSpace := @ReplaceSubstring(abrName; " "; "_");
+UName := @ReplaceSubstring(abrNameReplSpace; "/"; "__");
+@SetProfileField("TempVars"; "ProfileKey"; UName);
+@Command([ToolsRunMacro]; "(EditInterestProfile)");SELECT
+ @All</formula>
+    </simpleaction>
+  </code>
+</agent>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(InactiveToActive)" hide="v3" runaswebuser="true" publicaccess="false" language="en">
+  <trigger type="agentlist"/>
+  <documentset type="selected"/>
+  <code event="options">
+    <lotusscript>Option Public
+Option Declare
+Use "wStringResource"
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>'SetActiveToInactive: 
+
+
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	
+	Dim session As New notessession
+	Dim db As notesdatabase
+	Dim doc As notesdocument
+	Set db  = session.currentdatabase
+	Dim collection As notesdocumentcollection
+	Set collection = db.UnprocessedDocuments
+	Dim i As Integer
+	Dim item As notesitem	
+	Dim item1 As notesitem
+	
+	If collection.Count &lt; 1 Then
+		Msgbox getSTring(55)
+		Exit Sub
+	End If
+	
+	For i = 1 To collection.Count
+		Set doc = collection.GetNthDocument( i )
+		Set item1 = doc.getfirstItem("DateFiled")	
+		Dim form As Variant
+		Dim valFile As Variant
+		form = doc.getitemvalue("form")
+		
+		If form(0) &lt;&gt; "MainTopic" And doc.getitemvalue("FileThisStatusDoc")(0) = "0" Then
+			Msgbox "This document is already active."
+			Exit Sub
+		Elseif  item1 Is Nothing And form(0) = "MainTopic" Then
+			Msgbox "This document is already active."
+			Exit Sub			
+		End If
+		
+		
+		
+		If doc.form(0) = "MainTopic" Then
+			Set item = doc.getfirstItem("FileByDate")
+			Call item.remove		
+			Set item = doc.getfirstItem("DateFiled")
+			Call item.remove
+			Set item = doc.getfirstItem("ViewDateFiled")
+			Call item.remove
+			Call doc.replaceitemvalue("NeverFile", "1")
+			Call doc.replaceitemvalue("Status", "1")
+		Else
+			Call doc.replaceitemvalue("FileThisStatusDoc", "0")
+			Call doc.replaceitemvalue("Status", "1")
+		End If	
+		Call doc.computewithform(0,0)
+		Call doc.save(True, True, True)    
+	Next		
+	
+End Sub</lotusscript>
+  </code>
+</agent>

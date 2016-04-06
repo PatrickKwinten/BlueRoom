@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(Web-EditMission)" hide="v3" runaswebuser="true" publicaccess="false" language="en">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+Use "DiscussionRoutines"
+Option Declare
+
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>Dim tmpPath As Variant
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Dim s As New notessession
+	Dim view As notesview
+	Dim missionDoc As notesdocument
+	Dim getUNID As Variant
+	Dim dbpath As Variant
+	
+	On Error Goto errorhere
+	
+	Dim dbug As New noteslog("WebEditMission")	
+'logging is for debug purposes
+	Set dbug = New NotesLog("WebEditMission")
+'to turn off the debug log, set this to False     
+	dbug.LogActions = True
+	dbug.OpenAgentLog
+	
+	dbug.logaction("Agent running")
+	
+	Set db = s.currentdatabase
+	Set view = db.getview("MissionLookup")
+	Set missionDoc = view.getdocumentbykey("Mission")
+	
+	dbpath = getdbpath		
+	
+	dbug.logaction("got to here")
+	
+	If missionDoc Is Nothing Then
+		Print "[/"+dbpath+"/"+"Mission?OpenForm]"
+	Else
+		getUNID = missionDoc.universalid
+		Print "[/"+dbpath+"/MissionLookup/"+Lcase(getUNID)+"?EditDocument]"
+	End If
+	
+ErrorHere:
+	dbug.logaction(Err &amp; " - " &amp; Error)
+	
+End Sub</lotusscript>
+  </code>
+</agent>

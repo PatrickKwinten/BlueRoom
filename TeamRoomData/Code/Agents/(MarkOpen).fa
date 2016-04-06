@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(MarkOpen)" hide="v3" publicaccess="false" language="en">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="action">
+    <simpleaction action="runformula">
+      <formula>FIELD DueDateStatus := "0";
+FIELD LastModDate := @Now;
+date := LastModDate;
+SELECT date</formula>
+    </simpleaction>
+  </code>
+  <item name="$CIAOOwner" sign="true">
+    <text>CN=Michael Kirschenbaum/O=Jacobson</text>
+  </item>
+  <item name="$CIAOTime" sign="true">
+    <datetime>19970210T174135,99-05</datetime>
+  </item>
+</agent>

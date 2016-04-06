@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://www.lotus.com/dxl" name="HelpAdvOpt" alias="HelpAdvOpt" publicaccess="false" language="en">
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="print notes embedded" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>&lt;HEAD&gt;<break/>&lt;STYLE TYPE="text/css"&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/> 	BODY {font-family: sans-serif}</run>
+      </par>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>&lt;/STYLE&gt;<break/>&lt;/HEAD&gt;</run>
+      </par>
+      <table widthtype="fixedleft" refwidth="5in">
+        <tablecolumn width="5in"/>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="#78b4bc">
+            <pardef id="3" leftmargin="1%" hide="notes web" keepwithnext="true" keeptogether="true"/>
+            <par def="3">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <table widthtype="fitmargins" leftmargin="0" refwidth="5in">
+              <tablecolumn width="100%"/>
+              <tablerow>
+                <tablecell borderwidth="0px 0px 2px">
+                  <pardef id="5" leftmargin="0.1000in" spacebefore="1.5" keepwithnext="true" keeptogether="true"/>
+                  <par def="5">
+                    <run>
+                      <font size="12pt" style="bold"/>Advanced Options Help</run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <par def="3">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+        <tablerow>
+          <tablecell borderwidth="0px">
+            <pardef id="6" leftmargin="2%" rightmargin="98%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="6">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="7" leftmargin="2%" rightmargin="98%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="7">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <pardef id="8" leftmargin="0.1000in" rightmargin="98%" keepwithnext="true" keeptogether="true"/>
+            <par def="8">
+              <run>
+                <font size="9pt"/>Enable </run>
+              <run>
+                <font size="9pt" style="underline"/>Marking Documents Inactive</run>
+              <run>
+                <font size="9pt"/>
+              </run>
+              <run>
+                <font size="9pt"/>for documents to be marked "inactive" on the date specified when they are created.  The documents will be removed from the Active Work views and marked as "Inactive" in the Index of All Documents view.  The Default Interval indicates the default date that new Documents are set to be marked inactive.  When enabled, this agent will run on a Daily basis.</run>
+            </par>
+            <pardef id="9" leftmargin="0.1000in" rightmargin="98%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="10" leftmargin="0.1000in" rightmargin="98%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt"/>Enable </run>
+              <run>
+                <font size="9pt" style="underline"/>Newsletters</run>
+              <run>
+                <font size="9pt"/>
+              </run>
+              <run>
+                <font size="9pt"/>to have emails sent to individuals who have created a "Newsletter Profile".  The criteria on the profile is matched with any criteria found in the topics of the TeamRoom.  Each match generates a document link, which will become part of the newsletter; that newsletter is then mailed to the subscriber. When enabled, this agent will run on a Daily basis.</run>
+            </par>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt"/>Enable </run>
+              <run>
+                <font size="9pt" style="underline"/>Reminders</run>
+              <run>
+                <font size="9pt"/>
+              </run>
+              <run>
+                <font size="9pt"/>to have an email reminder sent when the Due Date has passed on a topic in the TeamRoom.  This feature also checks to see if a document has been assigned for review by a team member.  If so, an e-mail is sent to that person, indicating that a document needs their review.   When enabled, this agent will run on a Daily basis.</run>
+            </par>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt"/>When you click the "Enable Agent" hotspot, you will be prompted for the server on which to run the agent.  This is helpful when you have more than one replica of the TeamRoom.</run>
+            </par>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt"/>Agents must be enabled and disabled via the Notes client.</run>
+            </par>
+            <par def="9">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt"/>If you are going to use the TeamRoom database on the web, fill in the name of the web server under </run>
+              <run>
+                <font size="9pt" style="underline"/>Web Information</run>
+              <run>
+                <font size="9pt"/>.  This is automatically filled in if the TeamRoom Setup document is created via a browser; it is blank by default if the TeamRoom Setup document is created via the Notes client.  NOTE: If your TeamRoom database is not available in a browser, leave this field blank, otherwise an invalid URL will be included in email reminders sent to users.</run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt"/> </run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+              <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="system">
+                <code event="click">
+                  <formula>@Command([FilePrint])</formula>
+                </code>
+                <font size="9pt"/>Print</button>
+              <run>
+                <font size="9pt"/>
+              </run>
+              <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="system">
+                <code event="click">
+                  <formula>@Command([FileCloseWindow])</formula>
+                </code>
+                <font size="9pt"/>Done</button>
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="10">
+              <run>
+                <font size="9pt"/>
+              </run>
+            </par>
+            <par def="9">
+              <run>
+                <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+              <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="system">
+                <code event="onClick" for="web">
+                  <javascript>window.close(self)</javascript>
+                </code>
+                <code event="onClick" for="client">
+                  <javascript>window.close(self)</javascript>
+                </code>
+                <font size="9pt"/>Done</button>
+              <run>
+                <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+            <par def="9">
+              <run>
+                <font size="9pt" name="Arial" pitch="variable" truetype="true" familyid="20"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <pardef id="11" leftmargin="1in" hide="notes"/>
+      <par def="11">
+        <run>
+          <font size="9pt"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+</page>

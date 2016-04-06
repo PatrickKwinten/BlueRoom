@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:xc="http://www.ibm.com/xsp/custom"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+	<xp:this.beforePageLoad><![CDATA[#{javascript://
+		var missionView:NotesView = database.getView("MissionLookup");
+		if(null != missionView){
+			missionView.refresh();
+			var missionNote:NotesDocument = missionView.getDocumentByKey("Mission");
+			if(null != missionNote){
+				var a11y = missionNote.getItemValueString("accessibilityOn");
+				if("" != a11y){
+					viewScope.accessibilityOn = a11y;
+				}else{
+					viewScope.accessibilityOn = false;
+				}
+			}
+		}}]]>
+	</xp:this.beforePageLoad>
+	<xc:layout navigationPath="/members">
+		<xc:memberManagement id="memberManagement">
+			<xc:this.loaded><![CDATA[${javascript:param.profile == null && param.subteam == null && param.documentId == null}]]></xc:this.loaded>
+		</xc:memberManagement>
+		<xc:memberProfile id="memberProfile" loaded="${param.profile != null || param.documentId != null}"></xc:memberProfile>
+		<xc:subteamProfile id="subteamProfile">
+			<xc:this.loaded><![CDATA[${javascript:param.profile == null && param.subteam != null}]]></xc:this.loaded>
+		</xc:subteamProfile>
+	</xc:layout>
+</xp:view>

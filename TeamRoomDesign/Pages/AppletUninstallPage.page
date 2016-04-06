@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://www.lotus.com/dxl" name="AppletUninstallPage" treatashtml="true" publicaccess="false" language="en">
+  <body>
+    <richtext>
+      <pardef id="1" leftmargin="1in" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1">
+        <run html="true">&lt;HTML&gt;&lt;HEAD&gt;&lt;TITLE&gt;Uninstalling Domino Applets&lt;/TITLE&gt;</run>
+      </par>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">&lt;SCRIPT language="Javascript"&gt;</run>
+      </par>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">//WINDOW DIALOG TEXT TO BE TRANSLATED</run>
+      </par>
+      <par def="1">
+        <run html="true">var UNINSTALLCOMPLETE = "The Domino Applets have been uninstalled!";</run>
+      </par>
+      <par def="1">
+        <run html="true">var is_netscape = (navigator.appName.indexOf("Netscape")!=-1);</run>
+      </par>
+      <par def="1">
+        <run html="true">//END TEXT TO BE TRANSLATED</run>
+      </par>
+      <par def="1"/>
+      <pardef id="2" leftmargin="1in" rightmargin="100%"/>
+      <par def="2">
+        <run html="true">var locProtocol = window.location.protocol;</run>
+      </par>
+      <par def="1">
+        <run html="true">var locHostname = window.location.host;</run>
+      </par>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">function setUninstalled() {</run>
+      </par>
+      <par def="1">
+        <run html="true">	if (!is_netscape)</run>
+      </par>
+      <par def="1">
+        <run html="true">		window.alert(UNINSTALLCOMPLETE);</run>
+      </par>
+      <par def="1">
+        <run html="true">}</run>
+      </par>
+      <par def="1"/>
+      <par def="2">
+        <run html="true"> /* Trigger script for Netscape uninstall */</run>
+      </par>
+      <par def="2">
+        <run html="true"/>
+        <run html="true">function launchNetscape() {</run>
+      </par>
+      <par def="2">
+        <run html="true">	if (is_netscape) {</run>
+      </par>
+      <par def="2">
+        <run html="true"/>
+        <run html="true">trigger = netscape.softupdate.Trigger;</run>
+      </par>
+      <par def="2">
+        <run html="true">		if ( trigger.UpdateEnabled() )</run>
+      </par>
+      <par def="2">
+        <run html="true">			trigger.StartSoftwareUpdate(</run>
+      </par>
+      <par def="2">
+        <run html="true">      			locProtocol+'//'+locHostname+'/domjava/uninstall.jar',</run>
+      </par>
+      <par def="2">
+        <run html="true">  			trigger.DEFAULT_MODE);</run>
+      </par>
+      <par def="2">
+        <run html="true">		else</run>
+      </par>
+      <par def="2">
+        <run html="true">			window.alert(SMARTUPDATESUPPORT);</run>
+      </par>
+      <par def="2">
+        <run html="true">	}</run>
+      </par>
+      <par def="2">
+        <run html="true">}</run>
+      </par>
+      <par def="2"/>
+      <par def="1">
+        <run html="true">&lt;/SCRIPT&gt;&lt;/HEAD&gt;</run>
+      </par>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">&lt;BODY link="#000000" vlink="#000000" alink="#000000" background="#ffffff" onLoad="launchNetscape();"&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">&lt;FONT face="Arial,Helvetcia,Verdana" color="#000000"&gt;</run>
+      </par>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">&lt;H3&gt;Uninstalling the Domino Applets&lt;/H3&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">&lt;P&gt;This will uninstall the Domino applets. It may take a few seconds to uninstall the applets from your hard drive. If 		you close this window before then the applets will not be uninstalled.  Once the applets are uninstalled you will be 		notified.</run>
+      </par>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">
+          <font size="9pt"/>&lt;SCRIPT Language="Javascript"&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">if (is_netscape) {</run>
+      </par>
+      <pardef id="3" leftmargin="1.2500in" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="3">
+        <run html="true">document.writeln('&lt;P&gt;&lt;B&gt;&lt;FONT face="Arial,Helvetcia,Verdana" color="#FF0000"&gt;IMPORTANT!: You will need to  restart Netscape in order to complete the uninstall.&lt;/FONT&gt;&lt;/B&gt;');</run>
+      </par>
+      <par def="1">
+        <run html="true">}</run>
+      </par>
+      <par def="1">
+        <run html="true">
+          <font size="9pt"/>&lt;/SCRIPT&gt;</run>
+      </par>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">&lt;APPLET code=lotus.notes.util.UtilApplet width=0 height=0 name=UtilApplet codebase="/domjava/"width=0 MAYSCRIPT&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">&lt;PARAM NAME="useslibrarycodebase" VALUE="dominoapplets.cab"&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">&lt;PARAM NAME="useslibrary" VALUE="DominoApplets"&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">&lt;PARAM NAME="useslibraryversion" VALUE="6,0,0,0"&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">&lt;PARAM NAME="namespace" VALUE="DominoApplets"&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">&lt;PARAM NAME="uninstall" VALUE="true"&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">&lt;/APPLET&gt;</run>
+      </par>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">&lt;/FONT&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">&lt;/BODY&gt;</run>
+      </par>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">&lt;/HTML&gt;</run>
+      </par>
+      <par def="1"/>
+    </richtext>
+  </body>
+</page>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view xmlns="http://www.lotus.com/dxl" name="s:TeamRoom Members Multi JSON" alias="(sMemberLkupMultiJSON)" hide="web" showinmenu="false" publicaccess="false" comment="XPages datasource: get JSON by different Keys" unreadmarks="none" onopengoto="lastopened" onrefresh="displayindicator" headers="beveled" opencollapsed="false" showresponsehierarchy="true" showmargin="false" shrinkrows="true" extendlastcolumn="false" showhierarchies="false" unreadcolor="black" rowlinecount="9" headerlinecount="1" rowspacing="1" bgcolor="white" altrowcolor="#efefef" totalscolor="black" headerbgcolor="white" boldunreadrows="false" evaluateactions="false" allownewdocuments="false" allowcustomizations="true" hidemarginborder="false" marginwidth="0px" marginbgcolor="white" uniquekeys="false">
+  <code event="selection">
+    <formula>SELECT (form = "ParticipantProfile" | form = "Participant Profile") &amp; status = "1"</formula>
+  </code>
+  <column sort="ascending" hidedetailrows="false" listseparator="newline" itemname="$14" width="26.2500" resizable="true" separatemultiplevalues="true" sortnoaccent="true" sortnocase="true" showaslinks="false">
+    <font size="8pt"/>
+    <columnheader title="Fullname|NotesName|EMail|UNID"/>
+    <code event="value">
+      <formula>@Trim(
+	@Name([Abbreviate]; Who):
+	@Name([Canonicalize]; Who):
+	Email:
+	@Text(@DocumentUniqueID)
+)</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" itemname="$2" width="260" resizable="true" separatemultiplevalues="false" sortnoaccent="false" sortnocase="true" showaslinks="false">
+    <columnheader title="JSON"/>
+    <code event="value">
+      <formula>REM {v1.0};
+src:="\\":"'":@NewLine:"\"";
+dst:="\\\\":"\\'":"\\n":"\\\"";
+
+REM { Notes identification properties };
+tmpUNID:=@Text(@DocumentUniqueID);
+tmpNoteID:=@Text(@NoteID);
+
+REM { Build Arrays from custom fields for the JSONObject };
+tmpNotesName:=Who;
+tmpCreated:=@Text(@Created);
+tmpEmail:=Email;
+tmpTitle:=JobTitle;
+
+REM { Avatar URL };
+hlpDUMMYPic:= "";
+hasPicture:= @If(@AttachmentNames !=""; @True; @False);
+tmpPicture:= @If(hasPicture; @AttachmentNames ;hlpDUMMYPic);
+
+separator:="\",";
+closure:="\"";
+
+"{" +
+
+"\"docUNID\":\"" + @ReplaceSubstring( tmpUNID; Src; Dst ) + separator +
+"\"docID\":\"" + @ReplaceSubstring( tmpNoteID; Src; Dst ) + separator +
+
+"\"member\":\"" + @ReplaceSubstring( tmpNotesName; Src; Dst ) + separator +
+"\"created\":\"" + @ReplaceSubstring( tmpCreated; Src; Dst ) + separator +
+"\"email\":\"" + @ReplaceSubstring( tmpEmail; Src; Dst ) + separator +
+"\"title\":\"" + @ReplaceSubstring( tmpTitle; Src; Dst ) + separator +
+"\"avatar\":\"" + @ReplaceSubstring( tmpPicture; Src; Dst ) + closure +
+
+
+"}"</formula>
+    </code>
+  </column>
+</view>

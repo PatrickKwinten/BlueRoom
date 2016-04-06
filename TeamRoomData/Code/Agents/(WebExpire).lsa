@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(WebExpire)" hide="v3" runaswebuser="true" publicaccess="false" language="en" comment="This performs the expiring/unexpiring of document functions for the web user.">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+Use "wStringResource"
+Use "DiscussionRoutines"
+
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>Dim topicview As String
+Dim favorites As String
+Dim categoryview As String
+Dim archivingview As String
+Dim authorview As String
+Dim originalnote As notesdocument
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	InstantiateObjects
+	dbpath = getdbpath
+	
+	AllView =   "&lt;hr&gt;&lt;font size=2&gt;&lt;a href=/" + dbpath + "/($All)?OpenView&gt;"+ getString(50) +"&lt;/a&gt;&amp;nbsp&amp;nbsp"
+	MissionView = "&lt;a href=/" + dbpath + "/TeamOverview?OpenView&gt;"+GetString(51)+"&lt;/a&gt;&amp;nbsp&amp;nbsp"
+	ActiveView = "&lt;a href=/" + dbpath + "/ActiveDate?OpenView&gt;"+GetString(52)+"&lt;/a&gt;&lt;hr&gt;"
+	
+      'Get real document
+	OriginalUNID = Mid(note.Query_String(0), Instr(note.Query_String(0), "&amp;")+1, 32)
+	Set originalNote = db.getdocumentbyunid(originalunid)
+	'CurrentDocument = "&lt;BR&gt;&lt;b&gt;&lt;a href=/"+dbpath+"/($All)/"+Lcase(originalUNID)+"?OpenDocument&gt;"+GetString(1)+"&lt;/a&gt;&lt;/b&gt;&lt;BR&gt;"
+	
+	If Originalnote.hasitem("protectfromarchive") Then
+		Print "&lt;b&gt;"+Originalnote.form(0)+GetString(12)+ "&lt;/b&gt;" + AllView + MissionView + ActiveView
+	Elseif OriginalNote.hasitem("expiredate") Then
+		If originalnote.expiredate(0) &lt;&gt; "" Then
+			Print "&lt;b&gt;" + GetString(13)+  "&lt;/b&gt;" + AllView + MissionView + ActiveView
+			OriginalNote.Removeitem("Expiredate")
+			Call OriginalNote.save(True, False)
+		Else
+			OriginalNote.expiredate = Today
+			Call OriginalNote.save(True,False)
+			Print "&lt;b&gt;" + GetString(14)+  "&lt;/b&gt;" + AllView + MissionView + ActiveView
+		End If
+	Else
+		OriginalNote.expiredate = Today
+		Call OriginalNote.save(True,False)
+		Print "&lt;b&gt;" + GetString(14)+  "&lt;/b&gt;" + AllView + MissionView + ActiveView
+	End If
+	
+End Sub</lotusscript>
+  </code>
+</agent>

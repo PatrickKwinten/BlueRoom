@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(EnableDisableAgents)" hide="v3" publicaccess="false" language="en" comment="Enables and disables filing agent.  Used in buttons in Advanced Options panel of the TeamRoom Setup">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+Option Declare
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>Dim db As notesdatabase
+Dim FilingAgent As notesagent
+Dim NewsletterAgent As notesagent
+Dim ReminderAgent As notesagent
+Dim DbProfile As NotesDocument
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Dim session As New notessession
+	
+	Set db = session.currentdatabase
+	Set DbProfile = db.GetProfileDocument( "TempVars")
+	Set FilingAgent = db.getagent("AutoFileAgent")
+	Set NewsletterAgent = db.getagent("Send Newsletters")
+	Set ReminderAgent = db.getagent("SendReminder")
+	
+	If dbprofile.SetThisAgent(0) = "filing" Then
+		Call SetFilingAgent
+		Exit Sub
+	End If
+	
+	If dbprofile.SetThisAgent(0) = "newsletter" Then
+		Call SetNewsletterAgent		
+		Exit Sub
+	End If
+	
+	If dbprofile.SetThisAgent(0) = "reminder" Then
+		Call SetReminderAgent		
+		Exit Sub
+	End If
+	
+End Sub
+
+
+
+</lotusscript>
+  </code>
+  <code event="SetFilingAgent">
+    <lotusscript>Sub SetFilingAgent
+	Dim fserver As Variant
+	Fserver = dbprofile.FilingServer(0)
+	
+	If dbprofile.FilingEnabled(0) = "1" Then
+		FilingAgent.IsEnabled  = True
+		If Fserver &lt;&gt; "" Then
+			FilingAgent.ServerName = Fserver
+		End If				
+		Call FilingAgent.save
+	Elseif dbprofile.FilingEnabled(0) = "0" Then
+		FilingAgent.IsEnabled  = False
+		Call FilingAgent.save
+	End If
+End Sub
+</lotusscript>
+  </code>
+  <code event="SetNewsletterAgent">
+    <lotusscript>Sub SetNewsletterAgent
+	Dim fserver As Variant
+	Fserver = dbprofile.NewsServer(0)
+	
+	If dbprofile.NewsletterEnabled(0) = "1" Then
+		NewsletterAgent.IsEnabled  = True
+		If Fserver &lt;&gt; "" Then
+			NewsletterAgent.ServerName = Fserver
+		End If
+		Call NewsletterAgent.save
+	Elseif dbprofile.NewsletterEnabled(0) = "0" Then
+		NewsletterAgent.IsEnabled  = False
+		Call  NewsletterAgent.save
+	End If
+End Sub
+
+
+</lotusscript>
+  </code>
+  <code event="SetReminderAgent">
+    <lotusscript>Sub SetReminderAgent
+	Dim fserver As Variant
+	Fserver = dbprofile.ReminderServer(0)
+	
+	If dbprofile.ReminderEnabled(0) = "1" Then
+		ReminderAgent.IsEnabled  = True
+		If Fserver &lt;&gt; "" Then
+			ReminderAgent.ServerName = Fserver
+		End If	
+		Call ReminderAgent.save
+	Elseif dbprofile.ReminderEnabled(0) = "0" Then
+		ReminderAgent.IsEnabled  = False
+		Call  ReminderAgent.save
+	End If
+End Sub</lotusscript>
+  </code>
+</agent>

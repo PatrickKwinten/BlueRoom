@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.lotus.com/dxl" name="(MapCategories)" alias="MapCategories" nocompose="true" noquery="true" publicaccess="false" language="en" bgcolor="#efefef">
+  <code event="windowtitle">
+    <formula>"Map Categories"</formula>
+  </code>
+  <code event="htmlbody">
+    <formula>"BGCOLOR=\"white\"  FACE=\"Ariel\""</formula>
+  </code>
+  <background allowoverride="false"/>
+  <body>
+    <richtext>
+      <pardef id="1" align="none" leftmargin="1in" hide="notes" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1"/>
+      <subformref name="WebFont"/>
+      <par def="1"/>
+      <pardef id="2" hide="read edit copy preview previewedit"/>
+      <par def="2">
+        <run>
+          <font size="9pt" name="user-interface" color="gray"/>check to see if Mission Page exists </run>
+        <run>
+          <font size="9pt" color="gray" name="user-interface"/>
+          <field type="text" kind="computed" name="MissionCheck" htmlid="MissionCheck">
+            <code event="defaultvalue">
+              <formula>View := "MissionLookup";
+Check := @DbColumn("":"NoCache"; ""; View; 1);
+@If(Check = ""; ""; Check)</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" name="user-interface" color="gray"/>
+        </run>
+      </par>
+      <par def="2">
+        <run>
+          <font size="9pt" name="user-interface" color="gray"/>list of categories used in documents that are NOT defined in the Mission Page </run>
+        <run>
+          <font size="9pt" color="gray" name="user-interface"/>
+          <field type="text" allowmultivalues="true" kind="computed" name="ListCats" listinputseparators="comma semicolon" listdisplayseparator="semicolon" htmlid="ListCats">
+            <code event="defaultvalue">
+              <formula>CatView := "CategoryLookup";
+MissionView := "MissionLookup";
+Key := "Mission";
+
+REM {Get list of categories specified in Mission Statement};
+CurrentCat := @DbLookup("":"NoCache"; ""; MissionView; Key; 4);
+
+REM {Get list of all categories used in database};
+OldCat := @DbColumn("":"NoCache"; ""; CatView; 1);
+TrOldCat := @Trim(OldCat);
+
+REM {Get just a list of categories not specified in the Mission statement};
+InvalidCat := @Replace(TrOldCat; CurrentCat; "");
+TrInvalidCat := @Trim(InvalidCat);
+
+@If(@IsError(CurrentCat) | CurrentCat = ""; ""; TrInvalidCat)</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" name="user-interface" color="gray"/>
+        </run>
+      </par>
+      <par def="2">
+        <run>
+          <font size="9pt" name="user-interface" color="gray"/>list of categories that are defined in the Mission Page </run>
+        <run>
+          <font size="9pt" color="gray" name="user-interface"/>
+          <field type="text" allowmultivalues="true" kind="computed" name="CurrentCatList" listinputseparators="comma semicolon" listdisplayseparator="semicolon" htmlid="CurrentCatList">
+            <code event="defaultvalue">
+              <formula>MissionView := "MissionLookup";
+Key := "Mission";
+Cat := @DbLookup("":"NoCache"; ""; MissionView; Key; 4);
+
+@If(@IsError(Cat) | Cat = ""; "";  Cat)</formula>
+            </code>
+          </field>
+        </run>
+        <run>
+          <font size="9pt" name="user-interface"/>
+        </run>
+      </par>
+      <table widthtype="fixedleft" refwidth="4.6875in">
+        <tablecolumn width="4.6875in"/>
+        <tablerow>
+          <tablecell borderwidth="0px" bgcolor="system">
+            <pardef id="4" leftmargin="1%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="4">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="5" leftmargin="1%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="5">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/>
+              </run>
+            </par>
+            <pardef id="6" leftmargin="2%" rightmargin="97%" keepwithnext="true" keeptogether="true"/>
+            <par def="6">
+              <run>
+                <font size="9pt" name="user-interface"/>Documents in this TeamRoom may have been created using a prior category list.  Use the Map Categories feature to replace obsolete categories with current categories defined in the TeamRoom Setup.</run>
+            </par>
+            <pardef id="7" leftmargin="2%" rightmargin="97%" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+            <par def="7">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <pardef id="8" leftmargin="2%" rightmargin="97%" hide="web" keepwithnext="true" keeptogether="true"/>
+            <par def="8">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/>
+              </run>
+            </par>
+            <par def="6">
+              <run>
+                <font size="9pt" name="user-interface"/>Note:  This feature is useful when you've created a TeamRoom database by replacing the design of a Discussion database. </run>
+            </par>
+            <par def="7">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt" name="user-interface" color="white"/>
+              </run>
+            </par>
+            <pardef id="9" leftmargin="2%" rightmargin="97%" hide="notes" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>FieldBlank = "" | ListCats  = "" |  MissionCheck = ""</formula>
+              </code>
+            </pardef>
+            <par def="9">
+              <run>
+                <font size="9pt" name="user-interface" color="gray"/>
+              </run>
+              <run>
+                <font size="9pt" color="red" style="bold" name="user-interface"/>
+                <field type="text" kind="computedwhencomposed" name="FieldBlank" htmlid="FieldBlank">
+                  <code event="defaultvalue">
+                    <formula>""</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" name="user-interface"/> </run>
+              <run>
+                <font size="9pt" name="user-interface" color="white"/> </run>
+            </par>
+            <pardef id="10" leftmargin="2%" rightmargin="97%" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>ListCats != "" | MissionCheck = ""</formula>
+              </code>
+            </pardef>
+            <par def="10">
+              <run>
+                <font size="9pt" name="user-interface" color="red"/>
+              </run>
+              <run>
+                <font size="9pt" color="red" style="bold" name="user-interface"/>
+                <field type="text" kind="computedfordisplay" name="NoMoreToMap" htmlid="NoMoreToMap">
+                  <code event="defaultvalue">
+                    <formula>"All documents in this TeamRoom are using valid categories defined in the TeamRoom Setup (or the category field was left blank)."</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" name="user-interface" color="red"/> </run>
+              <run>
+                <font size="9pt" name="user-interface" color="white"/> </run>
+            </par>
+            <pardef id="11" leftmargin="2%" rightmargin="97%" keepwithnext="true" keeptogether="true">
+              <code event="hidewhen">
+                <formula>MissionCheck != ""</formula>
+              </code>
+            </pardef>
+            <par def="11">
+              <run>
+                <font size="9pt" name="user-interface" color="red"/>
+              </run>
+              <run>
+                <font size="9pt" color="red" style="bold" name="user-interface"/>
+                <field type="text" kind="computedfordisplay" name="MissingMissionPage" htmlid="MissingMissionPage">
+                  <code event="defaultvalue">
+                    <formula>"This operation cannot be completed because the TeamRoom Setup has not yet been completed."</formula>
+                  </code>
+                </field>
+              </run>
+              <run>
+                <font size="9pt" name="user-interface"/>
+              </run>
+            </par>
+            <par def="7">
+              <run html="true">
+                <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+            </par>
+            <par def="8">
+              <run>
+                <font size="9pt" name="user-interface"/>
+              </run>
+            </par>
+            <table leftmargin="2%" rightmargin="97%" widthtype="fixedleft" refwidth="4.4063in">
+              <tablecolumn width="4.4063in"/>
+              <tablerow>
+                <tablecell borderwidth="0px" bgcolor="#d2d2d2">
+                  <cellbackground>
+                    <imageref name="bg_DIALOGBAND"/>
+                  </cellbackground>
+                  <pardef id="13" leftmargin="0.0104in" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>ListCats = "" | MissionCheck = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="13">
+                    <run>
+                      <font size="9pt" name="user-interface"/>1.  Select obsolete category(s) to map</run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px" bgcolor="system">
+                  <pardef id="14" leftmargin="0.0104in" hide="notes mobile" keepwithnext="true" keeptogether="true"/>
+                  <par def="14">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <pardef id="15" leftmargin="0.0104in" hide="web" keepwithnext="true" keeptogether="true"/>
+                  <par def="15">
+                    <run>
+                      <font size="9pt" name="user-interface" color="#efefef"/>
+                    </run>
+                  </par>
+                  <pardef id="16" leftmargin="0.0104in" hide="notes" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>ListCats = "" | MissionCheck = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="16">
+                    <run>
+                      <font size="9pt" name="user-interface" color="gray"/>Hold down CTRL key to select multiple categories</run>
+                  </par>
+                  <par def="13">
+                    <run>
+                      <font name="user-interface"/>
+                    </run>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                      <field usenotesstyle="false" height="0.6000in" width="2in" multiline="true" borderstyle="single" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" allowmultivalues="true" kind="editable" name="OldCat" description="Obsolete categories to map" listinputseparators="comma" listdisplayseparator="comma" htmlid="OldCat" htmltitle="Obsolete categories to map">
+                        <keywords recalcchoices="true" columns="1" ui="listbox">
+                          <formula>@Unique(ListCats)</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size = 4"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>""</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px" bgcolor="system">
+                  <par def="14">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <pardef id="17" leftmargin="0.0104in" keepwithnext="true" keeptogether="true"/>
+                  <par def="17">
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px" bgcolor="#d2d2d2">
+                  <cellbackground>
+                    <imageref name="bg_DIALOGBAND"/>
+                  </cellbackground>
+                  <par def="13">
+                    <run>
+                      <font size="9pt" name="user-interface"/>2.  Select a replacement category</run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px" bgcolor="system">
+                  <par def="14">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <par def="15">
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                  <par def="13">
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                      <field usenotesstyle="false" height="0.2340in" width="2in" multiline="true" borderstyle="inset" lookupeachchar="false" lookupaddressonrefresh="false" type="keyword" kind="editable" name="CurrentCat" description="Replacement category" htmlid="CurrentCat" htmltitle="Replacement category">
+                        <keywords recalcchoices="true" columns="1" ui="combobox">
+                          <formula>CurrentCatList</formula>
+                        </keywords>
+                        <code event="htmlattributes">
+                          <formula>"size = 4"</formula>
+                        </code>
+                        <code event="defaultvalue">
+                          <formula>""</formula>
+                        </code>
+                      </field>
+                    </run>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px" bgcolor="system">
+                  <par def="14">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <par def="15">
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px" bgcolor="#d2d2d2">
+                  <cellbackground>
+                    <imageref name="bg_DIALOGBAND"/>
+                  </cellbackground>
+                  <par def="13">
+                    <run>
+                      <font size="9pt" name="user-interface"/>3.  Map Categories</run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px" bgcolor="system">
+                  <par def="14">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <par def="15">
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                  <par def="13">
+                    <run>
+                      <font size="9pt" name="user-interface"/>Click the "Map Categories Now" button to map the selected categories to the replacement category   You can repeat steps 1 - 3 until all obsolete categories have been mapped </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px" bgcolor="system">
+                  <par def="14">
+                    <run html="true">
+                      <font size="9pt" name="user-interface"/>&lt;br&gt;</run>
+                  </par>
+                  <par def="15">
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="18" align="right" leftmargin="0.0104in" hide="web" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>ListCats = ""| MissionCheck = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="18">
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                    <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="#d5ccbb">
+                      <code event="click">
+                        <formula>@Command([ToolsRunMacro]; "(NotesFixCategories)")</formula>
+                      </code>
+                      <font size="9pt" name="user-interface"/>Map Categories Now</button>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                    <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="#d5ccbb">
+                      <code event="click">
+                        <formula>@Command([FileCloseWindow])</formula>
+                      </code>
+                      <font size="9pt" name="user-interface"/>Done</button>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="19" align="right" leftmargin="0.0104in" hide="notes" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>ListCats = "" | MissionCheck = ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="19">
+                    <run>
+                      <font size="9pt" name="user-interface" color="teal"/>
+                    </run>
+                    <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="#d5ccbb">
+                      <code event="click">
+                        <formula>REM {Variable to translate};
+MissingTxt := "The following fields require values: Current Category(s) and Replacement Category";
+REM {End variable to translate};
+
+FIELD FieldBlank := "";
+
+@If(OldCat = "" | OldCat = SelectTxt | CurrentCat = "" | CurrentCat = SelectTxt;
+@Return(
+@Do(
+@SetField("FieldBlank"; MissingTxt);
+@PostedCommand([ViewRefreshFields])));
+
+@Do(
+@PostedCommand([FileSave]);
+@PostedCommand([FileCloseWindow]);
+@PostedCommand([ToolsRunMacro]; "(WebFixCategories)")
+))</formula>
+                      </code>
+                      <font size="9pt" name="user-interface"/>Map Categories Now</button>
+                    <run>
+                      <font size="9pt" name="user-interface" color="teal"/>
+                    </run>
+                    <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="#d5ccbb">
+                      <code event="onClick" for="web">
+                        <javascript>window.close(self)</javascript>
+                      </code>
+                      <font size="9pt" name="user-interface"/>Done</button>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="20" align="right" leftmargin="0.0104in" hide="web" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>ListCats != "" &amp; MissionCheck != ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="20">
+                    <run>
+                      <font size="9pt" name="user-interface" color="teal"/>
+                    </run>
+                    <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="#d5ccbb">
+                      <code event="click">
+                        <formula>@Command([FileCloseWindow])</formula>
+                      </code>
+                      <font size="9pt" name="user-interface"/>Done</button>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+              <tablerow>
+                <tablecell borderwidth="0px">
+                  <pardef id="21" align="right" leftmargin="0.0104in" hide="notes" keepwithnext="true" keeptogether="true">
+                    <code event="hidewhen">
+                      <formula>ListCats != "" &amp; MissionCheck != ""</formula>
+                    </code>
+                  </pardef>
+                  <par def="21">
+                    <run>
+                      <font size="9pt" name="user-interface" color="teal"/>
+                    </run>
+                    <button width="2in" widthtype="maximum" maxlines="1" wraptext="true" bgcolor="#d5ccbb">
+                      <code event="onClick" for="web">
+                        <javascript>window.close(self)</javascript>
+                      </code>
+                      <font size="9pt" name="user-interface"/>Done</button>
+                    <run>
+                      <font size="9pt" name="user-interface"/>
+                    </run>
+                  </par>
+                </tablecell>
+              </tablerow>
+            </table>
+            <pardef id="22" leftmargin="5%" keepwithnext="true" keeptogether="true"/>
+            <par def="22">
+              <run>
+                <font size="9pt" name="user-interface"/>
+              </run>
+            </par>
+          </tablecell>
+        </tablerow>
+      </table>
+      <par def="2">
+        <run>
+          <font size="9pt" name="user-interface"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+  <item name="$SubForm_RepIDs" sign="true">
+    <text>0000000000000000</text>
+  </item>
+</form>

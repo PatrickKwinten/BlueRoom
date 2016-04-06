@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="Convert My Newsletter Profile to a Subscription" hide="v3" publicaccess="false" language="en" comment="Only available to R5 and above.">
+  <trigger type="actionsmenu"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+Option Declare
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>'Convert My Newsletter Profile to a Subscription: 
+
+'Variables to translate
+Const msg1 = "You do not currently have an Interest Profile.  Select Create--Subscription to create a subscription for this discussion database."
+Const title1 = "Document not found"
+Const msg2 = "The subscription has been successfully created!  Future subscriptions to this database can be created by selecting Create-Subscription."
+Const title2 = "Successful"
+Const error46 = "This feature is only available to Notes clients which are running Release 5.0 and above."
+Const title3 = "Alert"
+Const msg4 = "Enter a title for your subscription: "
+Const title4 = "Converting Interest Profile to Subscription"
+
+Const msg5 = "You either did not enter a title or you clicked Cancel.  Do you wish to continue?"
+Const msg6 = "Interest profile was not converted to a subscription."
+'End variables to translate
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>'END variables to translate
+Sub Initialize
+	Dim session As New notessession	
+	Dim uiwork As New notesuiworkspace
+	Dim db As notesdatabase
+	Dim interestView As notesview
+	Dim interestDoc As notesdocument
+	Dim dbTitle As String
+	Dim repID As String
+	Dim key As String
+	Dim user As Variant
+	Dim item As Variant
+	Dim auth As Variant
+	Dim subj As Variant
+	Dim cat As Variant
+	Dim ev As Variant
+	Dim thr As Variant
+	Dim title As String
+	Dim SubscriptionDoc As notesdocument
+	Dim headDB As New NotesDatabase("", "headline.nsf")
+	Dim Sver As Variant
+	Dim Iver As Integer
+	Dim YN As Integer
+	
+	Sver = Evaluate("@version")
+	Iver = Cint(Sver(0))
+	
+	If Iver &lt; 160 Then
+		Msgbox error46, 16, title3          'user is running release prior to R5.0
+		Exit Sub
+	End If
+	
+	Set db = session.currentdatabase
+	repID = db.replicaID
+	dbTitle = db.title
+	Set user = New notesname(session.username)  
+	
+	Set interestView = db.getview("($Profiles)")
+	Call interestView.refresh
+	key =  "Interest Profile" + user.common   'DNT
+	
+	Set interestDoc = interestView.getdocumentbykey(key) 
+	
+	If interestDoc Is Nothing Then        'user doesn't have an interest profile
+		Msgbox msg1, 48, title1
+		Exit Sub
+	End If
+	
+	title = Inputbox(msg4,  title4, dbTitle)
+	
+	YN = 1
+	
+	If title = "" Then
+		YN =  uiwork.prompt(PROMPT_YESNO, title3, msg5)
+	End If
+	
+	If YN = 0 Then
+		Msgbox msg6, 64 
+		Exit Sub
+	End If
+	
+	
+	Set item = interestDoc.replaceitemvalue("Form", "($Subscription)")
+	auth = interestDoc.getitemvalue("ProfileAuthors")
+	subj = interestDoc.getitemvalue("ProfileStrings")
+	cat = interestDoc.getitemvalue("ProfileCategories")
+	ev = interestDoc.getitemvalue("ProfileEvents")
+	thr = interestDoc.getitemvalue("ProfileThreadSubjects")
+	
+	If auth(0) &lt;&gt; "" Then
+		Set item = interestdoc.replaceitemvalue("AuthorMatch", "1")
+	End If
+	
+	If subj(0) &lt;&gt; "" Then
+		Set item = interestdoc.replaceitemvalue("SubjectMatch", "1")
+	End If
+	
+	If cat(0) &lt;&gt; "" Then
+		Set item = interestdoc.replaceitemvalue("CategoryMatch", "1")
+	End If
+	
+	Dim st As Variant
+	st = interestDoc.getitemvalue("ProfileSubteams")
+	If st(0) &lt;&gt; "" Then
+		Set item = interestdoc.replaceitemvalue("SubteamMatch", "1")
+	End If	
+	
+	If ev(0) &lt;&gt; "" Then
+		Set item = interestdoc.replaceitemvalue("EventMatch", "1")
+	End If
+	
+	If thr(0) &lt;&gt; "" Then
+		Set item = interestdoc.replaceitemvalue("ThreadMatch", "1")
+	End If
+	
+	Set item = interestdoc.replaceitemvalue("$HLTitle", title)
+	
+	Set item = interestdoc.replaceitemvalue("$HLMonitorDB", Left(repID, 8) + ":" + Right(repID,8))
+	
+	Call interestDoc.computewithform(0,0)
+	Call interestDoc.save(True, False)
+	Set SubscriptionDoc = interestDoc.CopyToDatabase(headDB)
+	SubscriptionDoc.formDBIDitem = repID
+	Set item = SubscriptionDoc.replaceitemvalue("test", "1")
+	Call SubscriptionDoc.save(False,False)
+	
+	InterestDoc.remove(True)
+	Msgbox msg2, 64, title2              'successful subscription creation
+	
+End Sub</lotusscript>
+  </code>
+</agent>

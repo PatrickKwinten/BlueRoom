@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view xmlns="http://www.lotus.com/dxl" name="Project Information\Team Announcements" alias="Announcements" showinmenu="true" allowdocselection="true" publicaccess="false" language="en" default="true" unreadmarks="standard" onopengoto="lastopened" onrefresh="displayindicator" headers="simple" opencollapsed="true" showresponsehierarchy="true" showmargin="true" shrinkrows="true" extendlastcolumn="false" showhierarchies="false" unreadcolor="red" rowlinecount="4" headerlinecount="1" rowspacing="1.25" haslinkcolumn="true" bgcolor="white" altrowcolor="#efefef" totalscolor="blue" headerbgcolor="#a8cfd4" boldunreadrows="false" evaluateactions="false" allownewdocuments="false" allowcustomizations="true" hidemarginborder="false" marginwidth="0px 0px 1px" marginbgcolor="white" uniquekeys="false" initialbuildrestricted="false" noemptycategories="true">
+  <code event="selection">
+    <formula>SELECT form = "announcement" &amp; FileThisStatusDoc != "1"</formula>
+  </code>
+  <code event="helprequest">
+    <formula>REM {DNT};
+@Command([OpenHelpDocument]; [ClientHelp]; "(Help)"; "TeamRoomVIndex")</formula>
+  </code>
+  <actionbar useappletinbrowser="true" bgcolor="#78b4bc" bordercolor="black">
+    <actionbarstyle height="4.7500ex">
+      <font size="9pt" name="multilingual"/>
+    </actionbarstyle>
+    <actionbuttonstyle margintype="fixed" margin="5" bgcolor="#c4dee1" displayborder="notesstyle" widthtype="background"/>
+    <font size="9pt" name="multilingual"/>
+    <border width="0px 0px 1px"/>
+    <action title="_Forward" showinbar="false" hide="web" systemcommand="forward"/>
+    <action title="_Edit Document" showinbar="false" hide="web" systemcommand="edit"/>
+    <action title="New Announcement">
+      <code event="click">
+        <formula>@SetProfileField("TempVars"; "viewtitle"; @Subset(@ViewTitle; -1));
+@PostedCommand([Compose];"Announcement")</formula>
+      </code>
+      <code event="hidewhen">
+        <formula>access := @TextToNumber(@V4UserAccess(@DbName));
+REM {hide when access is less than Editor};
+@Subset(access; 1) &lt; 4</formula>
+      </code>
+    </action>
+    <sharedactionref id="59">
+      <action title="Set Status to Inactive" hide="web">
+        <code event="click">
+          <formula>REM {variables to translate};
+label := "Error";
+message := "You must first select a document.  Note:  highlight bar cannot be on a category.";
+REM {END variables to translate};
+
+@If(!@IsAvailable(form);
+@Return(@Prompt([Ok]; label; message));
+"");
+
+@Command([ToolsRunMacro]; "(SetStatusInactive)")</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="55">
+      <action title="Delete\Move to Trash" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>@Command([MoveToTrash])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="56">
+      <action title="Delete\Empty Trash" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>@Command([EmptyTrash])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="44">
+      <action title="Search" showinmenu="false" hide="notes">
+        <code event="click">
+          <formula>REM {Web only - used in Views};
+@Command([ViewShowSearchBar])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+    <sharedactionref id="60">
+      <action title="Database Help">
+        <code event="click">
+          <formula>@Command([HelpUsingDatabase])</formula>
+        </code>
+      </action>
+    </sharedactionref>
+  </actionbar>
+  <column sort="ascending" hidedetailrows="false" itemname="$189" width="2.6250" resizable="true" separatemultiplevalues="false" sortnoaccent="false" sortnocase="true" showaslinks="false" showasicons="true">
+    <font size="9pt"/>
+    <columnheader title=" ">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <code event="value">
+      <formula>@If(type = "1"; 89; "")</formula>
+    </code>
+  </column>
+  <column hidedetailrows="false" itemname="$191" width="28.3750" resizable="true" separatemultiplevalues="false" sortnoaccent="false" sortnocase="true" showaslinks="true">
+    <font size="9pt"/>
+    <columnheader title="Team Announcement">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <code event="value">
+      <formula>ExpiredTxt := "EXPIRED: ";
+@If(ExpireDate != ""; ExpiredTxt; "") + Subject</formula>
+    </code>
+  </column>
+  <column sort="descending" hidedetailrows="false" itemname="$190" width="13.8750" resizable="true" separatemultiplevalues="false" sortnoaccent="false" sortnocase="true" showaslinks="true">
+    <font size="9pt"/>
+    <columnheader title="Date">
+      <font size="9pt" name="multilingual"/>
+    </columnheader>
+    <datetimeformat legacy="true" show="datetime" date="yearmonthday" fourdigityear="true" time="hourminute" zone="never"/>
+    <code event="value">
+      <formula>@Created</formula>
+    </code>
+  </column>
+</view>

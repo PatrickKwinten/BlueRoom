@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://www.lotus.com/dxl" name="$$ViewTemplateDefault" alias="AllViewTemplate" publicaccess="false" language="en">
+  <body>
+    <richtext>
+      <pardef id="1"/>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>&lt;STYLE TYPE="text/css"&gt;</run>
+      </par>
+      <pardef id="2" align="none" leftmargin="1in" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="2">
+        <run html="true">
+          <font size="8pt"/> 	BODY {</run>
+      </par>
+      <par def="2">
+        <run html="true">
+          <font size="8pt"/>		font-family: sans-serif;</run>
+      </par>
+      <par def="2">
+        <run html="true">
+          <font size="8pt"/>		font-size:  9 pt;</run>
+      </par>
+      <par def="2">
+        <run html="true">
+          <font size="8pt"/>	           }</run>
+      </par>
+      <par def="2">
+        <run html="true">
+          <font size="8pt"/>&lt;/STYLE&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>&lt;TABLE BGCOLOR="EFEFEF"WIDTH="100%" BORDER=0 CELLSPACING=0 CELLPADDING=0&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>&lt;TR HEIGHT="21"&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>&lt;TD ALIGN=LEFT NOWRAP&gt;</run>
+        <actionhotspot hotspotstyle="none">
+          <code event="click">
+            <formula>@DbCommand("Domino"; "ViewPreviousPage")</formula>
+          </code>
+          <run>
+            <font size="8pt" style="bold"/>Previous Page</run>
+        </actionhotspot>
+        <run>
+          <font size="8pt" style="bold"/> | </run>
+        <actionhotspot hotspotstyle="none">
+          <code event="click">
+            <formula>@DbCommand("Domino"; "ViewNextPage")</formula>
+          </code>
+          <run>
+            <font size="8pt" style="bold"/>Next Page</run>
+        </actionhotspot>
+        <run>
+          <font size="8pt"/>
+        </run>
+        <run>
+          <font size="8pt" style="bold"/>| </run>
+        <actionhotspot hotspotstyle="none">
+          <code event="click">
+            <formula>@Command([OpenView]; @ViewTitle)</formula>
+          </code>
+          <run>
+            <font size="8pt" style="bold"/>First Page</run>
+        </actionhotspot>
+        <run>
+          <font size="8pt" style="bold"/> | </run>
+        <actionhotspot hotspotstyle="none">
+          <code event="click">
+            <formula>@DbCommand("Domino"; "EndView")</formula>
+          </code>
+          <run>
+            <font size="8pt" style="bold"/>Last Page</run>
+        </actionhotspot>
+        <run>
+          <font size="8pt" style="bold"/> | </run>
+        <actionhotspot hotspotstyle="none">
+          <code event="click">
+            <formula>@Command([ViewExpandAll])</formula>
+          </code>
+          <run>
+            <font size="8pt" style="bold"/>Expand</run>
+        </actionhotspot>
+        <run>
+          <font size="8pt" style="bold"/> | </run>
+        <actionhotspot hotspotstyle="none">
+          <code event="click">
+            <formula>@Command([ViewCollapseAll])</formula>
+          </code>
+          <run>
+            <font size="8pt" style="bold"/>Collapse</run>
+        </actionhotspot>
+        <run html="true">
+          <font size="8pt"/>
+        </run>
+        <actionhotspot hotspotstyle="none">
+          <code event="onClick" for="web">
+            <javascript>var pathname = (window.location.pathname);
+window.open(pathname.substring(0,(pathname.lastIndexOf('.nsf')+5))+'FolderCreate?OpenForm','Folder','scrollbars,resizable=yes,screenX=150,screenY=200,width=550,height=280');</javascript>
+          </code>
+          <code event="onClick" for="client">
+            <javascript>var pathname = (window.location.pathname);
+window.open(pathname.substring(0,(pathname.lastIndexOf('.nsf')+5))+'FolderCreate?OpenForm','Folder','scrollbars,resizable=yes,screenX=150,screenY=200,width=550,height=280');</javascript>
+          </code>
+          <run>
+            <font size="8pt"/>
+          </run>
+        </actionhotspot>
+        <run>
+          <font size="8pt" style="bold"/>
+        </run>
+        <actionhotspot hotspotstyle="none">
+          <code event="click">
+            <formula>@Command([RemoveFromFolder])</formula>
+          </code>
+          <run>
+            <font size="8pt"/>
+          </run>
+        </actionhotspot>
+        <run>
+          <font size="8pt" style="bold"/>
+        </run>
+        <actionhotspot hotspotstyle="none">
+          <code event="onClick" for="web">
+            <javascript>var pathname = (window.location.pathname);
+window.open(pathname.substring(0,(pathname.lastIndexOf('.nsf')+5))+'FolderRemove?OpenForm','Folder','scrollbars,resizable=yes,screenX=150,screenY=200,width=550,height=250');</javascript>
+          </code>
+          <code event="onClick" for="client">
+            <javascript>var pathname = (window.location.pathname);
+window.open(pathname.substring(0,(pathname.lastIndexOf('.nsf')+5))+'FolderRemove?OpenForm','Folder','scrollbars,resizable=yes,screenX=150,screenY=200,width=550,height=250');</javascript>
+          </code>
+          <run>
+            <font size="8pt" style="bold"/>
+          </run>
+        </actionhotspot>
+        <run>
+          <font size="8pt" style="bold"/>
+        </run>
+        <actionhotspot hotspotstyle="none">
+          <code event="click">
+            <formula>@If($$SelectDestFolder = "-- Select Folder --"; "";
+@Command([Folder]; ""; "0"))</formula>
+          </code>
+          <run>
+            <font size="8pt" style="bold"/>
+          </run>
+        </actionhotspot>
+        <run>
+          <font size="8pt" style="bold"/>
+        </run>
+        <actionhotspot hotspotstyle="none">
+          <code event="click">
+            <formula>@Command([Folder];"";"1")</formula>
+          </code>
+          <run>
+            <font size="8pt" style="bold"/>
+          </run>
+        </actionhotspot>
+        <run html="true">
+          <font size="8pt"/>
+        </run>
+        <actionhotspot hotspotstyle="none">
+          <code event="click">
+            <formula>@DbCommand("Domino"; "ViewPreviousPage")</formula>
+          </code>
+          <run>
+            <font size="8pt" style="bold"/>
+          </run>
+        </actionhotspot>
+        <run html="true">
+          <font size="8pt"/>&lt;/TD&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>&lt;/TR&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>&lt;/TABLE&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">
+          <font size="8pt"/>&lt;br&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">
+          <font size="8pt" style="bold"/>
+        </run>
+      </par>
+      <pardef id="3" align="center"/>
+      <par def="3">
+        <run html="true">
+          <font color="gray"/>
+        </run>
+        <run>
+          <font size="9pt" style="bold" name="Arial" pitch="variable" truetype="true" familyid="20"/>
+          <computedtext>
+            <code event="value">
+              <formula>@ProperCase(@Subset(@ViewTitle;1))</formula>
+            </code>
+          </computedtext>
+        </run>
+      </par>
+      <par def="3">
+        <run html="true">
+          <font size="8pt"/>&lt;br&gt;</run>
+      </par>
+      <par def="1">
+        <embeddedview displayusing="html" widthtype="fitwindow" heighttype="fitwindow" height="3.5833in" dclickframe="NotesView">
+          <code event="value">
+            <formula>"($All)"</formula>
+          </code>
+        </embeddedview>
+      </par>
+    </richtext>
+  </body>
+</page>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<frameset xmlns="http://www.lotus.com/dxl" name="View Frame" alias="View Frame" publicaccess="false" language="en" rows="97% 0px" spacing="0px" borderwidth="0px" bordercolor="#78b4bc">
+  <frame name="NotesView" targetframe="NotesPreview" border3d="false">
+    <namedelementlink type="view" name="Announcements"/>
+  </frame>
+  <frame name="NotesPreview" border3d="false">
+    <bordercaption show="caption arrows" justify="center" open="40%" bgcolor="#78b4bc">
+      <code event="value">
+        <formula>"Preview"</formula>
+      </code>
+    </bordercaption>
+  </frame>
+</frameset>

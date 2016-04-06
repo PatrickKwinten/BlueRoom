@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(wSendLink)" hide="v3" runaswebuser="true" publicaccess="false" language="en">
+  <trigger type="agentlist"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>Option Public
+Option Declare
+Option Compare NoCase
+Use "DiscussionRoutines"
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Dim dbug As New NotesLog("wSendLink")	
+'logging is for debug purposes
+	Set dbug = New NotesLog("wSendLink")
+'to turn off the debug log, set this to False     
+	dbug.LogActions = True
+	dbug.OpenAgentLog	
+	
+	Dim session As New NotesSession
+	Dim note As NotesDocument
+	Dim TRname As Variant
+	Dim TeamRoomName As String
+	Dim Subj As Variant
+	Dim peopleList As Variant
+	Dim errMsg As String
+	Dim lcDocType As Variant
+	Dim lcMtg As Variant
+	Dim peopleView As NotesView
+	Dim partdoc As NotesDocument
+	Dim partAddress As Variant
+	Dim DDrtitem As NotesRichTextItem
+	Dim mailnote As NotesDocument
+	Dim Sname As String
+	Dim goBack As String
+	Dim noteUNID As String
+	Dim errList As String
+	Dim L As Integer
+	Dim trimComma  As String
+	Dim profiledoc As NotesDocument
+	Dim dbpath As String
+	Dim wMail As Variant
+	
+	InstantiateObjects
+	
+	Set note = session.documentcontext
+	Dim webaddress As Variant
+	Dim getWebAddress As String
+	Dim isUseXPageUrl As Variant
+	
+	getWebAddress = getURL
+	dbpath = getdbpath
+	Set profiledoc = db.getprofiledocument("tempvars")	
+	isUseXPageUrl = profiledoc.getitemvalue("useXPageUrl")
+	
+	If getWebAddress = "" Then
+		wMail = getString(15)
+	ElseIf isUseXPageUrl(0) = "true" Then
+		Dim localDb As Boolean
+		Let localDb = False
+		Dim serverName As String
+		Let serverName = getWebAddress
+		dbpath = db.Filepath
+		dbpath = Replace(dbpath, "\", "/")
+		If serverName = "127.0.0.1" Then
+			serverName = db.Server
+			If serverName &lt;&gt; "" Then
+				Dim newName As NotesName
+				Set newName = session.Createname(serverName)
+				serverName = newName.Common	
+			Else
+				localDb = True
+			End If
+		End If
+		If localDb &lt;&gt; True Then
+			wMail = "  http://" + serverName +"/"+ dbpath +"/topicThread.xsp?action=openDocument&amp;documentId="+note.universalid
+		Else
+			' This is a local replica, all we can do is to create a local Notes link with a server hint
+			Dim redirectName As String  ' Would be VERY useful to get the server name of the remote replica !
+			Let redirectName = "" '"?Redirect&amp;Name=" + serverName
+			wMail = "  notes:///" + dbpath +"/($All)" + +"/"+ note.universalid + redirectName			
+		End If	
+	Else
+		wMail = "  http://"+ getWebAddress +"/"+ dbpath+"/$All/"+note.universalid
+	End If	
+	
+	If note.isnewnote Then
+		profiledoc.MailSent = getstring(14)
+		profiledoc.MailSentXpages = getstring(114)
+		Exit Sub
+	End If	
+	
+	TRname = note.getitemvalue("TeamRoomName")
+	If trName(0) = "" Then
+		TeamRoomName = getString(2)
+	Else
+		TeamRoomName = trName(0)
+	End If
+	
+	subj  = note.getitemvalue("Subject")
+	peopleList = note.getitemvalue("People")
+	lcDocType = note.getitemvalue("DocType")
+	lcMtg = note.getitemvalue("DefaultDocType3")
+	
+	If subj(0) = "" Then
+		subj(0) = getString(1)
+	End If
+	
+	If peopleList(0) = "" And LCase(lcDocType(0)) = LCase(lcMtg(0)) Then	
+		profiledoc.MailSent = getstring(5)
+		profiledoc.MailSentXpages = getstring(105)
+		Exit Sub
+	ElseIf peopleList(0) = "" Then
+		profiledoc.MailSent = getstring(6)
+		profiledoc.MailSentXpages = getstring(106)
+		Exit Sub
+	End If	
+	
+	Set mailnote = New NotesDocument(db)
+	
+	ForAll x In peopleList
+		Set DDrtitem = New NotesRichTextItem(mailnote, "Body")
+		Set peopleView = db.getview("PeopleLookup")		
+		Set partdoc = peopleview.getdocumentbykey(x)
+		partAddress = partdoc.getitemvalue("email")
+		If partAddress(0) &lt;&gt; "" Then
+			x = partAddress(0)
+		End If
+		
+		Sname = x
+		mailnote.SendTo = x
+		mailnote.subject = subj(0)
+		
+		Call DDrtitem.appendtext(getString(8))
+		Call DDrtitem.addnewline(2)
+		Call DDrtitem.appendtext(getString(9) + TeamRoomName )
+		Call DDrtitem.addnewline(2)
+		Call DDrtitem.appendtext(getString(10)	)
+'		Call DDrtitem.appenddoclink(note,"")
+		Call DDrtitem.appendtext(wMail)
+		On Error GoTo ErrorMessage
+		Call mailnote.send(False)
+	End ForAll
+	GoTo Finish	
+	
+errorMessage:
+	errList = errList + ", " + Sname 
+	L = Len(ErrList)
+	dbug.logaction("errlist = " + errlist)
+	dbug.logaction("length=" + CStr(L))	
+	Resume Next
+	
+finish:
+	If errList &lt;&gt; "" Then
+		trimComma = Right(errList, L-2)
+		errList = trimComma
+		profiledoc.MailSent = "There was an error sending mail to the following people: " + errList + ".  " + getString(13)
+		profiledoc.MailSentXpages = "There was an error sending mail to the following people: " + errList + ".  " + getString(13)
+		profiledoc.MailSentXpagesErrorList = errList
+	Else
+		profileDoc.MailSent = getString(11)
+		profileDoc.MailSentXpages = getString(111)
+	End If
+	
+End Sub
+
+</lotusscript>
+  </code>
+  <code event="GetString">
+    <lotusscript>Function GetString ( StringType As Integer) As String
+	
+	Select Case StringType
+		Case 1  
+			GetString = "[Untitled]"
+		Case 2
+			getString = "[No team name defined]"
+		Case 3
+			getString = "Mail has been sent successfully."
+		Case 4
+			getString = "There was an error sending the email to: "
+		Case 5
+			getString = "There are no attendees specified."
+		Case 6
+			getString = "There are no assignees specified"
+		Case 7
+			getString = "Please review: "
+		Case 8
+			getString = "An item requiring your attention has been posted to a TeamRoom database." + Chr(13) 
+		Case 9
+			getString = "TeamRoom Name: "
+		Case 10
+			getString = "Item:  "
+		Case 11
+			getString =  "Mail notifications have been sent successfully."
+		Case 12
+			getString = "Error on name(s): "
+		Case 13
+			getString = "Any/all other mail notifications have been sent."
+		Case 14
+			getString = "You must click the 'Save only' link before sending mail."
+		Case 15
+			getString = " [Note:  A URL link to this document was not supplied because the web server address is not specified in TeamRoom setup.]"
+		Case 100
+			getString = "error.100"
+		Case 101
+			getString = "error.101"
+		Case 102
+			getString = "error.102"
+		Case 103
+			getString = "error.103"
+		Case 104
+			getString = "error.104"
+		Case 105
+			getString = "error.105"
+		Case 106
+			getString = "error.106"
+		Case 107
+			getString = "error.107"
+		Case 108
+			getString = "error.108"
+		Case 109
+			getString = "error.109"
+		Case 110
+			getString = "error.110"
+		Case 111
+			getString = "error.111"
+		Case 112
+			getString = "error.112"
+		Case 113
+			getString = "error.113"
+		Case 114
+			getString = "error.114"
+		Case 115
+			getString = "error.115"
+			
+	End Select
+	
+End Function	</lotusscript>
+  </code>
+</agent>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="(SetStatusInactive)" hide="v3" publicaccess="false" language="en">
+  <trigger type="agentlist"/>
+  <documentset type="selected"/>
+  <code event="options">
+    <lotusscript>Option Public
+Option Declare
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>Const Msg1 = "You must first select a document.  Note:  highlight bar cannot be on a category."
+Const msg2 = "The TeamRoom Setup cannot be marked as inactive."
+
+
+
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	Dim session As New notessession	
+	Dim uiwork As New notesuiworkspace
+	Dim uiview As notesuiview
+	Dim uidoc As notesuidocument
+	Dim db As notesdatabase
+	Dim collection As notesdocumentcollection
+	Dim doc As notesdocument
+	Dim formval As Variant
+	Dim i As Variant
+	Dim view As notesview
+	
+	Set db = session.CurrentDatabase
+	Set uiview = uiwork.currentview
+	Set view = db.getview("TeamOverview")
+	Set collection = db.UnprocessedDocuments
+	
+	If collection.count &lt; 1 Then
+		Msgbox Msg1, 64
+	End If
+	
+	For i = 1 To collection.Count
+		Set doc = collection.GetNthDocument( i )
+		formval = doc.getitemvalue("form")
+		If formval(0) = "Mission" Then
+			Msgbox msg2, 64
+		Elseif formval(0) = "MainTopic" Then
+			Call doc.replaceitemvalue("Status", "0")
+			Call doc.replaceitemvalue("DateFiled", Now)
+			Call doc.save(True, False, True)    			
+		Else
+			Call doc.replaceitemvalue("FileThisStatusDoc", "1")
+			Call doc.replaceitemvalue("IndStatInactive", Today)
+			Call doc.replaceitemvalue("Status", "0")
+			Call doc.save(True, False, True)    			
+		End If
+	Next		
+	
+'	Call view.refresh
+End Sub</lotusscript>
+  </code>
+</agent>

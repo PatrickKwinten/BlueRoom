@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://www.lotus.com/dxl" name="AppletInstallPage" treatashtml="true" publicaccess="false" language="en" comment="Install launches from here" activelinkcolor="white" visitedlinkcolor="white" unvisitedlinkcolor="white">
+  <body>
+    <richtext>
+      <pardef id="1" leftmargin="1in" tabs="L0.5000in L1in L1.5000in L2in L2.5000in L3in L3.5000in L4in"/>
+      <par def="1">
+        <run html="true">&lt;HTML&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">&lt;HEAD&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">&lt;SCRIPT LANGUAGE= "Javascript"&gt;</run>
+      </par>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">//WINDOW DIALOG TEXT TO BE TRANSLATED</run>
+      </par>
+      <par def="1">
+        <run html="true">var SUPPORT = "Installable applets is only supported for Internet Explorer 4.0 and Netscape 4.6 and greater.";</run>
+      </par>
+      <par def="1">
+        <run html="true">var JAVASUPPORT = "You must have a Java enabled browser to install the Domino applets.  If your browser is Java enabled then you may have Java turned off.  Please turn Java on via the options menu and restart the browser.";</run>
+      </par>
+      <par def="1">
+        <run html="true">var SMARTUPDATESUPPORT = "You must enable SmartUpdate to install the Domino applets.  Please enable SmartUpdate and try to install again.";</run>
+      </par>
+      <par def="1">
+        <run html="true">var INSTALLCOMPLETE = "The Domino Applets have been installed successfully!";</run>
+      </par>
+      <par def="1">
+        <run html="true">var ERROR_NOCOOKIE = "Your browser was not able to set the proper cookie information. Your browser may not be able to handle cookies or cookie functionality may be turned off.  Consult your browser's documentation on how to enable cookies.";</run>
+      </par>
+      <par def="1">
+        <run html="true">//END TEXT TO BE TRANSLATED</run>
+      </par>
+      <par def="1"/>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">var locProtocol = window.location.protocol;</run>
+      </par>
+      <par def="1">
+        <run html="true">var locHostname = window.location.host;</run>
+      </par>
+      <par def="1">
+        <run html="true">var AppName ="install";</run>
+      </par>
+      <par def="1">
+        <run html="true">var appletInstalled = false;</run>
+      </par>
+      <par def="1">
+        <run html="true">var Version = new String(navigator.appVersion);</run>
+      </par>
+      <par def="1">
+        <run html="true">var majorVersion = parseInt(Version);</run>
+      </par>
+      <par def="1">
+        <run html="true">var minorVersion = parseInt(Version.substring(2,3)); </run>
+      </par>
+      <par def="1">
+        <run html="true">var is_ie = (navigator.userAgent.indexOf("MSIE") != -1);</run>
+      </par>
+      <par def="1">
+        <run html="true">var is_netscape = (navigator.appName.indexOf("Netscape")!=-1);</run>
+      </par>
+      <par def="1">
+        <run html="true">var CookieLife = "CookieLife=expires=Fri, 31-Dec-10 00:00:01 GMT; expires=Fri, 31-Dec-10 00:00:01 GMT; path=/;";</run>
+      </par>
+      <par def="1"/>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">if(AppName != "")</run>
+      </par>
+      <par def="1">
+        <run html="true">{</run>
+      </par>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">setCookieLife();</run>
+      </par>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">// Validate the Browser's capabilities</run>
+      </par>
+      <par def="1">
+        <run html="true">        if (!navigator.javaEnabled()) {</run>
+      </par>
+      <par def="1">
+        <run html="true">        	alert(JAVASUPPORT);</run>
+      </par>
+      <par def="1">
+        <run html="true">        	window.close();</run>
+      </par>
+      <par def="1">
+        <run html="true">        }</run>
+      </par>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">        // Launch the netscape trigger if it is Netscape4.5 or above</run>
+      </par>
+      <par def="1">
+        <run html="true">        if (is_netscape &amp;&amp; (majorVersion&gt;=4 /*&amp;&amp; minorVersion&gt;=5*/)) {</run>
+      </par>
+      <par def="1">
+        <run html="true">        	launchNetscape();</run>
+      </par>
+      <par def="1">
+        <run html="true">        }</run>
+      </par>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">        // Handle all other cases</run>
+      </par>
+      <par def="1">
+        <run html="true">        else if ((is_ie &amp;&amp; (majorVersion&lt;4)) || !is_ie) {</run>
+      </par>
+      <par def="1">
+        <run html="true">        	alert(SUPPORT);</run>
+      </par>
+      <par def="1">
+        <run html="true">        	window.close();</run>
+      </par>
+      <par def="1">
+        <run html="true">        }</run>
+      </par>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">        //Set installed()  called from UtilApplet</run>
+      </par>
+      <par def="1">
+        <run html="true">        function setInstalled() {</run>
+      </par>
+      <par def="1">
+        <run html="true">	//check to see if cookie was set properly</run>
+      </par>
+      <par def="1">
+        <run html="true">	var cookie = document.cookie;</run>
+      </par>
+      <par def="1">
+        <run html="true">	if(cookie.indexOf("DominoApplets")!=-1 &amp;&amp; cookie.indexOf("true")!=-1)</run>
+      </par>
+      <par def="1">
+        <run html="true">		window.alert(INSTALLCOMPLETE);</run>
+      </par>
+      <par def="1">
+        <run html="true">	else</run>
+      </par>
+      <par def="1">
+        <run html="true">		window.alert(ERROR_NOCOOKIE);</run>
+      </par>
+      <par def="1">
+        <run html="true">	window.close();</run>
+      </par>
+      <par def="1">
+        <run html="true">        }</run>
+      </par>
+      <pardef id="2" leftmargin="1in" rightmargin="100%"/>
+      <par def="2">
+        <run html="true">
+          <font name="Courier New" pitch="fixed" truetype="true" familyid="30"/>
+        </run>
+      </par>
+      <par def="2">
+        <run html="true">         /* Trigger script for Netscape install */</run>
+      </par>
+      <par def="2">
+        <run html="true">        function launchNetscape() {</run>
+      </par>
+      <par def="2">
+        <run html="true">	vi = new netscape.softupdate.VersionInfo(6,0,0,0);</run>
+      </par>
+      <par def="2">
+        <run html="true">	trigger = netscape.softupdate.Trigger;</run>
+      </par>
+      <par def="2">
+        <run html="true">		if ( trigger.UpdateEnabled() )</run>
+      </par>
+      <par def="2">
+        <run html="true">			trigger.ConditionalSoftwareUpdate(</run>
+      </par>
+      <par def="2">
+        <run html="true">      			locProtocol+'//'+locHostname+'/domjava/dominoapplets.jar',</run>
+      </par>
+      <par def="2">
+        <run html="true">  			"java/download/Lotus/Notes/DominoApplets", </run>
+      </par>
+      <par def="2">
+        <run html="true">  			vi, </run>
+      </par>
+      <par def="2">
+        <run html="true">  			trigger.DEFAULT_MODE);</run>
+      </par>
+      <par def="2">
+        <run html="true">		else</run>
+      </par>
+      <par def="2">
+        <run html="true">			window.alert(SMARTUPDATESUPPORT);</run>
+      </par>
+      <par def="2">
+        <run html="true">        }</run>
+      </par>
+      <par def="2"/>
+      <par def="2">
+        <run html="true">        function setCookieLife() {</run>
+      </par>
+      <par def="2">
+        <run html="true">               document.cookie=CookieLife;</run>
+      </par>
+      <par def="2">
+        <run html="true">        }</run>
+      </par>
+      <par def="2"/>
+      <par def="2">
+        <run html="true">}</run>
+      </par>
+      <par def="1">
+        <run html="true">&lt;/SCRIPT&gt;</run>
+      </par>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">&lt;/HEAD&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">&lt;BODY link="#000000" vlink="#000000" alink="#000000" background="#ffffff"&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">&lt;FONT face="Arial,Helvetcia,Verdana" color="#000000"&gt;</run>
+      </par>
+      <par def="1"/>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">&lt;H3&gt;Installing the Domino Applets&lt;/H3&gt;</run>
+      </par>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">&lt;P&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">This will install the Domino applets.  Please do not close this window until the installation process is complete.  It may take a few minutes to download the applets from the server and install them to your hard drive. If you close this window before then, the applets will not be installed.</run>
+      </par>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">&lt;SCRIPT Language="Javascript"&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">if (is_netscape) {</run>
+      </par>
+      <par def="1">
+        <run html="true">	document.writeln('&lt;P&gt;&lt;B&gt;&lt;FONT face="Arial,Helvetcia,Verdana" color="#FF0000"&gt;IMPORTANT!: You will need to  restart Netscape in order to complete the install.&lt;/FONT&gt;&lt;/B&gt;');</run>
+      </par>
+      <par def="1">
+        <run html="true">}</run>
+      </par>
+      <par def="1">
+        <run html="true">if (is_ie) {</run>
+      </par>
+      <par def="1">
+        <run html="true">	document.writeln('You will be notified once the applets have been installed.');</run>
+      </par>
+      <par def="1">
+        <run html="true">	document.writeln('&lt;APPLET code=lotus.notes.util.UtilApplet width=0 height=0 name=UtilApplet codebase=\"/domjava/\"width=0 MAYSCRIPT&gt;');</run>
+      </par>
+      <par def="1">
+        <run html="true">	document.writeln('&lt;PARAM NAME=\"useslibrarycodebase\" VALUE=\"dominoapplets.cab\"&gt;');</run>
+      </par>
+      <par def="1">
+        <run html="true">	document.writeln('&lt;PARAM NAME=\"useslibrary\" VALUE=\"DominoApplets\"&gt;');</run>
+      </par>
+      <par def="1">
+        <run html="true">	document.writeln('&lt;PARAM NAME=\"useslibraryversion\" VALUE=\"6,0,0,0\"&gt;');</run>
+      </par>
+      <par def="1">
+        <run html="true">	document.writeln('&lt;PARAM NAME=\"namespace\" VALUE=\"DominoApplets\"&gt;');</run>
+      </par>
+      <par def="1">
+        <run html="true">	document.writeln('&lt;PARAM NAME=\"installcheck\" VALUE=\"true\"&gt;');</run>
+      </par>
+      <par def="1">
+        <run html="true">	document.writeln('&lt;/APPLET&gt;');</run>
+      </par>
+      <par def="1">
+        <run html="true">}</run>
+      </par>
+      <par def="1">
+        <run html="true">&lt;/SCRIPT&gt;</run>
+      </par>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">&lt;/FONT&gt;</run>
+      </par>
+      <par def="1">
+        <run html="true">&lt;/BODY&gt;</run>
+      </par>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">&lt;/HTML&gt;</run>
+      </par>
+      <par def="1"/>
+      <par def="1"/>
+      <par def="1">
+        <run html="true">
+          <font size="16pt" style="extrude"/>
+        </run>
+      </par>
+    </richtext>
+  </body>
+</page>

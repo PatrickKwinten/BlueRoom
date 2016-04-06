@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns="http://www.lotus.com/dxl" name="Upgrade Content" alias="agUpgrade" hide="v3" publicaccess="false" comment="Creates Abstracts for XPages Views">
+  <trigger type="actionsmenu"/>
+  <documentset type="runonce"/>
+  <code event="options">
+    <lotusscript>%REM ////////////////////////////////////////////////////////////////////////////////////
+
+	Upgrades existing docs in TeamRoom dbs:
+	Creates "Abstract" items from existing "Body" items (used in XPages views)
+
+%END REM ////////////////////////////////////////////////////////////////////////////////
+
+Option Public
+Option Declare
+
+Use "lsClassException"
+
+
+</lotusscript>
+  </code>
+  <code event="declarations">
+    <lotusscript>Private Const MODULE_NAME = "agUpgrade"
+
+Public Class cUpgrade
+	
+	Private m_session	As NotesSession
+	Private m_db		As NotesDatabase
+	
+	'-------------
+	Public Sub New
+	'-------------
+		
+		On Error GoTo ERROR_HANDLER
+		
+		Set m_session	= New NotesSession
+		Set m_db		= m_session.CurrentDatabase
+		
+		'requires at least DESIGNER access
+		If Not Me.HasAccess(ACLLEVEL_DESIGNER) Then
+			MsgBox NEED_DESIGNER_ACCESS, MB_OK + MB_ICONEXCLAMATION, m_db.Title
+			Exit Sub
+		End If
+		
+		'run the upgrade...
+		Call Me.CreateAbstractFromBody()
+		
+		Exit Sub
+		
+ERROR_HANDLER:
+		
+		Call oException.RaiseError(MODULE_NAME, TypeName(Me), Null)
+		Exit Sub
+		
+	End Sub
+	
+	'-------------------------
+	Private Function HasAccess(iRequestedLevel As Integer) As Boolean
+	'-------------------------
+		
+		On Error GoTo ERROR_HANDLER
+		
+		Dim iCurrentLevel As Integer
+		
+		If m_db.CurrentAccessLevel &gt;= iRequestedLevel Then
+			HasAccess = True
+		End If
+		
+		Exit Function
+		
+ERROR_HANDLER:
+		
+		Call oException.RaiseError(MODULE_NAME, TypeName(Me), iRequestedLevel)
+		Exit Function
+		
+	End Function
+	
+	'---------------------------------
+	Private Sub CreateAbstractFromBody
+	'---------------------------------
+		
+		On Error GoTo ERROR_HANDLER
+		
+		Const VIEW_NAME		= "xvwRecentActivity"
+		Const COL_HASABSTRACT	= 6
+		Const ITEM_BODY		= "Body"
+		Const ITEM_ABSTRACT		= "Abstract"
+		Const ABSTRACT_SIZE		= 300
+		
+		Dim view				As NotesView
+		Dim vecoll			As NotesViewEntryCollection
+		Dim viewEntry			As NotesViewEntry
+		
+		Dim doc				As NotesDocument
+		Dim item				As NotesItem
+		Dim sAbstract			As String
+		Dim sEntryCount		As String
+		Dim lConverted			As Long
+		Dim vCols				As Variant
+		
+		Set view	= m_db.GetView(VIEW_NAME)
+		If view Is Nothing Then Error 1000, sprintf1(ERR_VIEW_NOT_FOUND, VIEW_NAME)
+		
+		'bring the view up-to-date, then lock it
+		Call view.Refresh()
+		view.AutoUpdate = False
+		
+		sEntryCount	= CStr(view.EntryCount)
+		Set vecoll	= view.AllEntries()
+		Set viewEntry	= vecoll.GetFirstEntry()
+		
+		While Not(viewEntry Is Nothing)
+			
+			If viewEntry.IsValid Then
+				
+				'only process entries which don't yet have the new abstract item
+				If viewEntry.ColumnValues(COL_HASABSTRACT) = 0 Then
+					
+					Set doc = viewEntry.Document
+					
+					'only process docs which actually have a body item we can abstract
+					If doc.HasItem(ITEM_BODY) Then
+						
+						Set item	= doc.GetFirstItem(ITEM_BODY)
+						sAbstract	= item.Abstract(ABSTRACT_SIZE, False, False)
+						
+						'in case we're truncating/clipping the last word
+						If Len(sAbstract) = ABSTRACT_SIZE Then
+							
+							'get the text up to the last word before the last space
+							sAbstract = StrLeftBack(sAbstract, " ", 5)
+							
+							'and append ellipsis "..."
+							sAbstract = sprintf1(ABSTRACT_ELLIPSIS, sAbstract)
+							
+						End If
+						
+						'save the new abstract item
+						Call doc.ReplaceItemValue(ITEM_ABSTRACT, sAbstract)
+						Call doc.Save(True, False, True)
+						
+						'log progress
+						lConverted = lConverted + 1
+						Print sprintf2(UPGRADE_PROGRESS, CStr(lConverted), sEntryCount)
+						
+					End If
+				End If
+			End If
+			
+			Set viewEntry = vecoll.GetNextEntry(viewEntry)
+		Wend
+		
+		'log status
+		If lConverted = 0 Then
+			MsgBox sprintf2("%s1\n\n%s2", UPGRADE_ALREADY_DONE, UPGRADE_NOT_AGAIN), MB_OK + MB_ICONINFORMATION, m_db.Title
+		Else
+			MsgBox sprintf2("%s1\n\n%s2", UPGRADE_COMPLETED, UPGRADE_NOT_AGAIN), MB_OK + MB_ICONINFORMATION, m_db.Title
+		End If
+		
+		Exit Sub
+		
+ERROR_HANDLER:
+		
+		Call oException.RaiseError(MODULE_NAME, TypeName(Me), sAbstract)
+		
+	End Sub
+	
+End Class
+</lotusscript>
+  </code>
+  <code event="initialize">
+    <lotusscript>Sub Initialize
+	
+	On Error GoTo ERROR_HANDLER
+	
+	'Upgrade the database
+	Dim oUpgrade As New cUpgrade
+	
+	Exit Sub
+	
+ERROR_HANDLER:
+	
+	Call oException.HandleError(MODULE_NAME, "", Null)
+	Exit Sub
+	
+End Sub
+
+</lotusscript>
+  </code>
+</agent>
